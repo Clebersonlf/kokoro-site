@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    { "id": "base", "name": "Base", "level": "fundamento" },
+    { "id": "queda", "name": "Queda", "level": "intermediario" },
+    { "id": "montada", "name": "Montada", "level": "avancado" }
+  ],
+  "links": [
+    { "source": "base", "target": "queda" },
+    { "source": "queda", "target": "montada" }
+  ]
+}

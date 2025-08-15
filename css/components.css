@@ -1,0 +1,25 @@
+
+/* Estilos para componentes reutilizáveis */
+.card {
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-item {
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.section {
+    margin: 20px 0;
+    padding: 20px;
+}

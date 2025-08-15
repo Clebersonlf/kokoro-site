@@ -1,0 +1,204 @@
+/* === CONFIGURAÇÕES GERAIS === */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: sans-serif;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* === MENU DE NAVEGAÇÃO PRINCIPAL === */
+.main-nav {
+    display: flex;
+    background-color: #2c3e50;
+    padding: 0 20px;
+    border-bottom: 3px solid #3498db; /* Cor padrão inicial */
+    flex-shrink: 0; 
+    transition: border-color 0.4s ease;
+}
+.nav-item {
+    color: white;
+    padding: 15px 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 3px solid transparent;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+.nav-item:hover { background-color: #34495e; }
+.nav-item.active { font-weight: bold; }
+
+/* Dropdown */
+.dropdown { position: relative; }
+.dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: #34495e; min-width: 200px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 100; }
+.dropdown-content a { color: white; padding: 12px 16px; text-decoration: none; display: block; }
+.dropdown-content a:hover { background-color: #4a627a; }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* === CONTAINER DE CONTEÚDO PRINCIPAL === */
+#main-content {
+    flex-grow: 1;
+    overflow: hidden;
+}
+.page-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a;
+    transition: background-color 0.4s ease;
+}
+.page-content.active {
+    display: flex;
+    flex-direction: column;
+}
+.page-content > h1 {
+    text-align: center;
+    padding-top: 50px;
+    font-size: 2.5em;
+    transition: color 0.4s ease;
+}
+
+/* === PÁGINA DE TÉCNICAS (ESTILOS INTERNOS) === */
+#page-tecnicas .header { display: flex; justify-content: space-between; align-items: center; background-color: #1f2b38; padding: 10px; flex-shrink: 0; }
+.tecnicas-container { display: flex; flex-grow: 1; height: 100%; }
+#mapa-container { flex-grow: 1; position: relative; }
+#painel-tecnicas { width: 280px; flex-shrink: 0; background-color: #2c3e50; border-left: 2px solid #3498db; padding: 15px; overflow-y: auto; box-sizing: border-box; }
+#painel-tecnicas h2 { margin-top: 0; color: #ecf0f1; border-bottom: 1px solid #7f8c8d; padding-bottom: 10px; padding-top: 5px; line-height: normal; }
+#lista-container h3 { color: #3498db; margin-bottom: 5px; margin-top: 20px; text-transform: capitalize; }
+#lista-container p { margin: 5px 0 5px 10px; color: #bdc3c7; cursor: pointer; }
+
+/* === PÁGINA DE BUSCA (ESTILO GENÉRICO) === */
+.search-page { overflow-y: auto; }
+.search-page .search-page-header { padding: 20px 40px; background-color: rgba(0,0,0,0.1); flex-shrink: 0; }
+.search-page .search-page-header h1 { margin: 0 0 20px 0; text-align: left; display: flex; align-items: center; gap: 15px; }
+.search-page .search-bar { display: flex; }
+.search-page .search-bar input { flex-grow: 1; padding: 12px; font-size: 16px; border: 1px solid #555; background-color: #333; color: white; border-radius: 5px 0 0 5px; }
+.search-page .search-bar button { padding: 12px 25px; font-size: 16px; border: none; background-color: #3498db; color: white; cursor: pointer; border-radius: 0 5px 5px 0; }
+.search-page .search-page-content { display: flex; flex-grow: 1; padding: 20px 40px; gap: 40px; overflow: hidden; }
+.search-page .word-cloud-container { width: 350px; flex-shrink: 0; }
+.search-page .results-container { flex-grow: 1; overflow-y: auto; }
+.search-page .word-cloud-container h3, .search-page .results-container h3 { margin-top: 0; border-bottom: 2px solid #555; padding-bottom: 10px; }
+.search-page .word-cloud { width: 100%; height: 300px; }
+.search-page .word-cloud text { cursor: pointer; }
+/* ... (outros estilos da página de busca) ... */
+
+/* === TEMAS DE CORES === */
+body.tema-azul .main-nav, body.tema-azul .nav-item.active { border-bottom-color: #3498db; }
+body.tema-azul #page-tecnicas.active { background-color: #1A2833; }
+
+body.tema-verde .main-nav, body.tema-verde .nav-item.active { border-bottom-color: #2ecc71; }
+body.tema-verde .page-content.active { background-color: #1E3B2A; }
+body.tema-verde .page-content.active h1 { color: #2ecc71; }
+
+body.tema-vermelho .main-nav, body.tema-vermelho .nav-item.active { border-bottom-color: #e74c3c; }
+body.tema-vermelho .page-content.active { background-color: #4A1D1D; }
+body.tema-vermelho .page-content.active h1 { color: #e74c3c; }
+
+body.tema-cinza-escuro .main-nav, body.tema-cinza-escuro .nav-item.active { border-bottom-color: #A9A9A9; }
+body.tema-cinza-escuro .page-content.active { background-color: #212121; }
+body.tema-cinza-escuro .page-content.active h1 { color: #A9A9A9; }
+body.tema-cinza-escuro .search-bar button { background-color: #52616B; }
+/* ... (outros temas) ... */
+
+/* === RESTANTE DOS ESTILOS === */
+.link { stroke: #999; stroke-opacity: 0.6; }
+.node circle { stroke: #fff; stroke-width: 1.5px; cursor: pointer; }
+.node text { fill: #f0f0f0; text-shadow: 1px 1px 2px black; font-size: 12px; cursor: pointer; }
+.modal { display: none; position: fixed; z-index: 101; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.7); }
+.modal-content { background-color: #e8e8e8; color: #1a1a1a; margin: 10% auto; padding: 25px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 10px; position: relative; animation-name: animatetop; animation-duration: 0.4s }
+@keyframes animatetop { from {top: -300px; opacity: 0} to {top: 0; opacity: 1} }
+.close-button { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
+.video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; margin-top: 20px; }
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+#modal-image { max-width: 100%; border-radius: 5px; margin-bottom: 15px; }
+#btn-gerar-ia { background-color: #8e44ad; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 20px; font-weight: bold; }
+.tooltip { position: absolute; text-align: center; width: auto; max-width: 300px; padding: 8px 12px; font-size: 14px; background: #34495e; color: #ecf0f1; border: 1px solid #7f8c8d; border-radius: 5px; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+/* === CAIXA MOTIVACIONAL (HOME) === */
+.motivacional-box{
+    position: relative;                 /* para posicionar o X dentro */
+    margin: 16px auto 0;                /* centralizada, abaixo do kanji */
+    width: min(92vw, 600px);            /* menor e responsiva */
+    padding: 16px 44px 16px 16px;       /* espaço pro X à direita */
+    text-align: center;
+
+    background: rgba(255,255,255,0.06); /* volta a “cor” translúcida */
+    border: 1px solid #333;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+
+.motivacional-box .japanese-text{
+    font-size: 1.8rem;
+    line-height: 1.1;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+.motivacional-box .quote-translation{
+    font-size: 1rem;
+    color: #d0d0d0;
+}
+
+.motivacional-box .close-button{
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: transparent;
+    border: 0;
+    color: #bbb;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.motivacional-box .close-button:hover{
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.motivacional-box.hidden{
+    display: none !important;           /* classe usada pra sumir no X */
+}
+/* Caixa motivacional apenas */
+#motivacional {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 100;
+  max-width: 520px;
+  width: calc(100% - 32px);
+  padding: 16px 40px 16px 16px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid #333;
+  border-radius: 12px;
+  color: #eee;
+  backdrop-filter: blur(4px);
+}
+
+#motivacional .motivacional-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 18px;
+  color: #bbb;
+}
+#motivacional .motivacional-close:hover { color: #fff; }
+
+.japanese-text { font-size: 1.6rem; }
+.quote-translation { color: #ccc; font-size: 1rem; }
+
+.hidden { display: none !important; }
+.hidden { display: none !important; }

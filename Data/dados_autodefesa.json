@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    { "id": "atencao", "name": "Atenção Situacional", "level": "basico", "description": "O princípio mais importante: estar ciente do seu entorno para evitar o perigo antes que ele aconteça.", "permiteIA": true },
+    { "id": "distancia", "name": "Manter Distância", "level": "basico", "description": "Usar barreiras verbais e físicas (mãos abertas) para manter um agressor a uma distância segura.", "permiteIA": true },
+    { "id": "golpes_vitais", "name": "Alvos Primários", "level": "basico", "description": "Identificar e atacar os pontos mais vulneráveis para incapacitar um agressor rapidamente: olhos, garganta, genitais.", "permiteIA": false, "imageUrl": "https://via.placeholder.com/500x300.png?text=Alvos+Vitais" },
+    { "id": "defesa_agarramento", "name": "Defesa de Agarramento (Punho)", "level": "intermediario", "description": "Técnicas para se soltar quando um agressor agarra seu pulso ou braço.", "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+    { "id": "defesa_estrangulamento", "name": "Defesa de Estrangulamento (Frontal)", "level": "intermediario", "description": "Movimentos para criar espaço e se livrar de um estrangulamento vindo pela frente.", "permiteIA": true },
+    { "id": "uso_objetos", "name": "Uso de Objetos Comuns", "level": "avancado", "description": "Aprender a usar objetos do dia a dia (chaves, caneta, bolsa) como ferramentas de defesa para equalizar a força." }
+  ],
+  "links": [
+    { "source": "atencao", "target": "distancia" },
+    { "source": "distancia", "target": "golpes_vitais" },
+    { "source": "distancia", "target": "defesa_agarramento" },
+    { "source": "defesa_agarramento", "target": "defesa_estrangulamento" },
+    { "source": "golpes_vitais", "target": "uso_objetos" }
+  ]
+}

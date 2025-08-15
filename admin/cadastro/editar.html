@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Lista de Cadastros</title>
+    <link rel="stylesheet" href="../../assets/style.css"/>
+    <style>
+        body{font-family:system-ui,Segoe UI,Roboto,Arial;background:#121212;color:#eee;margin:0;padding:24px}
+        .topbar{display:flex;gap:10px;align-items:center;margin-bottom:18px}
+        .btn{background:#2d6cdf;border:0;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+        .btn.alt{background:#444}
+        table{width:100%;border-collapse:collapse;background:#1a1a1a;border:1px solid #333}
+        th,td{padding:10px;border-bottom:1px solid #2a2a2a;font-size:14px}
+        th{background:#0f1115;text-align:left}
+        td .row-actions{display:flex;gap:6px;flex-wrap:wrap}
+        .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#222;border:1px solid #333}
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <button class="btn alt" onclick="history.back()">Voltar ao Cadastro</button>
+    <button class="btn" id="btnExport">Exportar JSON</button>
+    <span style="margin-left:auto;opacity:.7">Chave: <code id="keySpan"></code></span>
+</div>
+
+<table id="tbl">
+    <thead>
+    <tr>
+        <th style="width:180px">ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Esporte</th>
+        <th>Faixa</th>
+        <th>Status</th>
+        <th>Registro #</th>
+        <th>Criado em</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    const ALUNOS_KEY = 'kokoro_alunos_v1';
+    const REG_STATE_KEY = 'kokoro_reg_state_v1';
+
+    // inicializa o plano de numeração (0000–0020 e 0021–0073 MANUAL; auto = 0074+)
+    (function initReg(){
+        const s = JSON.parse(localStorage.getItem(REG_STATE_KEY) || 'null');
+        if(!s){
+            localStorage.setItem(REG_STATE_KEY, JSON.stringify({
+                nextAuto: 74,              // começa a gerar em 0074
+                blocked: [[0,20],[21,73]]  // faixas que você vai usar manualmente
+            }));
+        }
+    })();
+
+    function getRegState(){ return JSON.parse(localStorage.getItem(REG_STATE_KEY)); }
+    function setRegState(s){ localStorage.setItem(REG_STATE_KEY, JSON.stringify(s)); }
+
+    function getNextAutoReg(){
+        const st = getRegState();
+        const blocked = st.blocked||[];
+        const inBlocked = (x)=>blocked.some(([a,b])=>x>=a&&x<=b);
+
+        let n = st.nextAuto;
+        while(inBlocked(n)) n++;          // pula faixas manuais, por segurança
+        st.nextAuto = n+1;
+        setRegState(st);
+        return String(n).padStart(4,'0');
+    }
+
+    function load(){ return JSON.parse(localStorage.getItem(ALUNOS_KEY)||'[]'); }
+    function save(arr){ localStorage.setItem(ALUNOS_KEY, JSON.stringify(arr)); }
+
+    const keySpan = document.getElementById('keySpan');
+    keySpan.textContent = ALUNOS_KEY;
+
+    const tbody = document.querySelector('#tbl tbody');
+
+    function render(){
+        const alunos = load();
+        tbody.innerHTML = '';
+        alunos.forEach(a=>{
+            const tr = document.createElement('tr');
+
+            const tdId = `<td><code>${a.id}</code></td>`;
+            const tdNome = `<td>${a.nome||'-'}</td>`;
+            const tdEmail = `<td>${a.email||'-'}</td>`;
+            const tdEsporte = `<td>${a.esporte||'-'}</td>`;
+            const tdFaixa = `<td>${a.corFaixa||'-'}</td>`;
+            const tdStatus = `<td><span class="tag">${a.status||'Ativo'}</span></td>`;
+            const regNum = a?.registro?.numero ?? null;
+            const tdReg = `<td>${regNum?('<b>'+regNum+'</b>'):'<i>null</i>'}</td>`;
+            const created = a.createdAt ? new Date(a.createdAt).toLocaleString() : '-';
+            const tdCreated = `<td>${created}</td>`;
+
+            const tdActions = document.createElement('td');
+            tdActions.innerHTML = `
+      <div class="row-actions">
+        <a class="btn" href="editar.html?id=${a.id}">Editar</a>
+        <button class="btn alt" data-act="corrigir" data-id="${a.id}">Corrigir nº</button>
+        <button class="btn alt" data-act="gerar" data-id="${a.id}">Gerar nº</button>
+        <button class="btn alt" data-act="excluir" data-id="${a.id}">Excluir</button>
+      </div>
+    `;
+
+            tr.innerHTML = tdId+tdNome+tdEmail+tdEsporte+tdFaixa+tdStatus+tdReg+tdCreated;
+            tr.appendChild(tdActions);
+            tbody.appendChild(tr);
+        });
+    }
+
+    tbody.addEventListener('click', (e)=>{
+        const btn = e.target.closest('button[data-act]');
+        if(!btn) return;
+        const id = Number(btn.dataset.id);
+        const act = btn.dataset.act;
+        let alunos = load();
+        const idx = alunos.findIndex(x=>x.id===id);
+        if(idx<0) return;
+
+        if(act==='excluir'){
+            if(confirm('Excluir este cadastro?')){
+                alunos.splice(idx,1); save(alunos); render();
+            }
+        }
+
+        if(act==='corrigir'){
+            const atual = alunos[idx].registro?.numero ?? '';
+            const val = prompt('Digite o número de registro (0000–9999). Pode ser manual:', atual || '');
+            if(val===null) return;
+            const limpo = (val+'').replace(/\D/g,'').padStart(4,'0');
+            if(!alunos[idx].registro) alunos[idx].registro = {numero:null, historico:[]};
+            alunos[idx].registro.numero = limpo;
+            save(alunos); render();
+        }
+
+        if(act==='gerar'){
+            // só gera se não existir
+            if(alunos[idx].registro?.numero){
+                alert('Este aluno já tem número. Use "Corrigir nº" se precisar.');
+                return;
+            }
+            if(!alunos[idx].registro) alunos[idx].registro = {numero:null, historico:[]};
+            const novo = getNextAutoReg();   // começa em 0074 e pula bloqueados
+            alunos[idx].registro.numero = novo;
+            save(alunos); render();
+        }
+    });
+
+    document.getElementById('btnExport').addEventListener('click', ()=>{
+        const alunos = load();
+        const blob = new Blob([JSON.stringify(alunos,null,2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'kokoro_alunos.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    render();
+</script>
+</body>
+</html>

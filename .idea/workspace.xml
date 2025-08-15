@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="928845f5-b4f2-4ff5-a158-eb5b7b2b4641" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/admin/cadastro/editar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/cadastro/lista.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/cadastro/registro.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/financeiro/financeiro.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/cadastro/cadastro.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/cadastro/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/cadastro/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/historia.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/judo.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/karate.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/legislacao.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/livros-artigos.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/nutricao.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/primeiros-socorros.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/pages/psicologia.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dados.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jornada.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/jornada.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/area-aluno.html" beforeDir="false" afterPath="$PROJECT_DIR$/.env.local" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/atividade-fisica.html" beforeDir="false" afterPath="$PROJECT_DIR$/API/upload-selfie.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/autodefesa.html" beforeDir="false" afterPath="$PROJECT_DIR$/Data/quotes-index.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/cursos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Data/quotes-ja-pt.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/doutrina-tatica.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/cadastro/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/eventos.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/financeiro/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/glossario.html" beforeDir="false" afterPath="$PROJECT_DIR$/server.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/historia.html" beforeDir="false" afterPath="$PROJECT_DIR$/shared/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/jiujitsu.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/jiujitsu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/judo.html" beforeDir="false" afterPath="$PROJECT_DIR$/shared/js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/karate.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/area-aluno.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/legislacao.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/atividade-fisica.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/livros-artigos.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/autodefesa.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/mentoria.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/mentoria.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/nutricao.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/cursos.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/primeiros-socorros.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/doutrina-tatica.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/psicologia.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/eventos.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/painel/Cadastro/cadastro.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/painel/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preparacao.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/preparacao.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/socorros.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teste_teia.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/pages/glossario.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="30DHYfgVwP8Sza0rysnWvvYQ0Pp" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.cadastro.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.home.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html (1).executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/clebe/OneDrive/Desktop/KOKORO&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/clebe/Desktop/kokoro-site&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMThirdPartyAiProvidersConfigurable&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.1.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;HTML&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\clebe\OneDrive\Desktop\KOKORO" />
+      <recent name="C:\Users\clebe\OneDrive\Desktop\KOKORO\pages " />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\clebe\Desktop\kokoro-site\assets" />
+      <recent name="C:\Users\clebe\Desktop\kokoro-site\user\pages" />
+      <recent name="C:\Users\clebe\Desktop\kokoro-site\user" />
+      <recent name="C:\Users\clebe\Desktop\kokoro-site\user\cadastro" />
+      <recent name="C:\Users\clebe\Desktop\kokoro-site\admin\cadastro" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JavaScript Debug.cadastro.html">
+    <configuration name="cadastro.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/kokoro-site/user/cadastro/cadastro.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/KOKORO - TELA PRETA/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/KOKORO/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/kokoro-site/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.cadastro.html" />
+        <item itemvalue="JavaScript Debug.index.html" />
+        <item itemvalue="JavaScript Debug.index.html (1)" />
+        <item itemvalue="JavaScript Debug.index.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-WS-251.26927.40" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="928845f5-b4f2-4ff5-a158-eb5b7b2b4641" name="Changes" comment="" />
+      <created>1753155271806</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1753155271806</updated>
+      <workItem from="1753155273144" duration="13000" />
+      <workItem from="1753155296775" duration="11000" />
+      <workItem from="1753155317246" duration="8000" />
+      <workItem from="1753155334746" duration="67000" />
+      <workItem from="1753155411776" duration="1321000" />
+      <workItem from="1753156751340" duration="2654000" />
+      <workItem from="1753159426234" duration="4009000" />
+      <workItem from="1753240895972" duration="6876000" />
+      <workItem from="1753334099148" duration="315000" />
+      <workItem from="1753334427220" duration="8484000" />
+      <workItem from="1753414980050" duration="10000" />
+      <workItem from="1753759199100" duration="3636000" />
+      <workItem from="1754071458988" duration="54736000" />
+      <workItem from="1754778204287" duration="13555000" />
+      <workItem from="1754801133538" duration="40572000" />
+      <workItem from="1754971517818" duration="73000" />
+      <workItem from="1754971612255" duration="6036000" />
+      <workItem from="1755104673276" duration="1859000" />
+      <workItem from="1755110871087" duration="234000" />
+      <workItem from="1755111118502" duration="24478000" />
+      <workItem from="1755217394552" duration="39000" />
+      <workItem from="1755217435732" duration="823000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

@@ -1,0 +1,31 @@
+{
+  "nodes": [
+    { "id": "base", "name": "Base e Postura", "faixa": "branca", "description": "Aprender a se posicionar de forma equilibrada, com os pés na distância correta e o centro de gravidade baixo. É o fundamento mais importante de todos.", "imageUrl": "https://via.placeholder.com/500x300.png?text=Foto+da+Base", "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ", "permiteIA": true },
+    { "id": "jab", "name": "Jab", "faixa": "branca", "description": "Golpe rápido e reto com a mão da frente. Serve para medir a distância, quebrar a defesa do oponente e iniciar combinações.", "permiteIA": true },
+    { "id": "direto", "name": "Direto", "faixa": "branca", "description": "Golpe reto e potente com a mão de trás. Utiliza a rotação do quadril e do tronco para gerar força máxima." },
+    { "id": "guarda", "name": "Guarda Alta", "faixa": "branca", "description": "Posição defensiva fundamental onde as mãos protegem o rosto e os cotovelos protegem o tronco." },
+    { "id": "doubleleg", "name": "Double Leg", "faixa": "branca", "description": "Queda fundamental do grappling onde o lutador ataca as duas pernas do oponente para derrubá-lo." },
+    { "id": "montada", "name": "Montada", "faixa": "branca", "description": "Posição dominante no solo, onde se senta sobre o tronco do oponente, controlando seus movimentos e abrindo espaço para finalizações." },
+    { "id": "fuga_montada", "name": "Fuga de Montada (UPA)", "faixa": "branca", "description": "Técnica de fuga essencial para sair da montada, utilizando uma 'ponte' com o quadril e um rolamento para inverter a posição." },
+    { "id": "guarda_fechada", "name": "Guarda Fechada", "faixa": "branca", "description": "Posição defensiva no solo onde se controla o oponente com as pernas fechadas em sua cintura, neutralizando seus ataques e preparando raspagens ou finalizações." },
+    { "id": "cruzado", "name": "Cruzado", "faixa": "amarela", "description": "Golpe potente em arco, geralmente usado em curta distância para contornar a guarda do oponente." },
+    { "id": "esquiva", "name": "Esquiva", "faixa": "amarela", "description": "Movimento de cabeça e tronco para desviar de um golpe sem sair do lugar, mantendo-se em posição para um contra-ataque." },
+    { "id": "armlock", "name": "Armlock da Montada", "faixa": "amarela", "description": "Chave de braço clássica aplicada a partir da montada, que hiperextende o cotovelo do oponente." },
+    { "id": "cotovelada", "name": "Cotovelada", "faixa": "laranja", "description": "Golpe de curta distância extremamente eficaz, utilizando a ponta do cotovelo." },
+    { "id": "triangulo", "name": "Triângulo da Guarda", "faixa": "azul", "description": "Finalização aplicada com as pernas a partir da guarda, que estrangula o oponente utilizando o seu próprio ombro contra o pescoço." }
+  ],
+  "links": [
+    { "source": "base", "target": "jab" },
+    { "source": "base", "target": "direto" },
+    { "source": "guarda", "target": "jab" },
+    { "source": "jab", "target": "direto" },
+    { "source": "jab", "target": "esquiva" },
+    { "source": "esquiva", "target": "cruzado" },
+    { "source": "base", "target": "doubleleg" },
+    { "source": "doubleleg", "target": "montada" },
+    { "source": "montada", "target": "armlock" },
+    { "source": "montada", "target": "fuga_montada" },
+    { "source": "fuga_montada", "target": "guarda_fechada" },
+    { "source": "guarda_fechada", "target": "triangulo" }
+  ]
+}
