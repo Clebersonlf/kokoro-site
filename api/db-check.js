@@ -1,6 +1,7 @@
-const { neon } = require('@neondatabase/serverless');
+// api/db-check.js (ESM)
+import { neon } from '@neondatabase/serverless';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
     try {
         // tenta várias chaves possíveis
         const url =
@@ -11,18 +12,24 @@ module.exports = async (req, res) => {
             process.env.POSTGRES_URL_NON_POOLING;
 
         if (!url) {
-            return res.status(500).json({ ok: false, error: 'Nenhuma variável de conexão encontrada (NEON_DATABASE_URL/DATABASE_URL/POSTGRES_*)' });
+            return res
+                .status(500)
+                .json({
+                    ok: false,
+                    error:
+                        'Nenhuma variável de conexão encontrada (NEON_DATABASE_URL/DATABASE_URL/POSTGRES_*)',
+                });
         }
 
         const sql = neon(url);
         const rows = await sql`
-            SELECT NOW() AS agora,
-                   current_user AS usuario,
-                   current_database() AS banco
-        `;
+      SELECT NOW() AS agora,
+             current_user AS usuario,
+             current_database() AS banco
+    `;
 
-        res.status(200).json({ ok: true, ...rows[0] });
+        return res.status(200).json({ ok: true, ...rows[0] });
     } catch (err) {
-        res.status(500).json({ ok: false, error: String(err) });
+        return res.status(500).json({ ok: false, error: String(err) });
     }
-};
+}
