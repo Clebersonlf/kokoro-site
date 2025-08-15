@@ -1,16 +1,26 @@
-// api/db-check.js  (CommonJS – compatível no Vercel)
 const { neon } = require('@neondatabase/serverless');
 
 module.exports = async (req, res) => {
     try {
-        const sql = neon(process.env.DATABASE_URL);
+        // tenta várias chaves possíveis
+        const url =
+            process.env.NEON_DATABASE_URL ||
+            process.env.DATABASE_URL ||
+            process.env.POSTGRES_URL ||
+            process.env.POSTGRES_PRISMA_URL ||
+            process.env.POSTGRES_URL_NON_POOLING;
 
-        // Teste simples: pega infos do banco
+        if (!url) {
+            return res.status(500).json({ ok: false, error: 'Nenhuma variável de conexão encontrada (NEON_DATABASE_URL/DATABASE_URL/POSTGRES_*)' });
+        }
+
+        const sql = neon(url);
         const rows = await sql`
-      SELECT NOW()        AS agora,
-             current_user AS usuario,
-             current_database() AS banco
-    `;
+            SELECT NOW() AS agora,
+                   current_user AS usuario,
+                   current_database() AS banco
+        `;
+
         res.status(200).json({ ok: true, ...rows[0] });
     } catch (err) {
         res.status(500).json({ ok: false, error: String(err) });
