@@ -14,7 +14,7 @@
 
     try {
       // 1) tenta login admin (banco)
-      const resp = await fetch('/api/admin/login', {
+      const resp = await fetch('https://www.planckkokoro.com/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ email, senha })
