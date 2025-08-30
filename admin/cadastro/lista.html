@@ -1,232 +1,100 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Lista de Cadastros</title>
-    <style>
-        body{font-family:system-ui,Segoe UI,Roboto,Arial;background:#121212;color:#eee;margin:0;padding:24px}
-        .topbar{display:flex;gap:10px;align-items:center;margin-bottom:18px}
-        .btn{background:#2d6cdf;border:0;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
-        .btn.alt{background:#444}
-        table{width:100%;border-collapse:collapse;background:#1a1a1a;border:1px solid #333}
-        th,td{padding:10px;border-bottom:1px solid #2a2a2a;font-size:14px}
-        th{background:#0f1115;text-align:left}
-        td .row-actions{display:flex;gap:6px;flex-wrap:wrap}
-        .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#222;border:1px solid #333}
-        .muted{opacity:.7}
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Alunos • Lista</title>
+  <style>
+    :root{
+      --bg:#0c0f14; --ink:#eaeaea; --line:#1f2530;
+      --card:#111827; --thead:#0f141b;
+      --btn-bg:#111827; --btn-br:#334155; --btn-ink:#bfdbfe; --btn-hover:#1e293b;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
+    header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line)}
+    main{padding:16px 24px}
+    table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--line);font-size:14px}
+    th{color:#9ad1ff;text-align:left;background:var(--thead)}
+    tr:last-child td{border-bottom:0}
+    a.btn{color:#60a5fa;text-decoration:none}
+    .muted{opacity:.7}
+
+    /* Botão-link de voltar – um único <a> */
+    .btn-back{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.55rem .9rem;background:var(--btn-bg);
+      border:1px solid var(--btn-br);border-radius:.6rem;
+      color:var(--btn-ink);text-decoration:none;line-height:1
+    }
+    .btn-back:hover{background:var(--btn-hover)}
+    .chevron{font-weight:600}
+  </style>
 </head>
 <body>
-<div class="topbar">
-    <button class="btn alt" onclick="history.back()">Voltar ao Cadastro</button>
-    <button class="btn" id="btnExport">Exportar JSON</button>
-    <span class="muted" style="margin-left:auto">Chave: <code id="keySpan"></code></span>
-</div>
+<header>
+  <h1>Alunos • Lista</h1>
+  <!-- UM ÚNICO LINK estilizado como botão (sem <a> dentro de <a>) -->
+  <a class="btn-back" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a>
+</header>
 
-<table id="tbl">
+<main>
+  <table aria-describedby="tableHint">
     <thead>
     <tr>
-        <th style="width:180px">ID</th>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Esporte</th>
-        <th>Faixa</th>
-        <th>Status</th>
-        <th>Registro #</th>
-        <th>Criado em</th>
-        <th>Ações</th>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefone</th>
+      <th>Nº Cadastro</th>
+      <th>Criado</th>
+      <th></th>
     </tr>
     </thead>
-    <tbody></tbody>
-</table>
+    <tbody id="tb">
+    <tr><td class="muted" colspan="6">Carregando…</td></tr>
+    </tbody>
+  </table>
+  <p id="tableHint" class="muted" style="margin:.6rem 0 0">Use “Editar” para alterar um cadastro.</p>
+</main>
 
 <script>
-    // ================== CHAVES NO LOCALSTORAGE ==================
-    const ALUNOS_KEY    = 'kokoro_alunos_v1';
-    const REG_STATE_KEY = 'kokoro_reg_state_v1';
+  function fmtData(v){
+    if(!v) return '';
+    const d = new Date(v);
+    return isNaN(d) ? '' : d.toLocaleString();
+  }
 
-    // ================== UTIL LOCALSTORAGE ==================
-    const load = () => JSON.parse(localStorage.getItem(ALUNOS_KEY) || '[]');
-    const save = (arr) => localStorage.setItem(ALUNOS_KEY, JSON.stringify(arr));
+  async function load(){
+    const tb = document.getElementById('tb');
+    try{
+      const r = await fetch('/api/alunos/list');
+      const j = await r.json().catch(()=> ({}));
+      const rows = j.data || j.rows || [];
 
-    const getRegState = () => JSON.parse(localStorage.getItem(REG_STATE_KEY) || 'null');
-    const setRegState = (s) => localStorage.setItem(REG_STATE_KEY, JSON.stringify(s));
+      if(!Array.isArray(rows) || rows.length === 0){
+        tb.innerHTML = '<tr><td class="muted" colspan="6">Nenhum aluno encontrado.</td></tr>';
+        return;
+      }
 
-    // ================== ESTADO DE NUMERAÇÃO ==================
-    function initRegStateIfNeeded(){
-        let s = getRegState();
-        if(!s){
-            s = {
-                nextAuto: 74,          // 0074+ automático
-                blocked: [[0,20],[21,73]] // 0000–0020 (Reservado) e 0021–0073 (Pendente) = manual
-            };
-            setRegState(s);
-            console.log('[OK] REG_STATE inicializado:', s);
-        }
+      tb.innerHTML = '';
+      rows.forEach(a=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${a.nome ?? ''}</td>
+            <td>${a.email ?? ''}</td>
+            <td>${a.telefone ?? ''}</td>
+            <td><code>${a.cad_numero ?? ''}</code></td>
+            <td>${fmtData(a.created_at)}</td>
+            <td><a class="btn" href="/admin/cadastro/editar.html?id=${encodeURIComponent(a.id)}">Editar</a></td>
+          `;
+        tb.appendChild(tr);
+      });
+    }catch(e){
+      tb.innerHTML = '<tr><td class="muted" colspan="6">Falha ao carregar a lista.</td></tr>';
     }
+  }
 
-    function getNextAutoReg(){
-        const st = getRegState();
-        const blocked = st.blocked || [];
-        const inBlocked = (x) => blocked.some(([a,b]) => x>=a && x<=b);
-        let n = st.nextAuto;
-        while(inBlocked(n)) n++; // segurança extra
-        st.nextAuto = n + 1;
-        setRegState(st);
-        return String(n).padStart(4,'0');
-    }
-
-    // ================== PLACEHOLDERS 0000–0073 ==================
-    function ensurePlaceholders(){
-        initRegStateIfNeeded();
-        let alunos = load();
-
-        const usados = new Set(alunos.map(a => a?.registro?.numero).filter(Boolean));
-
-        // 0000–0020 → Reservado
-        for(let n=0; n<=20; n++){
-            const num = String(n).padStart(4,'0');
-            if(!usados.has(num)){
-                alunos.push({
-                    id: `PL-${num}`,
-                    nome: '',
-                    email: '',
-                    esporte: '',
-                    corFaixa: '',
-                    status: 'Reservado',
-                    registro: { numero: num, historico: [] },
-                    createdAt: new Date().toISOString(),
-                    isPlaceholder: true
-                });
-            }
-        }
-
-        // 0021–0073 → Pendente
-        for(let n=21; n<=73; n++){
-            const num = String(n).padStart(4,'0');
-            if(!usados.has(num)){
-                alunos.push({
-                    id: `PL-${num}`,
-                    nome: '',
-                    email: '',
-                    esporte: '',
-                    corFaixa: '',
-                    status: 'Pendente',
-                    registro: { numero: num, historico: [] },
-                    createdAt: new Date().toISOString(),
-                    isPlaceholder: true
-                });
-            }
-        }
-
-        save(alunos);
-        console.log('[OK] Placeholders garantidos (0000–0020 Reservado, 0021–0073 Pendente).');
-    }
-
-    // === CRIA placeholders AGORA (antes de desenhar a tabela) ===
-    ensurePlaceholders();
-
-    // ================== UI ==================
-    document.getElementById('keySpan').textContent = ALUNOS_KEY;
-    const tbody = document.querySelector('#tbl tbody');
-
-    function render(){
-        const alunos = load();
-
-        // Ordena por número de registro, depois por ID para ficar bonitinho
-        alunos.sort((a,b)=>{
-            const na = a?.registro?.numero ?? 'zzzz';
-            const nb = b?.registro?.numero ?? 'zzzz';
-            if (na !== nb) return na.localeCompare(nb);
-            return String(a.id).localeCompare(String(b.id));
-        });
-
-        tbody.innerHTML = '';
-        alunos.forEach(a=>{
-            const tr = document.createElement('tr');
-
-            const tdId      = `<td><code>${a.id}</code></td>`;
-            const tdNome    = `<td>${(a.nome||'').trim() || (a.isPlaceholder ? '<i>(vazio)</i>' : '-')}</td>`;
-            const tdEmail   = `<td>${a.email||'-'}</td>`;
-            const tdEsporte = `<td>${a.esporte||'-'}</td>`;
-            const tdFaixa   = `<td>${a.corFaixa||'-'}</td>`;
-            const tdStatus  = `<td><span class="tag">${a.status||'Ativo'}</span></td>`;
-            const regNum    = a?.registro?.numero ?? null;
-            const tdReg     = `<td>${regNum ? ('<b>'+regNum+'</b>') : '<i>null</i>'}</td>`;
-            const created   = a.createdAt ? new Date(a.createdAt).toLocaleString() : '-';
-            const tdCreated = `<td>${created}</td>`;
-
-            const tdActions = document.createElement('td');
-            tdActions.innerHTML = `
-        <div class="row-actions">
-          <a class="btn" href="editar.html?id=${a.id}">Editar</a>
-          <button class="btn alt" data-act="corrigir" data-id="${a.id}">Corrigir nº</button>
-          <button class="btn alt" data-act="gerar"    data-id="${a.id}">Gerar nº</button>
-          <button class="btn alt" data-act="excluir"  data-id="${a.id}">Excluir</button>
-        </div>
-      `;
-
-            tr.innerHTML = tdId+tdNome+tdEmail+tdEsporte+tdFaixa+tdStatus+tdReg+tdCreated;
-            tr.appendChild(tdActions);
-            tbody.appendChild(tr);
-        });
-    }
-
-    // Ações dos botões
-    tbody.addEventListener('click', (e)=>{
-        const btn = e.target.closest('button[data-act]');
-        if(!btn) return;
-        const id  = btn.dataset.id;
-        const act = btn.dataset.act;
-        let alunos = load();
-        const idx = alunos.findIndex(x=>String(x.id)===String(id));
-        if(idx<0) return;
-
-        if(act==='excluir'){
-            if(confirm('Excluir este cadastro?')){
-                alunos.splice(idx,1); save(alunos); render();
-            }
-            return;
-        }
-
-        if(act==='corrigir'){
-            const atual = alunos[idx].registro?.numero ?? '';
-            const val = prompt('Digite o número de registro (0000–9999). Pode ser manual:', atual || '');
-            if(val===null) return;
-            const limpo = (val+'').replace(/\D/g,'').padStart(4,'0');
-            if(!alunos[idx].registro) alunos[idx].registro = {numero:null, historico:[]};
-            alunos[idx].registro.numero = limpo;
-            save(alunos); render();
-            return;
-        }
-
-        if(act==='gerar'){
-            if(alunos[idx].registro?.numero){
-                alert('Este aluno já tem número. Use "Corrigir nº" se precisar.');
-                return;
-            }
-            if(!alunos[idx].registro) alunos[idx].registro = {numero:null, historico:[]};
-            const novo = getNextAutoReg(); // começa em 0074 e pula as faixas bloqueadas
-            alunos[idx].registro.numero = novo;
-            save(alunos); render();
-            return;
-        }
-    });
-
-    // Exportar JSON
-    document.getElementById('btnExport').addEventListener('click', ()=>{
-        const alunos = load();
-        const blob = new Blob([JSON.stringify(alunos,null,2)], {type:'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'kokoro_alunos.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    });
-
-    // Primeira renderização
-    render();
+  document.addEventListener('DOMContentLoaded', load);
 </script>
 </body>
 </html>

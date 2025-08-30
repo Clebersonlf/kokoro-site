@@ -1,8 +1,3 @@
-// api/health.js
-module.exports = async (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify({
-        status: 'ok',
-        ts: new Date().toISOString()
-    }));
-};
+export default function handler(req, res) {
+    res.status(200).json({ ok: true, message: "API funcionando 🚀" });
+}

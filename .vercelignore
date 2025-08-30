@@ -1,0 +1,10 @@
+# ignore backups e temporários
+*.bak
+*.bak.*
+*.tmp
+*.swp
+
+# (opcional) ignore também arquivos locais e IDE
+.DS_Store
+.idea/
+.vscode/

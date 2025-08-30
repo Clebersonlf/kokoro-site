@@ -1,166 +1,150 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Lista de Cadastros</title>
-    <link rel="stylesheet" href="../../assets/style.css"/>
-    <style>
-        body{font-family:system-ui,Segoe UI,Roboto,Arial;background:#121212;color:#eee;margin:0;padding:24px}
-        .topbar{display:flex;gap:10px;align-items:center;margin-bottom:18px}
-        .btn{background:#2d6cdf;border:0;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
-        .btn.alt{background:#444}
-        table{width:100%;border-collapse:collapse;background:#1a1a1a;border:1px solid #333}
-        th,td{padding:10px;border-bottom:1px solid #2a2a2a;font-size:14px}
-        th{background:#0f1115;text-align:left}
-        td .row-actions{display:flex;gap:6px;flex-wrap:wrap}
-        .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#222;border:1px solid #333}
-    </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Aluno • Editar</title>
+
+  <style>
+    :root{
+      --bg:#0c0f14; --ink:#eaeaea; --line:#1f2530;
+      --field-bg:#0f1622; --field-br:#2a3342;
+      --btn-bg:#111827; --btn-br:#334155; --btn-hover:#1e293b; --btn-ink:#bfdbfe;
+      --muted:#9ca3af;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
+    header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line)}
+    main{padding:16px 24px;max-width:780px}
+
+    /* Botão-link padrão (1 link por botão, nada de <a> dentro de <a>) */
+    .btn{
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.55rem .9rem; background:var(--btn-bg);
+      border:1px solid var(--btn-br); border-radius:.6rem;
+      color:var(--btn-ink); text-decoration:none; line-height:1
+    }
+    .btn:hover{background:var(--btn-hover)}
+    .chevron{font-weight:600}
+
+    label{display:block;margin:10px 0 4px}
+    input{
+      width:100%;padding:10px;border-radius:8px;border:1px solid var(--field-br);
+      background:var(--field-bg);color:var(--ink)
+    }
+    .row{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+    .actions{margin-top:16px;display:flex;gap:10px}
+    button{
+      padding:10px 14px;border-radius:8px;border:1px solid var(--btn-br);
+      background:#1f2937;color:var(--ink);cursor:pointer
+    }
+    button.danger{border-color:#ef4444;color:#fecaca}
+    .hint{color:var(--muted)}
+  </style>
 </head>
 <body>
-<div class="topbar">
-    <button class="btn alt" onclick="history.back()">Voltar ao Cadastro</button>
-    <button class="btn" id="btnExport">Exportar JSON</button>
-    <span style="margin-left:auto;opacity:.7">Chave: <code id="keySpan"></code></span>
-</div>
+<header>
+  <h1>Aluno • Editar</h1>
+  <!-- UM ÚNICO LINK ESTILIZADO COMO BOTÃO -->
+  <nav><a class="btn" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a></nav>
+</header>
 
-<table id="tbl">
-    <thead>
-    <tr>
-        <th style="width:180px">ID</th>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Esporte</th>
-        <th>Faixa</th>
-        <th>Status</th>
-        <th>Registro #</th>
-        <th>Criado em</th>
-        <th>Ações</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<main>
+  <div id="load" class="hint">Carregando...</div>
+
+  <form id="f" style="display:none">
+    <input type="hidden" id="id"/>
+
+    <label>Nome</label>
+    <input id="nome" required/>
+
+    <div class="row">
+      <div>
+        <label>Email</label>
+        <input id="email" type="email" placeholder="opcional"/>
+      </div>
+      <div>
+        <label>Telefone</label>
+        <input id="telefone" placeholder="opcional"/>
+      </div>
+    </div>
+
+    <label>Nº de Cadastro (não é o de graduação)</label>
+    <input id="cad_numero" placeholder="ex: 0012"/>
+
+    <div class="actions">
+      <button type="submit">Salvar</button>
+      <button type="button" class="danger" id="btnDel">Excluir</button>
+    </div>
+
+    <div id="msg" class="hint"></div>
+  </form>
+</main>
 
 <script>
-    const ALUNOS_KEY = 'kokoro_alunos_v1';
-    const REG_STATE_KEY = 'kokoro_reg_state_v1';
+  function q(name){ return new URLSearchParams(location.search).get(name); }
 
-    // inicializa o plano de numeração (0000–0020 e 0021–0073 MANUAL; auto = 0074+)
-    (function initReg(){
-        const s = JSON.parse(localStorage.getItem(REG_STATE_KEY) || 'null');
-        if(!s){
-            localStorage.setItem(REG_STATE_KEY, JSON.stringify({
-                nextAuto: 74,              // começa a gerar em 0074
-                blocked: [[0,20],[21,73]]  // faixas que você vai usar manualmente
-            }));
-        }
-    })();
+  async function load(){
+    const id = q('id');
+    if (!id){ document.getElementById('load').textContent='ID não informado'; return; }
 
-    function getRegState(){ return JSON.parse(localStorage.getItem(REG_STATE_KEY)); }
-    function setRegState(s){ localStorage.setItem(REG_STATE_KEY, JSON.stringify(s)); }
+    const r = await fetch('/api/alunos/get?id='+encodeURIComponent(id));
+    const j = await r.json();
+    if (!j.ok){ document.getElementById('load').textContent=j.message||'Aluno não encontrado'; return; }
 
-    function getNextAutoReg(){
-        const st = getRegState();
-        const blocked = st.blocked||[];
-        const inBlocked = (x)=>blocked.some(([a,b])=>x>=a&&x<=b);
+    const a = j.aluno;
+    f.style.display='block'; loadDiv.style.display='none';
+    idEl.value = a.id;
+    nome.value = a.nome||'';
+    email.value = a.email||'';
+    telefone.value = a.telefone||'';
+    cad_numero.value = a.cad_numero||'';
+  }
 
-        let n = st.nextAuto;
-        while(inBlocked(n)) n++;          // pula faixas manuais, por segurança
-        st.nextAuto = n+1;
-        setRegState(st);
-        return String(n).padStart(4,'0');
-    }
-
-    function load(){ return JSON.parse(localStorage.getItem(ALUNOS_KEY)||'[]'); }
-    function save(arr){ localStorage.setItem(ALUNOS_KEY, JSON.stringify(arr)); }
-
-    const keySpan = document.getElementById('keySpan');
-    keySpan.textContent = ALUNOS_KEY;
-
-    const tbody = document.querySelector('#tbl tbody');
-
-    function render(){
-        const alunos = load();
-        tbody.innerHTML = '';
-        alunos.forEach(a=>{
-            const tr = document.createElement('tr');
-
-            const tdId = `<td><code>${a.id}</code></td>`;
-            const tdNome = `<td>${a.nome||'-'}</td>`;
-            const tdEmail = `<td>${a.email||'-'}</td>`;
-            const tdEsporte = `<td>${a.esporte||'-'}</td>`;
-            const tdFaixa = `<td>${a.corFaixa||'-'}</td>`;
-            const tdStatus = `<td><span class="tag">${a.status||'Ativo'}</span></td>`;
-            const regNum = a?.registro?.numero ?? null;
-            const tdReg = `<td>${regNum?('<b>'+regNum+'</b>'):'<i>null</i>'}</td>`;
-            const created = a.createdAt ? new Date(a.createdAt).toLocaleString() : '-';
-            const tdCreated = `<td>${created}</td>`;
-
-            const tdActions = document.createElement('td');
-            tdActions.innerHTML = `
-      <div class="row-actions">
-        <a class="btn" href="editar.html?id=${a.id}">Editar</a>
-        <button class="btn alt" data-act="corrigir" data-id="${a.id}">Corrigir nº</button>
-        <button class="btn alt" data-act="gerar" data-id="${a.id}">Gerar nº</button>
-        <button class="btn alt" data-act="excluir" data-id="${a.id}">Excluir</button>
-      </div>
-    `;
-
-            tr.innerHTML = tdId+tdNome+tdEmail+tdEsporte+tdFaixa+tdStatus+tdReg+tdCreated;
-            tr.appendChild(tdActions);
-            tbody.appendChild(tr);
-        });
-    }
-
-    tbody.addEventListener('click', (e)=>{
-        const btn = e.target.closest('button[data-act]');
-        if(!btn) return;
-        const id = Number(btn.dataset.id);
-        const act = btn.dataset.act;
-        let alunos = load();
-        const idx = alunos.findIndex(x=>x.id===id);
-        if(idx<0) return;
-
-        if(act==='excluir'){
-            if(confirm('Excluir este cadastro?')){
-                alunos.splice(idx,1); save(alunos); render();
-            }
-        }
-
-        if(act==='corrigir'){
-            const atual = alunos[idx].registro?.numero ?? '';
-            const val = prompt('Digite o número de registro (0000–9999). Pode ser manual:', atual || '');
-            if(val===null) return;
-            const limpo = (val+'').replace(/\D/g,'').padStart(4,'0');
-            if(!alunos[idx].registro) alunos[idx].registro = {numero:null, historico:[]};
-            alunos[idx].registro.numero = limpo;
-            save(alunos); render();
-        }
-
-        if(act==='gerar'){
-            // só gera se não existir
-            if(alunos[idx].registro?.numero){
-                alert('Este aluno já tem número. Use "Corrigir nº" se precisar.');
-                return;
-            }
-            if(!alunos[idx].registro) alunos[idx].registro = {numero:null, historico:[]};
-            const novo = getNextAutoReg();   // começa em 0074 e pula bloqueados
-            alunos[idx].registro.numero = novo;
-            save(alunos); render();
-        }
+  async function salvar(e){
+    e.preventDefault();
+    msg.textContent='Salvando...';
+    const payload = {
+      id: idEl.value,
+      nome: nome.value.trim(),
+      email: email.value.trim().toLowerCase(),
+      telefone: telefone.value.trim(),
+      cad_numero: cad_numero.value.trim()
+    };
+    const r = await fetch('/api/alunos/update', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
     });
+    const j = await r.json();
+    msg.textContent = j.ok ? 'Salvo!' : (j.message || 'Erro ao salvar');
+  }
 
-    document.getElementById('btnExport').addEventListener('click', ()=>{
-        const alunos = load();
-        const blob = new Blob([JSON.stringify(alunos,null,2)], {type:'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'kokoro_alunos.json';
-        a.click();
-        URL.revokeObjectURL(url);
+  async function excluir(){
+    if (!confirm('Tem certeza que deseja excluir este aluno?')) return;
+    const r = await fetch('/api/alunos/delete', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id: idEl.value })
     });
+    const j = await r.json();
+    if (j.ok){ location.href = '/admin/cadastro/lista.html'; }
+    else { msg.textContent = j.message || 'Erro ao excluir'; }
+  }
 
-    render();
+  // refs
+  const f = document.getElementById('f');
+  const idEl = document.getElementById('id');
+  const nome = document.getElementById('nome');
+  const email = document.getElementById('email');
+  const telefone = document.getElementById('telefone');
+  const cad_numero = document.getElementById('cad_numero');
+  const msg = document.getElementById('msg');
+  const loadDiv = document.getElementById('load');
+  const btnDel = document.getElementById('btnDel');
+
+  document.addEventListener('DOMContentLoaded', load);
+  f.addEventListener('submit', salvar);
+  btnDel.addEventListener('click', excluir);
 </script>
 </body>
 </html>

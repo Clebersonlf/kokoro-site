@@ -612,7 +612,7 @@
     <header class="form-main-header">
         <h1>Cadastro</h1>
         <div class="header-controls">
-            <a href="index.html">Voltar ao Início</a>
+            <a href="/">Voltar ao Início</a>
             <div class="admin-mode-container">
                 <label for="adminToggle" class="admin-toggle-label">Admin</label>
                 <label class="switch">
@@ -1610,6 +1610,23 @@ document.addEventListener("DOMContentLoaded", function() {
             setTimeout(() => { btnConfirm.textContent = old; }, 1500);
         });
     });
+</script>
+<script id="BACK_LINK_ADMIN_FIX">
+(function(){
+  var url=new URL(location.href);
+  var fromAdmin = (url.searchParams.get("from")==="admin");
+  function getSess(){ try{return JSON.parse(localStorage.getItem("kokoro_session")||"null");}catch(e){return null;} }
+  var sess=getSess();
+  var isAdmin = !!(sess && (sess.role==="admin" || sess.role==="Administrador"));
+  /* acha o link com texto "Voltar ao Início" */
+  var back = Array.from(document.querySelectorAll("a")).find(function(a){
+    return /voltar ao início/i.test((a.textContent||"").trim());
+  });
+  if(back && (fromAdmin || isAdmin)){
+    back.href = "/admin/index.html";
+    back.textContent = "Voltar ao Admin";
+  }
+})();
 </script>
 </body>
 </html>

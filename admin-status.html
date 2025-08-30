@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Status Kokoro</title>
+  <style>
+    body{font-family:system-ui, Arial, sans-serif; margin:32px; max-width:900px}
+    h1{margin:0 0 16px}
+    pre{background:#111; color:#eee; padding:12px; border-radius:8px; overflow:auto}
+    .ok{color:green; font-weight:600}
+    .fail{color:#b00; font-weight:600}
+    .card{border:1px solid #ddd; border-radius:10px; padding:16px; margin:12px 0}
+    button{padding:10px 14px; border-radius:6px; border:1px solid #ccc; cursor:pointer}
+  </style>
+</head>
+<body>
+  <h1>Status do Backend</h1>
+
+  <div class="card">
+    <h3>/api/admin/ping</h3>
+    <button id="btnPing">Testar</button>
+    <span id="pingStatus"></span>
+    <pre id="pingOut"></pre>
+  </div>
+
+  <div class="card">
+    <h3>/api/admin/users</h3>
+    <button id="btnUsers">Listar</button>
+    <span id="usersStatus"></span>
+    <pre id="usersOut"></pre>
+  </div>
+
+  <script>
+    const base = window.location.origin;
+    async function hit(path, outEl, statusEl){
+      outEl.textContent = 'carregando...'; statusEl.textContent = '';
+      try {
+        const res = await fetch(base + path, { cache: 'no-store' });
+        const txt = await res.text(); outEl.textContent = txt;
+        try {
+          const js = JSON.parse(txt); const ok = js && js.ok === true;
+          statusEl.textContent = ok ? 'OK' : 'FALHOU';
+          statusEl.className = ok ? 'ok' : 'fail';
+        } catch {
+          statusEl.textContent = res.ok ? 'OK' : 'FALHOU';
+          statusEl.className = res.ok ? 'ok' : 'fail';
+        }
+      } catch(e){ outEl.textContent = String(e); statusEl.textContent='FALHOU'; statusEl.className='fail'; }
+    }
+    document.getElementById('btnPing').onclick  = () => hit('/api/admin/ping',  document.getElementById('pingOut'),  document.getElementById('pingStatus'));
+    document.getElementById('btnUsers').onclick = () => hit('/api/admin/users', document.getElementById('usersOut'), document.getElementById('usersStatus'));
+  </script>
+</body>
+</html>

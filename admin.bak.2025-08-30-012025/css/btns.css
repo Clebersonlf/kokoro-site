@@ -1,0 +1,17 @@
+/* Link em formato de botão pílula (voltar etc.) */
+a.link-btn{
+  display:inline-block; padding:8px 12px; border:1px solid #334155;
+  border-radius:10px; background:#0b1220; color:#93c5fd; text-decoration:none;
+  transition:all .15s ease-in-out; font-weight:500;
+}
+a.link-btn:hover{ background:#111827; border-color:#3b82f6; color:#cde3ff; }
+a.link-btn:active{ transform:translateY(1px); }
+
+/* Botão de ação principal (ex.: + Adicionar graduação) */
+a.primary-btn{
+  display:inline-block; padding:10px 14px; border:1px solid #3356ff55;
+  border-radius:10px; background:#1d4ed8; color:#fff; text-decoration:none;
+  font-weight:600; transition:all .15s ease-in-out;
+}
+a.primary-btn:hover{ background:#1b46c4; border-color:#3b82f6; }
+a.primary-btn:active{ transform:translateY(1px); }

@@ -8,36 +8,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
+    <!-- SCRIPT DO HCAPTCHA -->
+    <script src="https://js.hcaptcha.com/1/api.js?onload=initCaptcha&render=explicit" async defer></script>
     <style>
-        /* Topo */
+        /* Estilos gerais que você já tinha */
         .auth-container{position:relative; z-index:20; display:flex; gap:8px; justify-content:flex-end; padding:8px}
         .auth-btn{background:transparent;border:1px solid #555;color:#ddd;border-radius:10px;padding:8px 12px;cursor:pointer}
         #btnLogout{display:none}
         #sessionName{margin-right:8px;color:#9ad1ff;font-size:14px}
-
-        /* Modais */
         .modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.6);align-items:center;justify-content:center}
         .modal .modal-content{width:min(560px,92vw);background:#171717;color:#eee;border:1px solid #333;border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,.55);padding:18px}
         .modal .modal-content h2{margin:0 0 10px;color:#8ecbff}
         .modal .close{float:right;cursor:pointer;font-size:22px;color:#bbb}
-
-        /* Form */
         .form-group{display:flex;flex-direction:column;gap:6px;margin:8px 0}
         .form-group input{background:#232323;border:1px solid #3a3a3a;border-radius:10px;padding:11px 12px;color:#f5f5f5}
         .submit-btn{background:#3498db;border:none;color:#fff;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
         .submit-btn[disabled]{opacity:.6; cursor:not-allowed}
         .auth-error{display:none;background:#3b1d1d;color:#ffb3b3;border:1px solid #6c2f2f;padding:8px 10px;border-radius:8px;margin-bottom:10px}
-
-        /* Olhinho */
         .password-wrapper{position:relative; display:flex; align-items:center}
         .password-wrapper input{width:100%; padding-right:44px}
-        .password-toggle{
-            position:absolute; right:8px; top:50%; transform:translateY(-50%);
-            background:transparent; border:0; cursor:pointer; padding:6px; color:#bbb
-        }
+        .password-toggle{position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:0; cursor:pointer; padding:6px; color:#bbb}
         .password-toggle:focus{outline:2px solid #3498db; outline-offset:2px}
-
-        /* Medidor de força */
         .strength-wrap{display:flex; flex-direction:column; gap:6px; margin-top:6px}
         .strength-bar{height:8px; border-radius:999px; background:#2a2a2a; overflow:hidden}
         .strength-bar > span{display:block; height:100%; width:0%; background:#ff5858; transition:width .25s ease}
@@ -47,6 +38,11 @@
         .req-item i{font-size:12px}
         .ok{color:#74ff9f}
         .no{color:#ff9f9f}
+        .center-content{display:flex; flex-direction:column; align-items:center; gap:12px;}
+        #motivacional.motivacional-box{position: relative; display: inline-block; max-width: 260px; padding: 10px 14px; font-size: 14px; line-height: 1.35; text-align: center; background: rgba(66, 59, 59, 0.75); border: 1px solid #333; border-radius: 10px; margin: 8px auto 0;}
+        #motivacional .japanese-text{ font-size: 18px; }
+        #motivacional .quote-translation{ font-size: 12px; color:#d9d9d9; }
+        #motivacional .close-button{position: absolute; top: 6px; right: 8px; font-size: 18px; color: #ccc; background: transparent; border: 0; cursor: pointer;}
     </style>
 </head>
 <body>
@@ -54,607 +50,335 @@
     <!-- Auth topo direito -->
     <div class="auth-container">
         <span id="sessionName" aria-live="polite"></span>
-        <button id="loginBtn" class="auth-btn" aria-label="Fazer login">Login</button>
+        <button id="loginBtn" class="auth-btn" aria-label="Login">Login</button>
         <button id="registerBtn" class="auth-btn" aria-label="Cadastrar-se">Cadastre-se</button>
         <button id="btnLogout" class="auth-btn" aria-label="Sair">Sair</button>
     </div>
-
-    <!-- Conteúdo principal -->
-    <div class="center-content">
-      <h1>KOKORO</h1>
-      <div class="kanji" role="img" aria-label="Kanji Kokoro - Coração/Mente">心</div>
-
-      <!-- Caixa motivacional -->
-      <!-- ALTERAÇÃO: dei um id no botão para evitar ambiguidade e facilitar o JS -->
-      <div class="motivacional-box" id="motivacional">
-        <button class="close-button" id="motivacionalClose" aria-label="Fechar mensagem motivacional">×</button>
-        <p>
-          <span lang="ja" class="japanese-text">七転び八起き</span><br />
-          <span class="quote-translation">"Caia sete vezes, levante-se oito" (Japonês)</span>
-        </p>
-      </div>
-    </div>
-
-    <!-- Recursos -->
-    <section class="features-section">
-        <div class="feature-card">
-            <h3>Treine com os Melhores</h3>
-            <p>Instrutores certificados e metodologia exclusiva</p>
-        </div>
-        <div class="feature-card">
-            <h3>Conteúdo Exclusivo</h3>
-            <p>Acesso a vídeos, apostilas e material didático</p>
-        </div>
-        <div class="feature-card">
-            <h3>Mentoria</h3>
-            <p>Mentorias presenciais ou virtuais com profissionais experientes.</p>
-        </div>
-    </section>
-
-    <!-- Redes Sociais -->
-    <div class="social-media">
-        <a href="https://instagram.com/seu_perfil" target="_blank" class="social-icon" aria-label="Siga-nos no Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://facebook.com/sua_pagina" target="_blank" class="social-icon" aria-label="Curta nossa página no Facebook"><i class="fab fa-facebook"></i></a>
-        <a href="https://youtube.com/seu_canal" target="_blank" class="social-icon" aria-label="Inscreva-se no YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="https://wa.me/seu_numero" target="_blank" class="social-icon" aria-label="Contate-nos pelo WhatsApp"><i class="fab fa-whatsapp"></i></a>
-    </div>
-
-    <!-- Modal de Login -->
-    <div id="loginModal" class="modal" role="dialog" aria-labelledby="loginTitle" aria-modal="true">
-        <div class="modal-content">
-            <span class="close" data-close="loginModal" aria-label="Fechar modal">&times;</span>
-            <h2 id="loginTitle">Login</h2>
-            <div id="loginError" class="auth-error"></div>
-            <form id="loginForm" action="#" method="post" autocomplete="on">
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" placeholder="Seu email" required />
-                </div>
-                <div class="form-group">
-                    <label for="password">Senha:</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password" name="password" placeholder="Sua senha" required />
-                        <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="password">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" class="submit-btn">Entrar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal de Cadastro -->
-    <div id="registerModal" class="modal" role="dialog" aria-labelledby="registerTitle" aria-modal="true">
-        <div class="modal-content">
-            <span class="close" data-close="registerModal" aria-label="Fechar modal">&times;</span>
-            <h2 id="registerTitle">Cadastro</h2>
-            <div id="registerError" class="auth-error"></div>
-            <form id="registerForm" action="#" method="post" autocomplete="on">
-                <div class="form-group">
-                    <label for="newName">Nome completo (opcional)</label>
-                    <input type="text" id="newName" name="newName" placeholder="Seu nome" />
-                </div>
-                <div class="form-group">
-                    <label for="newEmail">Email:</label>
-                    <input type="email" id="newEmail" name="newEmail" placeholder="Seu email" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="newPassword">Senha:</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="newPassword" name="newPassword" placeholder="Sua senha" minlength="8" required />
-                        <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="newPassword">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                    </div>
-
-                    <!-- Medidor de força + requisitos -->
-                    <div class="strength-wrap" id="pwStrengthWrap">
-                        <div class="strength-bar"><span id="pwBar"></span></div>
-                        <div class="strength-hint" id="pwHint">Força da senha</div>
-                        <div class="req-list">
-                            <div class="req-item" id="reqLen"><i class="fa-solid fa-circle-xmark no"></i>Mínimo 8 caracteres</div>
-                            <div class="req-item" id="reqUpper"><i class="fa-solid fa-circle-xmark no"></i>Letra maiúscula</div>
-                            <div class="req-item" id="reqLower"><i class="fa-solid fa-circle-xmark no"></i>Letra minúscula</div>
-                            <div class="req-item" id="reqDigit"><i class="fa-solid fa-circle-xmark no"></i>Número</div>
-                            <div class="req-item" id="reqSpecial"><i class="fa-solid fa-circle-xmark no"></i>Caractere especial (!@#$...)</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="newPassword2">Confirmar senha:</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="newPassword2" name="newPassword2" placeholder="Repita a senha" minlength="8" required />
-                        <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="newPassword2">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" id="registerSubmit" class="submit-btn" disabled>Cadastrar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Navegação principal -->
-    <nav class="menu" role="navigation">
-        <ul>
-            <!-- Links serão adicionados aqui quando necessário -->
-        </ul>
-    </nav>
 </div>
 
-<!-- Scripts: autenticação e modais -->
-<script>
-    // ======= Rotas =======
-    const CADASTRO_PAGE = 'cadastro.html'; // após cadastro
+<!-- Conteúdo principal -->
+<div class="center-content">
+    <h1>KOKORO</h1>
+    <div class="kanji" role="img" aria-label="Kanji Kokoro - Coração/Mente">心</div>
 
-    // ======= Chaves =======
-    const USERS_KEY = 'kokoro_users';
-    const SESSION_KEY = 'kokoro_session';
+    <!-- Caixa motivacional -->
+    <div class="motivacional-box" id="motivacional">
+        <button class="close-button" id="motivacionalClose" aria-label="Fechar mensagem motivacional">×</button>
+        <p>
+            <span lang="ja" class="japanese-text">七転び八起き</span><br />
+            <span class="quote-translation">"Caia sete vezes, levante-se oito"</span>
+        </p>
+    </div>
+</div>
 
-    // === Registro vitalício & status (infra localStorage) ===
-    // Regras: 0000..0020 MANUAL | 0021..0073 MANUAL | AUTO só a partir de 0074
-    const REG_COUNTER_KEY = 'kokoro_reg_counter'; // guarda o PRÓXIMO número automático
-    const REG_AUTO_START = 74;                    // 74 -> “0074” (pois 21..73 você faz manual)
-    const REG_BLOCK_UNTIL = 73;                   // tudo até 0073 é bloqueado para auto
+<!-- Recursos -->
+<section class="features-section">
+    <div class="feature-card"><h3>Treine com os Melhores</h3><p>Instrutores certificados e metodologia exclusiva</p></div>
+    <div class="feature-card"><h3>Conteúdo Exclusivo</h3><p>Acesso a vídeos, apostilas e material didático</p></div>
+    <div class="feature-card"><h3>Mentoria</h3><p>Mentorias presenciais ou virtuais com profissionais experientes.</p></div>
+</section>
 
-    // inicia/migra o contador se não existir ou estiver abaixo do início automático
-    (function initRegCounter(){
-        const curr = parseInt(localStorage.getItem(REG_COUNTER_KEY) || '0', 10);
-        if (Number.isNaN(curr) || curr < REG_AUTO_START) {
-            localStorage.setItem(REG_COUNTER_KEY, String(REG_AUTO_START));
-        }
-    })();
+<!-- Redes Sociais -->
+<div class="social-media">
+    <a href="https://instagram.com/seu_perfil" target="_blank" class="social-icon" aria-label="Siga-nos no Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://facebook.com/sua_pagina" target="_blank" class="social-icon" aria-label="Curta nossa página no Facebook"><i class="fab fa-facebook"></i></a>
+    <a href="https://youtube.com/seu_canal" target="_blank" class="social-icon" aria-label="Inscreva-se no YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://wa.me/seu_numero" target="_blank" class="social-icon" aria-label="Contate-nos pelo WhatsApp"><i class="fab fa-whatsapp"></i></a>
+</div>
 
-    // util: 4 dígitos (0021, 0074...)
-    function formatRegNumber(n) {
-        n = Number(n) || 0;
-        return n.toString().padStart(4, '0');
-    }
+<!-- Modal de Login -->
+<div id="loginModal" class="modal" role="dialog" aria-labelledby="loginTitle" aria-modal="true">
+    <div class="modal-content">
+        <span class="close" data-close="loginModal" aria-label="Fechar modal">&times;</span>
+        <h2 id="loginTitle">Login</h2>
+        <div id="loginError" class="auth-error"></div>
+        <form id="loginForm" action="#" method="post" autocomplete="on">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Seu email" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Sua senha" required />
+                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="password">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Entrar</button>
+        </form>
+    </div>
+</div>
 
-    // util: carrega/guarda usuários
-    function getAllUsers() { return loadUsers(); }
-    function setAllUsers(arr) { saveUsers(arr); }
+<!-- Modal de Cadastro com hCaptcha -->
+<div id="registerModal" class="modal" role="dialog" aria-labelledby="registerTitle" aria-modal="true">
+    <div class="modal-content">
+        <span class="close" data-close="registerModal" aria-label="Fechar modal">&times;</span>
+        <h2 id="registerTitle">Cadastro</h2>
+        <div id="registerError" class="auth-error"></div>
+        <form id="registerForm" action="#" method="post" autocomplete="on">
+            <div class="form-group">
+                <label for="newName">Nome completo (opcional)</label>
+                <input type="text" id="newName" name="newName" placeholder="Seu nome" />
+            </div>
+            <div class="form-group">
+                <label for="newEmail">Email:</label>
+                <input type="email" id="newEmail" name="newEmail" placeholder="Seu email" required />
+            </div>
+            <div class="form-group">
+                <label for="newPassword">Senha:</label>
+                <div class="password-wrapper">
+                    <input type="password" id="newPassword" name="newPassword" placeholder="Sua senha" minlength="8" required />
+                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="newPassword">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <!-- Medidor de força + requisitos -->
+                <div class="strength-wrap" id="pwStrengthWrap">
+                    <div class="strength-bar"><span id="pwBar"></span></div>
+                    <div class="strength-hint" id="pwHint">Força da senha</div>
+                    <div class="req-list">
+                        <div class="req-item" id="reqLen"><i class="fa-solid fa-circle-xmark no"></i>Mínimo 8 caracteres</div>
+                        <div class="req-item" id="reqUpper"><i class="fa-solid fa-circle-xmark no"></i>Letra maiúscula</div>
+                        <div class="req-item" id="reqLower"><i class="fa-solid fa-circle-xmark no"></i>Letra minúscula</div>
+                        <div class="req-item" id="reqDigit"><i class="fa-solid fa-circle-xmark no"></i>Número</div>
+                        <div class="req-item" id="reqSpecial"><i class="fa-solid fa-circle-xmark no"></i>Caractere especial (!@#$...)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="newPassword2">Confirmar senha:</label>
+                <div class="password-wrapper">
+                    <input type="password" id="newPassword2" name="newPassword2" placeholder="Repita a senha" minlength="8" required />
+                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="newPassword2">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+            </div>
 
-    // checa se já existe um regNumber igual em algum usuário (case-insensitive)
-    function isRegTaken(regStr) {
-        const reg = String(regStr).trim();
-        if (!reg) return false;
-        const users = getAllUsers();
-        return users.some(u => (u.regNumber || '').toString().trim() === reg);
-    }
+            <!-- WIDGET DO HCAPTCHA -->
+            <div class="form-group">
+                <!-- ATENÇÃO AQUI: Substitua 'SUA_SITE_KEY_AQUI' pela sua chave real do hCaptcha -->
+                <div id="captchaContainer" class="h-captcha"
+                     data-sitekey="SUA_SITE_KEY_AQUI"
+                     data-callback="onCaptchaSuccess"
+                     data-expired-callback="onCaptchaExpired"
+                     data-error-callback="onCaptchaError">
+                </div>
+            </div>
 
-    // encontra usuário por id ou por email
-    function findUserById(id) {
-        const users = getAllUsers();
-        return { users, index: users.findIndex(u => u.id === id) };
-    }
-    function findUserByEmail(email) {
-        const e = (email || '').trim().toLowerCase();
-        const users = getAllUsers();
-        return { users, index: users.findIndex(u => (u.email || '').toLowerCase() === e) };
-    }
+            <button type="submit" id="registerSubmit" class="submit-btn" disabled>Cadastrar</button>
+        </form>
+    </div>
+</div>
 
-    // === ATRIBUIÇÃO AUTOMÁTICA (usada NA PRIMEIRA GRADUAÇÃO) ===
-    function assignRegistrationNumber(userId) {
-        const { users, index } = findUserById(userId);
-        if (index < 0) return null;
+<!-- Navegação principal -->
+<nav class="menu" role="navigation">
+    <ul><!-- Links serão adicionados aqui quando necessário --></ul>
+</div>
 
-        const user = users[index];
-        if (user.regNumber) return user.regNumber; // já tem
+    <!-- SCRIPT UNIFICADO E CORRIGIDO COM HCAPTCHA -->
+    <script>
+        // ===== hCaptcha: callbacks globais =====
+        let isCaptchaVerified = false;
+        function onCaptchaSuccess(){ isCaptchaVerified = true;  document.dispatchEvent(new Event('captchaStateChange')); }
+        function onCaptchaExpired(){ isCaptchaVerified = false; document.dispatchEvent(new Event('captchaStateChange')); }
+        function onCaptchaError(){   isCaptchaVerified = false; document.dispatchEvent(new Event('captchaStateChange')); }
 
-        let next = parseInt(localStorage.getItem(REG_COUNTER_KEY) || String(REG_AUTO_START), 10);
-        if (Number.isNaN(next) || next <= REG_BLOCK_UNTIL) next = REG_AUTO_START;
+        // ===== App =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Rotas/keys
+            const CADASTRO_PAGE = 'cadastro.html';
+            const USERS_KEY   = 'kokoro_users';
+            const SESSION_KEY = 'kokoro_session';
 
-        // garante que não vai pegar nada até 0073
-        if (next <= REG_BLOCK_UNTIL) next = REG_AUTO_START;
+            // Elementos
+            const loginBtn  = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('btnLogout');
+            const sessionNameEl = document.getElementById('sessionName');
 
-        // pula números ocupados por algum motivo
-        let candidate = formatRegNumber(next);
-        while (isRegTaken(candidate)) {
-            next += 1;
-            candidate = formatRegNumber(next);
-        }
+            const loginModal = document.getElementById('loginModal');
+            const registerModal = document.getElementById('registerModal');
+            const loginForm  = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginError = document.getElementById('loginError');
+            const registerError = document.getElementById('registerError');
+            const registerSubmit = document.getElementById('registerSubmit');
 
-        user.regNumber = candidate;
-        user.regAssignedAt = new Date().toISOString();
+            const pwInput   = document.getElementById('newPassword');
+            const pwConfirm = document.getElementById('newPassword2');
+            const pwBar   = document.getElementById('pwBar');
+            const pwHint  = document.getElementById('pwHint');
+            const reqLen    = document.getElementById('reqLen');
+            const reqUpper  = document.getElementById('reqUpper');
+            const reqLower  = document.getElementById('reqLower');
+            const reqDigit  = document.getElementById('reqDigit');
+            const reqSpecial= document.getElementById('reqSpecial');
 
-        // sobe contador e salva
-        localStorage.setItem(REG_COUNTER_KEY, String(next + 1));
-        users[index] = user;
-        setAllUsers(users);
-        return candidate;
-    }
+            const motivacionalBox = document.getElementById('motivacional');
+            const motivacionalCloseBtn = document.getElementById('motivacionalClose');
 
-    // === ADMIN: ações manuais ===
+            // Storage helpers
+            const loadUsers   = () => JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+            const saveUsers   = (arr) => localStorage.setItem(USERS_KEY, JSON.stringify(arr));
+            const setSession  = (obj) => localStorage.setItem(SESSION_KEY, JSON.stringify(obj));
+            const getSession  = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; } };
+            const clearSession= () => localStorage.removeItem(SESSION_KEY);
 
-    // Define manualmente o PRÓXIMO número automático (ex.: colocar 150 -> “0150”)
-    function adminSetNextAutoNumber(n) {
-        const num = parseInt(n, 10);
-        if (Number.isNaN(num) || num <= REG_BLOCK_UNTIL) {
-            alert(`Escolha um número >= ${REG_AUTO_START} (auto começa em ${formatRegNumber(REG_AUTO_START)}).`);
-            return false;
-        }
-        localStorage.setItem(REG_COUNTER_KEY, String(num));
-        alert(`Próximo número automático será ${formatRegNumber(num)}.`);
-        return true;
-    }
-
-    // Atribui/corrige manualmente o regNumber de um usuário por e-mail
-    function adminAssignRegByEmail(email, regStr, { force = false } = {}) {
-        const reg = formatRegNumber(regStr);
-        const { users, index } = findUserByEmail(email);
-        if (index < 0) { alert('Usuário não encontrado por e-mail.'); return false; }
-
-        if (!force && isRegTaken(reg) && (users[index].regNumber !== reg)) {
-            alert(`O número ${reg} já está em uso.`); return false;
-        }
-
-        users[index].regNumber = reg;
-        users[index].regAssignedAt = new Date().toISOString();
-        setAllUsers(users);
-        alert(`Número ${reg} aplicado ao usuário ${users[index].nome || users[index].email}.`);
-        return true;
-    }
-
-    // Remove o regNumber de um usuário (por e-mail) — não mexe no contador
-    function adminRemoveRegByEmail(email) {
-        const { users, index } = findUserByEmail(email);
-        if (index < 0) { alert('Usuário não encontrado por e-mail.'); return false; }
-        users[index].regNumber = null;
-        users[index].regAssignedAt = null;
-        setAllUsers(users);
-        alert(`Número removido do usuário ${users[index].nome || users[index].email}.`);
-        return true;
-    }
-
-
-    // ======= Elements =======
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
-    const logoutBtn = document.getElementById('btnLogout');
-    const sessionNameEl = document.getElementById('sessionName');
-
-    const loginModal = document.getElementById('loginModal');
-    const registerModal = document.getElementById('registerModal');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const loginError = document.getElementById('loginError');
-    const registerError = document.getElementById('registerError');
-    const registerSubmit = document.getElementById('registerSubmit');
-
-    // Strength widgets
-    const pwInput = document.getElementById('newPassword');
-    const pwConfirm = document.getElementById('newPassword2');
-    const pwBar = document.getElementById('pwBar');
-    const pwHint = document.getElementById('pwHint');
-    const reqLen = document.getElementById('reqLen');
-    const reqUpper = document.getElementById('reqUpper');
-    const reqLower = document.getElementById('reqLower');
-    const reqDigit = document.getElementById('reqDigit');
-    const reqSpecial = document.getElementById('reqSpecial');
-
-    // ======= Storage =======
-    const loadUsers = () => JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-    const saveUsers = (arr) => localStorage.setItem(USERS_KEY, JSON.stringify(arr));
-    const setSession = (obj) => localStorage.setItem(SESSION_KEY, JSON.stringify(obj));
-    const getSession = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); } catch { return null; } };
-    const clearSession = () => localStorage.removeItem(SESSION_KEY);
-
-    // ======= UI por sessão =======
-    function updateUIBySession(){
-        const sess = getSession();
-        const isLogged = !!sess;
-
-        if (sessionNameEl) {
-            sessionNameEl.textContent = isLogged ? `Olá, ${sess.nome || sess.email || ''}` : '';
-        }
-        if (loginBtn) loginBtn.style.display = isLogged ? 'none' : '';
-        if (registerBtn) registerBtn.style.display = isLogged ? 'none' : '';
-        if (logoutBtn) logoutBtn.style.display = isLogged ? '' : 'none';
-    }
-
-    // ======= Modal helpers =======
-    function openModal(modal){ if(modal){ modal.style.display = 'flex'; modal.setAttribute('aria-hidden','false'); } }
-    function closeModal(modal){ if(modal){ modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); } }
-    function closeById(id){ const el = document.getElementById(id); if (el) closeModal(el); }
-
-    [loginModal, registerModal].forEach(m => m && m.addEventListener('click', (e)=>{ if(e.target===m) closeModal(m); }));
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeModal(loginModal); closeModal(registerModal); }});
-    document.querySelectorAll('.close[data-close]').forEach(btn=>{
-        btn.addEventListener('click', ()=> closeById(btn.getAttribute('data-close')));
-    });
-
-    // Abrir/fechar modais
-    loginBtn?.addEventListener('click', ()=> openModal(loginModal));
-    registerBtn?.addEventListener('click', ()=> openModal(registerModal));
-    logoutBtn?.addEventListener('click', ()=>{ clearSession(); updateUIBySession(); alert('Você saiu.'); });
-
-    // ======= Login =======
-    loginForm?.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        loginError.style.display='none';
-        const email = (document.getElementById('email').value||'').trim().toLowerCase();
-        const senha = document.getElementById('password').value;
-        const users = loadUsers();
-        const found = users.find(u => u.email===email && u.senha===senha);
-        if(!found){
-            loginError.textContent = 'E-mail ou senha inválidos.';
-            loginError.style.display = 'block';
-            return;
-        }
-        setSession({ id: found.id, email: found.email, nome: found.nome||found.email.split('@')[0] });
-        closeModal(loginModal);
-        updateUIBySession();
-    });
-
-    // ======= Validação de senha (força + requisitos) =======
-    const rules = {
-        len: s => s.length >= 8,
-        upper: s => /[A-Z]/.test(s),
-        lower: s => /[a-z]/.test(s),
-        digit: s => /\d/.test(s),
-        special: s => /[^A-Za-z0-9]/.test(s)
-    };
-    function setReq(el, ok){
-        const icon = el.querySelector('i');
-        if(ok){
-            icon.classList.remove('fa-circle-xmark','no');
-            icon.classList.add('fa-circle-check','ok');
-        }else{
-            icon.classList.remove('fa-circle-check','ok');
-            icon.classList.add('fa-circle-xmark','no');
-        }
-    }
-    function computeStrength(s){
-        let passed = 0;
-        if(rules.len(s)) passed++;
-        if(rules.upper(s)) passed++;
-        if(rules.lower(s)) passed++;
-        if(rules.digit(s)) passed++;
-        if(rules.special(s)) passed++;
-        return passed; // 0..5
-    }
-    function refreshStrength(){
-        const s = pwInput.value || '';
-        const n = computeStrength(s);
-        const pct = [0,20,40,70,90,100][n];
-        pwBar.style.width = pct + '%';
-        // cores aproximadas por força
-        pwBar.style.background = n <= 2 ? '#ff5858' : (n===3 ? '#ffaa3b' : '#74ff9f');
-        pwHint.textContent = n <= 2 ? 'Senha fraca' : (n===3 ? 'Senha média' : 'Senha forte');
-
-        setReq(reqLen, rules.len(s));
-        setReq(reqUpper, rules.upper(s));
-        setReq(reqLower, rules.lower(s));
-        setReq(reqDigit, rules.digit(s));
-        setReq(reqSpecial, rules.special(s));
-
-        // Habilita o botão se senha forte e confirmação igual
-        const okAll = n >= 4 && pwInput.value.length >= 8 && pwInput.value === pwConfirm.value;
-        registerSubmit.disabled = !okAll;
-    }
-    pwInput?.addEventListener('input', refreshStrength);
-    pwConfirm?.addEventListener('input', refreshStrength);
-
-    // ======= Cadastro =======
-    registerForm?.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        registerError.style.display='none';
-
-        const nome = (document.getElementById('newName').value||'').trim();
-        const email = (document.getElementById('newEmail').value||'').trim().toLowerCase();
-        const senha = pwInput.value;
-        const senha2= pwConfirm.value;
-
-        // Regras obrigatórias
-        if(!(rules.len(senha) && rules.upper(senha) && rules.lower(senha) && rules.digit(senha) && rules.special(senha))){
-            registerError.textContent = 'A senha não atende a todos os requisitos.';
-            registerError.style.display='block';
-            return;
-        }
-        if(senha !== senha2){
-            registerError.textContent = 'As senhas não conferem.';
-            registerError.style.display='block';
-            return;
-        }
-
-        const users = loadUsers();
-        if(users.some(u => u.email === email)){
-            registerError.textContent = 'Já existe uma conta com este e-mail.';
-            registerError.style.display='block';
-            return;
-        }
-        const novo = { id: Date.now(), nome, email, senha, createdAt: new Date().toISOString() };
-        users.push(novo); saveUsers(users);
-        setSession({ id: novo.id, email: novo.email, nome: novo.nome||novo.email.split('@')[0] });
-        closeModal(registerModal);
-        updateUIBySession();
-        window.location.href = CADASTRO_PAGE;
-    });
-
-    // ======= Olhinho =======
-    function togglePasswordVisibility(btn){
-        const targetId = btn.getAttribute('data-target');
-        const input = document.getElementById(targetId);
-        if(!input) return;
-        const isPassword = input.type === 'password';
-        input.type = isPassword ? 'text' : 'password';
-        btn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
-        btn.innerHTML = isPassword ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
-    }
-    document.querySelectorAll('.password-toggle').forEach(btn=>{
-        btn.addEventListener('click', ()=> togglePasswordVisibility(btn));
-    });
-
-    // ======= Inicialização =======
-    document.addEventListener('DOMContentLoaded', ()=>{
-        updateUIBySession();
-        refreshStrength(); // iniciar estado do medidor
-    });
-
-    // ======= Fechar caixa motivacional (com persistência 1x ao dia) =======
-    // ALTERAÇÃO: fecha no clique e só volta a aparecer no próximo dia
-    (function(){
-        const box = document.getElementById('motivacional');
-        const btn = document.getElementById('motivacionalClose');
-        if(!box || !btn) return;
-
-        const KEY = 'kokoro_motivacional_last_close';
-        const today = new Date().toDateString(); // data “simples” do dia
-
-        const last = localStorage.getItem(KEY);
-        if (last === today) {
-            box.style.display = 'none'; // já foi fechado hoje, não mostra
-        } else {
-            box.style.display = '';     // garante que aparece no primeiro load do dia
-        }
-
-        btn.addEventListener('click', () => {
-            box.style.display = 'none';
-            localStorage.setItem(KEY, today); // marca que fechou hoje
-        });
-    })();
-</script>
-
-<script>
-    (function () {
-        const box = document.getElementById('motivacional');
-        const btn = document.getElementById('motivacionalClose');
-        if (!box || !btn) return;
-
-        // chaves para controle diário
-        const CLOSE_KEY = 'kokoro_motivacional_last_close';
-        const QUOTE_KEY = 'kokoro_motivacional_quote';
-        const QUOTE_DATE_KEY = 'kokoro_motivacional_date';
-
-        const today = new Date().toISOString().slice(0,10); // AAAA-MM-DD
-
-        // 1) Se já foi fechado hoje, nem mostra
-        const lastClose = localStorage.getItem(CLOSE_KEY);
-        if (lastClose === today) {
-            box.style.display = 'none';
-            return;
-        }
-
-        // 2) Mostrar a caixa e preencher com frase:
-        box.style.display = '';
-
-        // idioma do navegador como destino da tradução (ex: pt-BR)
-        const translateTo = (navigator.language || 'pt-BR');
-
-        // Se já temos uma frase do dia em cache, usa
-        const savedDate = localStorage.getItem(QUOTE_DATE_KEY);
-        const savedQuote = localStorage.getItem(QUOTE_KEY);
-        if (savedDate === today && savedQuote) {
-            try {
-                const data = JSON.parse(savedQuote);
-                renderQuote(data);
-            } catch {}
-        } else {
-            // Buscar no backend
-            fetch('/api/motivacao', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                // sempre vamos pedir original em japonês e traduzir para o idioma do usuário
-                body: JSON.stringify({ lang: 'ja', translateTo })
-            })
-                .then(r => r.json())
-                .then(data => {
-                    if (data?.ok) {
-                        localStorage.setItem(QUOTE_KEY, JSON.stringify(data));
-                        localStorage.setItem(QUOTE_DATE_KEY, today);
-                        renderQuote(data);
-                    }
-                })
-                .catch(() => {
-                    // Se der erro, deixa a frase fixa que já está no HTML
-                });
-        }
-
-        function renderQuote(data){
-            const jaEl = box.querySelector('.japanese-text');
-            const trEl = box.querySelector('.quote-translation');
-            if (jaEl && data.original_text) jaEl.textContent = data.original_text;
-            if (trEl && data.translated_text) {
-                trEl.textContent = `"${data.translated_text}" (${data.translated_lang})`;
+            // UI por sessão
+            function updateUIBySession() {
+                const sess = getSession();
+                const isLogged = !!sess;
+                if (sessionNameEl) sessionNameEl.textContent = isLogged ? `Olá, ${sess.nome || sess.email || ''}` : '';
+                if (loginBtn)    loginBtn.style.display    = isLogged ? 'none' : 'inline-block';
+                if (registerBtn) registerBtn.style.display = isLogged ? 'none' : 'inline-block';
+                if (logoutBtn)   logoutBtn.style.display   = isLogged ? 'inline-block' : 'none';
             }
-        }
 
-        // botão X fecha e marca que só volta amanhã
-        btn.addEventListener('click', () => {
-            box.style.display = 'none';
-            localStorage.setItem(CLOSE_KEY, today);
-        });
-    })();
-</script>
-
-<script>
-    // Chama a API para pegar a frase e traduzir
-    (async function carregarFraseMotivacional() {
-        try {
-            // escolha do idioma de origem e de tradução
-            const langOrigem = 'ja';       // japonês
-            const traduzirPara = 'pt-BR';  // português do Brasil
-
-            const resp = await fetch('/api/motivacao', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ lang: langOrigem, translateTo: traduzirPara })
+            // Modais
+            function openModal(m){ if(m){ m.style.display='flex'; } }
+            function closeModal(m){
+                if(!m) return;
+                m.style.display='none';
+                if (m.id === 'registerModal' && window.hcaptcha) {
+                    try { window.hcaptcha.reset(); isCaptchaVerified = false; checkIfRegisterReady(); } catch {}
+                }
+            }
+            [loginModal, registerModal].forEach(m => m && m.addEventListener('click', (e)=>{ if(e.target===m) closeModal(m); }));
+            document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeModal(loginModal); closeModal(registerModal); }});
+            document.querySelectorAll('.close[data-close]').forEach(btn=>{
+                btn.addEventListener('click', ()=> {
+                    const id = btn.getAttribute('data-close');
+                    const el = document.getElementById(id);
+                    closeModal(el);
+                });
             });
 
-            const data = await resp.json();
-            if (!data.ok) throw new Error('Resposta não OK');
+            // Botões topo
+            registerBtn?.addEventListener('click', ()=> openModal(registerModal));
+            loginBtn?.addEventListener('click',    ()=> openModal(loginModal));
+            logoutBtn?.addEventListener('click',   ()=> { clearSession(); updateUIBySession(); alert('Você saiu.'); });
 
-            // Preenche os elementos existentes
-            const jap = document.querySelector('#motivacional .japanese-text');
-            const traduz = document.querySelector('#motivacional .quote-translation');
+            // Login via API
+            loginForm?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (loginError) loginError.style.display = 'none';
+                const email = (document.getElementById('email')?.value || '').trim().toLowerCase();
+                const senha = document.getElementById('password')?.value || '';
 
-            if (jap) jap.textContent = data.original_text || '...';
-            if (traduz) traduz.textContent = `"${data.translated_text}"`;
-        } catch (e) {
-            console.warn('Não foi possível carregar a frase motivacional agora.', e);
-            // Em caso de erro, mantém a frase padrão que já está no HTML.
-        }
-    })();
+                try {
+                    const resp = await fetch('/api/admin/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type':'application/json' },
+                        body: JSON.stringify({ email, senha })
+                    });
+                    const data = await resp.json();
+
+                    if (!data.ok) {
+                        (loginError ? (loginError.textContent = data.message || 'E-mail ou senha inválidos.', loginError.style.display='block') : alert(data.message || 'E-mail ou senha inválidos.'));
+                        return;
+                    }
+
+                    setSession({ id: data.user.id, email: data.user.email, nome: data.user.nome, role: data.user.role });
+                    window.location.href = (data.user.role === 'admin') ? '/admin/index.html' : '/user/index.html';
+                } catch {
+                    (loginError ? (loginError.textContent = 'Falha ao conectar. Tente novamente.', loginError.style.display='block') : alert('Falha ao conectar. Tente novamente.'));
+                }
+            });
+
+            // Regras de senha (cadastro)
+            const rules = {
+                len: s => s.length >= 8,
+                upper: s => /[A-Z]/.test(s),
+                lower: s => /[a-z]/.test(s),
+                digit: s => /\d/.test(s),
+                special: s => /[^A-Za-z0-9]/.test(s)
+            };
+            function setReq(el, ok){
+                if(!el) return;
+                const icon = el.querySelector('i');
+                if(ok){ icon.classList.remove('fa-circle-xmark','no'); icon.classList.add('fa-circle-check','ok'); }
+                else  { icon.classList.remove('fa-circle-check','ok'); icon.classList.add('fa-circle-xmark','no'); }
+            }
+            function checkIfRegisterReady(){
+                if(!pwInput || !pwConfirm || !registerSubmit) return;
+                const s = pwInput.value || '';
+                let passed = 0;
+                if(rules.len(s)) passed++;
+                if(rules.upper(s)) passed++;
+                if(rules.lower(s)) passed++;
+                if(rules.digit(s)) passed++;
+                if(rules.special(s)) passed++;
+
+                const pct = [0,20,40,70,90,100][passed];
+                if (pwBar)   pwBar.style.width = pct + '%';
+                if (pwBar)   pwBar.style.background = passed <= 2 ? '#ff5858' : (passed === 3 ? '#ffaa3b' : '#74ff9f');
+                if (pwHint)  pwHint.textContent   = passed <= 2 ? 'Senha fraca' : (passed === 3 ? 'Senha média' : 'Senha forte');
+
+                setReq(reqLen, rules.len(s));
+                setReq(reqUpper, rules.upper(s));
+                setReq(reqLower, rules.lower(s));
+                setReq(reqDigit, rules.digit(s));
+                setReq(reqSpecial, rules.special(s));
+
+                const allOk = passed >= 4 && pwInput.value.length >= 8 && pwInput.value === pwConfirm.value && isCaptchaVerified;
+                registerSubmit.disabled = !allOk;
+            }
+            pwInput?.addEventListener('input', checkIfRegisterReady);
+            pwConfirm?.addEventListener('input', checkIfRegisterReady);
+            document.addEventListener('captchaStateChange', checkIfRegisterReady);
+
+            // Olhinho
+            function togglePasswordVisibility(btn){
+                const targetId = btn.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if(!input) return;
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                btn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+                btn.innerHTML = isPassword ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+            }
+            document.querySelectorAll('.password-toggle').forEach(btn=>{
+                btn.addEventListener('click', ()=> togglePasswordVisibility(btn));
+            });
+
+            // Caixa motivacional
+            function handleMotivacionalBox(){
+                if(!motivacionalBox || !motivacionalCloseBtn) return;
+                const KEY = 'kokoro_motivacional_last_close';
+                const today = new Date().toDateString();
+                const last  = localStorage.getItem(KEY);
+                motivacionalBox.style.display = (last === today) ? 'none' : 'inline-block';
+                motivacionalCloseBtn.addEventListener('click', ()=>{
+                    motivacionalBox.style.display = 'none';
+                    localStorage.setItem(KEY, today);
+                });
+            }
+
+            // Init
+            updateUIBySession();
+            checkIfRegisterReady();
+            handleMotivacionalBox();
+        });
+    </script>
+
+    <!-- Se você realmente precisa desses dois scripts externos, deixe-os.
+         Se eles duplicarem a lógica de login/captcha, remova-os. -->
+    <script src="js/captcha.js"></script>
+    <script src="/shared/js/admin-login.js"></script>
+<script id="SESSIONNAME_GO_ADMIN">
+document.addEventListener("DOMContentLoaded",function(){
+  var el=document.getElementById("sessionName");
+  if(!el) return;
+  try{ var s=JSON.parse(localStorage.getItem("kokoro_session")||"null"); }catch(e){ s=null; }
+  if(s){
+    el.style.cursor="pointer";
+    el.title="Ir ao painel administrativo";
+    el.addEventListener("click",function(){ location.href="/admin/index.html"; });
+  }
+});
 </script>
-
-<!-- ALTERAÇÃO: CSS específico e compacto só para a caixa motivacional -->
-<style>
-  .center-content{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:12px;
-  }
-  #motivacional.motivacional-box{
-    position: relative;
-    display: inline-block;
-    max-width: 260px;          /* tamanho compacto */
-    padding: 10px 14px;
-    font-size: 14px;
-    line-height: 1.35;
-    text-align: center;
-    background: rgba(66, 59, 59, 0.75); /* cor de fundo */
-    border: 1px solid #333;
-    border-radius: 10px;
-    margin: 8px auto 0;        /* centralizado abaixo do kanji */
-  }
-  #motivacional .japanese-text{ font-size: 18px; }
-  #motivacional .quote-translation{ font-size: 12px; color:#d9d9d9; }
-  #motivacional .close-button{
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    font-size: 18px;
-    color: #ccc;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-  }
-</style>
-<script src="/shared/js/auth.js"></script>
 </body>
 </html>
