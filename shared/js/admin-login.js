@@ -1,69 +1,66 @@
-(function(){
-  const form  = document.querySelector('#admin-login-form') || document.querySelector('form');
-  const emailEl = document.querySelector('#admin-email') || document.querySelector('input[type="email"]');
-  const passEl  = document.querySelector('#admin-password') || document.querySelector('input[type="password"]');
-  const msgEl   = document.querySelector('#admin-login-msg') || (function(){
-    const el = document.createElement('div');
-    el.id = 'admin-login-msg';
-    el.style.marginTop = '8px';
-    el.style.color = '#fca5a5';
-    (form || document.body).appendChild(el);
-    return el;
-  })();
+// Admin Login – usa sessionStorage + expira o login + sem "piscar" erro
+(() => {
+  const API = 'https://www.planckkokoro.com/api/admin/login';
 
-  function setMsg(t, ok=false){
-    msgEl.textContent = t||'';
+  // tenta localizar elementos do formulário (flexível)
+  const form    = document.getElementById('adminLoginForm') || document.querySelector('form[data-form="admin-login"], form#adminLoginForm, form.admin-login, form');
+  const emailEl = document.getElementById('email')          || document.querySelector('input[name="email"], input[type="email"]');
+  const passEl  = document.getElementById('password')       || document.querySelector('input[name="password"], input[type="password"]');
+  let msgEl     = document.getElementById('msg')            || document.querySelector('.login-msg');
+
+  if (!form || !emailEl || !passEl) return;
+
+  // cria área de mensagem se não existir
+  if (!msgEl) {
+    msgEl = document.createElement('div');
+    msgEl.className = 'login-msg';
+    msgEl.style.marginTop = '8px';
+    msgEl.style.minHeight = '1.2em';
+    form.appendChild(msgEl);
+  }
+
+  function setMsg(text, ok = false) {
+    msgEl.textContent = text || '';
     msgEl.style.color = ok ? '#86efac' : '#fca5a5';
   }
 
-  async function doLogin(e){
-    e && e.preventDefault();
-    setMsg('Autenticando…', true);
+  // limpa erros ao digitar
+  [emailEl, passEl].forEach(el => el.addEventListener('input', () => setMsg('')));
 
-    const email = String((emailEl?.value||'').trim().toLowerCase());
-    const password = String((passEl?.value||'').trim());
+  let sending = false;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (sending) return;
+    sending = true;
+    setMsg('Entrando...', true);
 
-    if(!email || !password){
-      setMsg('Informe e-mail e senha.');
-      return;
-    }
+    const email = String(emailEl.value || '').trim().toLowerCase();
+    const password = String(passEl.value || '').trim();
 
-    try{
-      const resp = await fetch('https://www.planckkokoro.com/api/admin/login', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ email, password }),
-        credentials:'omit',
-        cache:'no-store'
+    try {
+      const resp = await fetch(API, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, password })
       });
 
-      let data = {};
-      try { data = await resp.json(); } catch { /* ignore */ }
+      const data = await resp.json().catch(() => ({}));
 
-      if (resp.status === 200 && data && data.ok) {
-        // Guarda token e usuário
-        try {
-          localStorage.setItem('kokoro_admin_token', data.token || 'admin-token');
-          localStorage.setItem('kokoro_admin_user', JSON.stringify(data.user||{role:'admin',email}));
-        } catch(_) {}
-
-        setMsg('Login OK. Redirecionando…', true);
-
-        // Vai pro painel
-        const target = '/admin/index.html';
-        location.href = target;
+      if (resp.ok && data && data.ok && data.token) {
+        // ⚠️ Guarda o token na sessionStorage (some ao fechar a aba/janela)
+        sessionStorage.setItem('kokoro_admin_token', data.token);
+        sessionStorage.setItem('kokoro_admin_login_at', String(Date.now()));
+        // Redireciona pro painel
+        location.href = '/admin/index.html';
         return;
       }
 
-      // Se a API responder 401/404/etc ou {ok:false}
-      const mensagem = (data && (data.message||data.msg)) || 'E-mail ou senha inválidos.';
-      setMsg(mensagem);
-    }catch(err){
-      setMsg('Falha de rede. Tente novamente.');
+      // falha (não deixa a tela “piscar”): mostra msg e não redireciona
+      setMsg('E-mail ou senha inválidos.');
+      sending = false;
+    } catch (err) {
+      setMsg('Falha na conexão. Tente novamente.');
+      sending = false;
     }
-  }
-
-  if (form) form.addEventListener('submit', doLogin);
-  // Permite login com Enter mesmo sem form id
-  if (!form && passEl) passEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ doLogin(e); }});
+  }, { once: true }); // garante um handler único
 })();
