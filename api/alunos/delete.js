@@ -1,22 +1,24 @@
+import { sql } from '../_db.js';
+
+function normBody(body) {
+  try { return typeof body === 'string' ? JSON.parse(body||'{}') : (body||{}); }
+  catch { return {}; }
+}
+
 export default async function handler(req, res) {
   try {
-    if (req.method !== 'POST') { res.setHeader('Allow','POST'); return res.status(405).json({ok:false,message:'Use POST'}); }
-    const body = await new Promise((resolve,reject)=>{
-      let d=''; req.on('data',c=>d+=c);
-      req.on('end',()=>{ try{resolve(JSON.parse(d||'{}'))}catch(e){reject(e)} });
-      req.on('error',reject);
-    });
-    const id = (body.id||'').trim();
-    if (!id) return res.status(400).json({ ok:false, message:'Informe id' });
+    if (req.method !== 'POST') {
+      return res.status(405).json({ ok:false, message:'Method not allowed' });
+    }
+    const b = normBody(req.body);
+    const id = (b.id ?? '').toString().trim();
+    if (!id) return res.status(400).json({ ok:false, message:'id é obrigatório' });
 
-    const mod = await import('@neondatabase/serverless');
-    const neon = mod.neon || mod.default?.neon || mod.default;
-    const sql  = neon(process.env.DATABASE_URL || process.env.NEON_DATABASE_URL || process.env.POSTGRES_URL || '');
-
-    const rows = await sql`delete from alunos where id=${id} returning id`;
-    if (!rows.length) return res.status(404).json({ ok:false, message:'Aluno não encontrado' });
-    return res.status(200).json({ ok:true, deleted: rows[0].id });
+    // Apaga (graduacoes/financeiro têm FK ON DELETE CASCADE/SET NULL)
+    const { rowCount } = await sql`DELETE FROM alunos WHERE id::text = ${id};`;
+    if (!rowCount) return res.status(404).json({ ok:false, message:'Aluno não encontrado para excluir' });
+    return res.status(200).json({ ok:true, deleted: id });
   } catch (e) {
-    return res.status(500).json({ ok:false, message:e?.message||'Erro' });
+    return res.status(500).json({ ok:false, message:'Erro ao excluir aluno', error: String(e) });
   }
 }

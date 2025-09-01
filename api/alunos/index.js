@@ -1,17 +1,13 @@
-const { query } = require('../_db');
-module.exports = async (req, res) => {
-  res.setHeader('Content-Type','application/json; charset=utf-8');
-  if (req.method !== 'GET') return res.status(405).end(JSON.stringify({ ok:false, message:'Method not allowed' }));
+import { sql } from '../_db.js';
+
+export default async function handler(req, res) {
   try {
-    const sql = `
-      select id, coalesce(nome,'(sem nome)') as nome, coalesce(email,'') as email
-        from alunos
-       order by nome asc nulls last, email asc nulls last
-    `;
-    const { rows } = await query(sql);
-    res.status(200).end(JSON.stringify({ ok:true, data:rows }));
+    if (req.method !== 'GET') {
+      return res.status(405).json({ ok:false, message:'Method not allowed' });
+    }
+    const { rows } = await sql`SELECT id, nome, email, telefone FROM alunos ORDER BY criado_em DESC LIMIT 1000;`;
+    return res.status(200).json({ ok:true, data: rows });
   } catch (e) {
-    console.error(e);
-    res.status(500).end(JSON.stringify({ ok:false, message:'Erro ao listar alunos' }));
+    return res.status(500).json({ ok:false, message:'Erro ao listar alunos', error: String(e) });
   }
-};
+}

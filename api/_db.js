@@ -1,7 +1,4 @@
-const { Pool } = require('pg');
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
-async function query(text, params) { return pool.query(text, params); }
-module.exports = { query };
+import { sql } from '@vercel/postgres';
+
+// Retorna client 'sql' do @vercel/postgres (usa POSTGRES_URL/DATABASE_URL do ambiente da Vercel)
+export { sql };
