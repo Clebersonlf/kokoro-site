@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Completar Cadastro - Kokoro</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;max-width:860px;margin:20px auto;padding:0 12px;}
+    fieldset{margin:16px 0;padding:12px;border:1px solid #ddd;border-radius:8px}
+    legend{font-weight:700}
+    label{display:block;margin:8px 0 4px}
+    input,select{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .actions{margin-top:16px;display:flex;gap:12px;align-items:center}
+    .ok{color:#0a0}
+    .err{color:#c00}
+  </style>
+</head>
+<body>
+  <h1>Completar Cadastro</h1>
+  <div id="msg"></div>
+
+  <form id="form">
+    <fieldset>
+      <legend>Dados Pessoais</legend>
+      <div class="row">
+        <div><label>Nome<input name="nome" required></label></div>
+        <div><label>Sexo
+          <select name="sexo">
+            <option value="">Selecione</option>
+            <option>Masculino</option>
+            <option>Feminino</option>
+          </select>
+        </label></div>
+      </div>
+
+      <div class="row">
+        <div><label>Mãe<input name="nome_mae"></label></div>
+        <div><label>Pai<input name="nome_pai"></label></div>
+      </div>
+
+      <div class="row">
+        <div><label>RG<input name="rg"></label></div>
+        <div><label>CPF<input name="cpf"></label></div>
+      </div>
+
+      <div class="row">
+        <div><label>Data de Nascimento<input type="date" name="data_nascimento"></label></div>
+        <div><label>Idade<input type="number" name="idade" min="0" max="120"></label></div>
+      </div>
+
+      <div><label>Endereço<input name="endereco"></label></div>
+      <div class="row">
+        <div><label>Complemento<input name="complemento"></label></div>
+        <div><label>Bairro<input name="bairro"></label></div>
+      </div>
+      <div class="row">
+        <div><label>CEP<input name="cep"></label></div>
+        <div><label>Referência<input name="referencia"></label></div>
+      </div>
+
+      <div class="row">
+        <div><label>Telefone<input name="telefone"></label></div>
+        <div><label>WhatsApp / Telegram<input name="whatsapp"></label></div>
+      </div>
+
+      <div><label>Email<input type="email" name="email"></label></div>
+      <div><label>URL da Foto de Perfil<input name="foto_url" placeholder="https://..."></label></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Dados Esportivos</legend>
+      <div class="row">
+        <div><label>Qual esporte<input name="esporte"></label></div>
+        <div><label>Cor da Faixa<input name="cor_faixa"></label></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Dados Biométricos</legend>
+      <div class="row">
+        <div><label>Peso (kg)<input type="number" step="0.01" name="peso_kg"></label></div>
+        <div><label>Altura (m)<input type="number" step="0.01" name="altura_m"></label></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Contato de Emergência</legend>
+      <div><label>Nome<input name="contato_emerg_nome"></label></div>
+      <div class="row">
+        <div><label>Grau de parentesco<input name="contato_emerg_parentesco"></label></div>
+        <div><label>Telefone<input name="contato_emerg_telefone"></label></div>
+      </div>
+      <div><label>Endereço<input name="contato_emerg_endereco"></label></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>PAR-Q</legend>
+      <div>Responda Sim/Não:</div>
+      <div class="row">
+        <label><input type="checkbox" name="parq_q1"> 1) Problema de coração / precisa de supervisão?</label>
+        <label><input type="checkbox" name="parq_q2"> 2) Dores no peito ao praticar atividade?</label>
+        <label><input type="checkbox" name="parq_q3"> 3) Dores no peito no último mês sem atividade?</label>
+        <label><input type="checkbox" name="parq_q4"> 4) Tontura / perda de consciência?</label>
+        <label><input type="checkbox" name="parq_q5"> 5) Problema ósseo/articular agravável?</label>
+        <label><input type="checkbox" name="parq_q6"> 6) Usa remédio para pressão/coração?</label>
+        <label><input type="checkbox" name="parq_q7"> 7) Alguma outra razão para não praticar?</label>
+        <label><input type="checkbox" name="parq_q8"> 8) Medicamento contínuo/controlado?</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Termos</legend>
+      <label><input type="checkbox" name="termos_aceitos" required> Declaro que os dados são verdadeiros e aceito as condições.</label>
+      <label><input type="checkbox" name="lgpd_aceite" required> Autorizo o uso de dados conforme LGPD.</label>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit">Enviar</button>
+      <span id="status"></span>
+    </div>
+  </form>
+
+  <script src="/shared/js/completar-cadastro.js"></script>
+</body>
+</html>
