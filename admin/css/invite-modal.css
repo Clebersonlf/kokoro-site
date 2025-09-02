@@ -120,3 +120,11 @@
   margin-left:-8px !important;
   width:calc(100% + 8px) !important;
 }
+
+/* Ajuste fino: dá respiro lateral nos inputs do modal */
+#kkrInviteModal .kkr-field input,
+#kkrInviteModal .kkr-field textarea {
+  width: calc(100% - 8px); /* puxa um pouquinho para dentro */
+  margin-left: 4px;
+  margin-right: 4px;
+}
