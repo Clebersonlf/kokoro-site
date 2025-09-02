@@ -27,12 +27,8 @@ export default async function handler(req, res) {
 
     let aluno;
     if (aluno_id) {
-      // Reaproveita um aluno já criado
       const r = await client.query('SELECT id, nome, email, telefone, token_cadastro FROM alunos WHERE id = $1', [aluno_id]);
-      if (!r.rows.length) {
-        await client.end();
-        return res.status(404).json({ ok:false, message: 'Aluno não encontrado' });
-      }
+      if (!r.rows.length) { await client.end(); return res.status(404).json({ ok:false, message:'Aluno não encontrado' }); }
       aluno = r.rows[0];
       if (!aluno.token_cadastro) {
         const token = crypto.randomUUID();
@@ -40,11 +36,7 @@ export default async function handler(req, res) {
         aluno.token_cadastro = token;
       }
     } else {
-      // Cria cadastro mínimo
-      if (!email) {
-        await client.end();
-        return res.status(400).json({ ok:false, message:'Informe ao menos email' });
-      }
+      if (!email) { await client.end(); return res.status(400).json({ ok:false, message:'Informe ao menos email' }); }
       const token = crypto.randomUUID();
       const r = await client.query(
         `INSERT INTO alunos (nome, email, telefone, status, token_cadastro, criado_em)
@@ -59,7 +51,6 @@ export default async function handler(req, res) {
       );
       aluno = r.rows[0];
       if (!aluno.token_cadastro) {
-        // Em raras condições, garanta token
         const newTok = crypto.randomUUID();
         await client.query('UPDATE alunos SET token_cadastro = $1 WHERE id = $2', [newTok, aluno.id]);
         aluno.token_cadastro = newTok;
@@ -68,17 +59,19 @@ export default async function handler(req, res) {
 
     const link = linkFromToken(aluno.token_cadastro);
 
-    // Sugestões de disparo manual
     const texto = encodeURIComponent(
       `Olá${aluno.nome ? ' ' + aluno.nome : ''}! Seja bem-vindo(a) ao Kokoro.\n` +
       `Para completar seu cadastro, acesse: ${link}\n\n` +
       `Qualquer dúvida, responda esta mensagem.`
     );
-    const whatsapp = aluno.telefone ? `https://wa.me/${aluno.telefone.replace(/\D/g,'')}?text=${texto}` : null;
-    const sms      = aluno.telefone ? `sms:+${aluno.telefone.replace(/\D/g,'')}?&body=${texto}` : null;
-    const mailto   = aluno.email    ? `mailto:${encodeURIComponent(aluno.email)}?subject=${encodeURIComponent('Complete seu cadastro no Kokoro')}&body=${texto}` : null;
+    const telnum = aluno.telefone ? aluno.telefone.replace(/\D/g,'') : null;
 
-    // Envio por e-mail automático (opcional, se existir RESEND_API_KEY)
+    const whatsapp = telnum ? `https://wa.me/${telnum}?text=${texto}` : null;
+    const sms      = telnum ? `sms:+${telnum}?&body=${texto}` : null;
+    const mailto   = aluno.email ? `mailto:${encodeURIComponent(aluno.email)}?subject=${encodeURIComponent('Complete seu cadastro no Kokoro')}&body=${texto}` : null;
+    const telegram = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${texto}`;
+
+    // Envio automático (opcional) via Resend
     let emailSent = false;
     if (via === 'email' && process.env.RESEND_API_KEY && aluno.email) {
       try {
@@ -110,7 +103,7 @@ export default async function handler(req, res) {
       delivery: {
         viaRequested: via,
         emailSent,
-        suggestions: { whatsapp, sms, mailto }
+        suggestions: { whatsapp, sms, mailto, telegram }
       }
     });
   } catch (e) {
