@@ -7,49 +7,26 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 🔒 força usar somente a URL POOLING
-    const POOL = process.env.POSTGRES_URL;
-    if (!POOL) {
-      return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
-    }
+    // usa SEMPRE a conexão pooled
+    const POOL = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+    if (!POOL) return res.status(500).json({ ok:false, error:'DB URL não definida' });
 
-    // cria client com a pooled connection
     const client = createClient({ connectionString: POOL });
     await client.connect();
 
     const body = typeof req.body === 'string'
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
-
     const { token, nome, email, telefone, whatsapp, endereco, nascimento, observacoes } = body;
 
     if (!token)  return res.status(400).json({ ok:false, error:'Falta token' });
     if (!nome)   return res.status(400).json({ ok:false, error:'Falta nome' });
     if (!email)  return res.status(400).json({ ok:false, error:'Falta email' });
 
-    // tabela idempotente
-    await client.sql`
-      CREATE TABLE IF NOT EXISTS alunos (
-        id               TEXT PRIMARY KEY,
-        nome             TEXT NOT NULL,
-        email            TEXT UNIQUE,
-        telefone         TEXT,
-        whatsapp         TEXT,
-        endereco         TEXT,
-        nascimento       DATE,
-        observacoes      TEXT,
-        numero_vitalicio TEXT,
-        status           TEXT,
-        criado_em        TIMESTAMPTZ NOT NULL DEFAULT now()
-      );
-    `;
-// id simples (sem extensão)
-    const newId = 'a_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
-
+    // UPSERT somente nas colunas de dados; NÃO cita 'id'
     const { rows } = await client.sql`
-      INSERT INTO alunos (id, nome, email, telefone, whatsapp, endereco, nascimento, observacoes)
+      INSERT INTO alunos (nome, email, telefone, whatsapp, endereco, nascimento, observacoes)
       VALUES (
-        ${newId},
         ${nome},
         ${email},
         ${telefone || null},
@@ -69,7 +46,7 @@ export default async function handler(req, res) {
     `;
 
     await client.end();
-    return res.status(200).json({ ok:true, aluno: rows[0] || null, used:'POSTGRES_URL' });
+    return res.status(200).json({ ok:true, aluno: rows[0] || null, used:'POOLED_URL' });
   } catch (e) {
     return res.status(500).json({ ok:false, error:String(e) });
   }
