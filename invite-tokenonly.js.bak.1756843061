@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome, email })
       });
+npx vercel@latest --prodte): adiciona script para link curto em caixinha"/span>";:5px;"/></p>
 [main 1456658] feat(invite): adiciona script para link curto em caixinha
  1 file changed, 62 insertions(+)
  create mode 100644 invite-tokenonly.js
@@ -42,6 +43,9 @@ remote: Resolving deltas: 100% (1/1), completed with 1 local object.
 To https://github.com/Clebersonlf/kokoro-site.git
    0db9466..1456658  main -> main
 branch 'main' set up to track 'origin/main'.
+Vercel CLI 46.1.1
+🔍  Inspect: https://vercel.com/kokoros-projects-7c3d7e09/kokoro-site/D2vpDeyCod2q1oLhTgZhkfcuuspi [4s]
+✅  Production: https://kokoro-site-qt4vkjp6a-kokoros-projects-7c3d7e09.vercel.app [4s]
 cleberson@Cleberson:/mnt/c/Users/clebe/Desktop/kokoro-site$
 cd /mnt/c/Users/clebe/Desktop/kokoro-site
 mkdir -p api/convites
