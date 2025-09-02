@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Continuar Cadastro • Kokoro</title>
+  <style>
+    body{font-family:system-ui,Arial;background:#0c0f14;color:#eaeaea;margin:0;padding:20px}
+    .card{max-width:600px;margin:20px auto;padding:20px;background:#111827;border-radius:10px}
+    label{display:block;margin-top:12px;font-weight:600}
+    input,textarea,select{width:100%;padding:10px;margin-top:6px;border:1px solid #333;border-radius:6px;background:#1f2937;color:#fff}
+    button{margin-top:20px;padding:12px 18px;border:0;border-radius:6px;background:#22c55e;color:#fff;font-size:16px;cursor:pointer}
+    button:disabled{background:#444;cursor:not-allowed}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Complete seu cadastro</h2>
+    <form id="cadastroForm">
+      <label>Nome <input id="nome" required></label>
+      <label>Email <input id="email" type="email" required></label>
+      <label>Telefone <input id="telefone"></label>
+      <label>WhatsApp <input id="whatsapp"></label>
+      <label>Endereço <input id="endereco"></label>
+      <label>Data de Nascimento <input id="nasc" type="date"></label>
+      <label>Observações <textarea id="obs"></textarea></label>
+      <button type="submit">Finalizar Cadastro</button>
+    </form>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    if(!token){ document.body.innerHTML="<p>Token inválido.</p>"; }
+
+    const form = document.getElementById("cadastroForm");
+    const msg  = document.getElementById("msg");
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      msg.textContent = "Salvando...";
+      const data = {
+        token,
+        nome: document.getElementById("nome").value,
+        email: document.getElementById("email").value,
+        telefone: document.getElementById("telefone").value,
+        whatsapp: document.getElementById("whatsapp").value,
+        endereco: document.getElementById("endereco").value,
+        nascimento: document.getElementById("nasc").value,
+        observacoes: document.getElementById("obs").value,
+      };
+      const r = await fetch("/api/alunos/finalizar",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+      });
+      const j = await r.json().catch(()=>({}));
+      if(j.ok){
+        msg.textContent="Cadastro finalizado com sucesso!";
+        form.reset();
+      } else {
+        msg.textContent="Erro: "+(j.error||"falha ao salvar");
+      }
+    });
+  </script>
+</body>
+</html>
