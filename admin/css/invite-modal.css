@@ -128,3 +128,16 @@
   margin-left: 4px;
   margin-right: 4px;
 }
+
+/* --- nudge-left: empurra campos ~6px para a esquerda --- */
+#kkrInviteModal .kkr-card{
+  /* diminui um pouco o padding esquerdo do cartão */
+  padding-left: 22px !important;
+}
+#kkrInviteModal .kkr-field input,
+#kkrInviteModal .kkr-field textarea{
+  /* move o campo para a esquerda e compensa a largura
+     para manter a borda direita alinhada */
+  margin-left: -6px !important;
+  width: calc(100% + 6px) !important;
+}
