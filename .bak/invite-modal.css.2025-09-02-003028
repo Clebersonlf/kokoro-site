@@ -1,0 +1,37 @@
+.admin-toolbar{
+  display:flex; justify-content:flex-start; gap:12px;
+  padding:12px 16px; margin:8px 0 16px 0;
+}
+@media (min-width: 768px){ .admin-toolbar{ padding-left:24px; } }
+
+.btn{ border:none; border-radius:12px; padding:12px 18px; font-weight:700; cursor:pointer; }
+.btn-primary{ background:#22c55e; color:#04121a; box-shadow:0 6px 18px rgba(30,144,255,.25); }
+.btn-primary:hover{ filter:brightness(1.05); }
+
+.kkr-modal-backdrop{
+  position:fixed; inset:0; background:rgba(8,11,18,.55);
+  display:none; z-index:9998;
+}
+.kkr-modal{
+  position:fixed; inset:0; display:none; place-content:center; z-index:9999;
+}
+.kkr-card{
+  width:min(92vw, 560px); background:linear-gradient(180deg,#1b2230,#111725);
+  border:1px solid rgba(255,255,255,.06); border-radius:18px;
+  box-shadow:0 24px 64px rgba(0,0,0,.55);
+  color:#e9eef6; padding:22px; backdrop-filter: blur(6px);
+}
+.kkr-card h3{ margin:0 0 8px 0; }
+.kkr-card p.sub{ margin:0 0 16px 0; color:#9fb3c8; }
+
+.kkr-field{ margin:12px 0; }
+.kkr-field label{ display:block; font-size:.9rem; margin:0 0 6px 2px; color:#bfd2e6; }
+.kkr-field input, .kkr-field textarea{
+  width:100%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  border-radius:12px; padding:12px 14px; color:#e9eef6; outline:none;
+}
+.kkr-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+.kkr-btn{ border:none; border-radius:12px; padding:10px 16px; cursor:pointer; font-weight:700; }
+.kkr-btn.secondary{ background:rgba(255,255,255,.08); color:#cfe2f5; }
+.kkr-btn.primary{ background:#22c55e; color:#04121a; }
+.kkr-btn:disabled{ opacity:.6; cursor:not-allowed; }

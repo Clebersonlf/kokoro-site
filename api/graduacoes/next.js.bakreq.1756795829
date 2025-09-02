@@ -1,5 +1,3 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
 const { query } = require('../_db');
 export default async (req,res)=>{
   res.setHeader('Content-Type','application/json; charset=utf-8');

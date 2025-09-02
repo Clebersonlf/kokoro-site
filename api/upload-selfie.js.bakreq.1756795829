@@ -1,5 +1,3 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
 // /api/upload-selfie.js  (Serverless Function no Vercel)
 import { put } from '@vercel/blob';
 

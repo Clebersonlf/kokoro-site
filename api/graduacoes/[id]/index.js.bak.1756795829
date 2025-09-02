@@ -1,11 +1,9 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
 const { query } = require('../../_db');
 
 function pad4(s){ return String(s).padStart(4,'0'); }
 function isValidNum4(s){ return /^[0-9]{1,4}$/.test(String(s)); }
 
-export default async (req, res) => {
+module.exports = async (req, res) => {
   res.setHeader('Content-Type','application/json; charset=utf-8');
   try{
     const id = (req.query.id || '').trim();
