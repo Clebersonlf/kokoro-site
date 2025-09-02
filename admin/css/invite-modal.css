@@ -92,3 +92,10 @@
   margin-left: -4px; /* puxa só 4px para a esquerda */
   width: calc(100% + 4px); /* compensa a largura para não cortar */
 }
+
+/* Micro-ajuste lateral nos inputs e textarea */
+.kkr-field input,
+.kkr-field textarea {
+  margin-left: -2px;   /* puxa só 2px para a esquerda */
+  width: calc(100% + 2px); /* compensa largura para não cortar */
+}
