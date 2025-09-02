@@ -106,3 +106,10 @@
   margin-left: -4px !important;
   width: calc(100% + 4px) !important;
 }
+
+/* Ajuste fino extra: agora -8px no total */
+.kkr-field input,
+.kkr-field textarea {
+  margin-left: -8px !important;
+  width: calc(100% + 8px) !important;
+}
