@@ -99,3 +99,10 @@
   margin-left: -2px;   /* puxa só 2px para a esquerda */
   width: calc(100% + 2px); /* compensa largura para não cortar */
 }
+
+/* Ajuste fino extra: mais -2px nos campos */
+.kkr-field input,
+.kkr-field textarea {
+  margin-left: -4px !important;
+  width: calc(100% + 4px) !important;
+}
