@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { createClient } from '@vercel/postgres';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -7,10 +7,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 🔒 força uso do POSTGRES_URL
-    if (!process.env.POSTGRES_URL) {
+    // 🔒 força usar somente a URL POOLING
+    const POOL = process.env.POSTGRES_URL;
+    if (!POOL) {
       return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
     }
+
+    // cria client com a pooled connection
+    const client = createClient({ connectionString: POOL });
+    await client.connect();
 
     const body = typeof req.body === 'string'
       ? JSON.parse(req.body || '{}')
@@ -22,7 +27,8 @@ export default async function handler(req, res) {
     if (!nome)   return res.status(400).json({ ok:false, error:'Falta nome' });
     if (!email)  return res.status(400).json({ ok:false, error:'Falta email' });
 
-    await sql`
+    // tabela idempotente
+    await client.sql`
       CREATE TABLE IF NOT EXISTS alunos (
         id               TEXT PRIMARY KEY,
         nome             TEXT NOT NULL,
@@ -37,11 +43,10 @@ export default async function handler(req, res) {
         criado_em        TIMESTAMPTZ NOT NULL DEFAULT now()
       );
     `;
-
-// ID simples
+// id simples (sem extensão)
     const newId = 'a_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
 
-    const { rows } = await sql`
+    const { rows } = await client.sql`
       INSERT INTO alunos (id, nome, email, telefone, whatsapp, endereco, nascimento, observacoes)
       VALUES (
         ${newId},
@@ -63,6 +68,7 @@ export default async function handler(req, res) {
       RETURNING id, nome, email, telefone, whatsapp, endereco, nascimento, observacoes, criado_em;
     `;
 
+    await client.end();
     return res.status(200).json({ ok:true, aluno: rows[0] || null, used:'POSTGRES_URL' });
   } catch (e) {
     return res.status(500).json({ ok:false, error:String(e) });
