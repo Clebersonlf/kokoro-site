@@ -105,7 +105,6 @@
   document.addEventListener('DOMContentLoaded', load);
 </script>
   <script src="/shared/js/invite-share.js?v=1756790326"></script>
-  <script src="/invite-tokenonly.js?v=2"></script>
 </body>
   <script src="/shared/js/invite-rebuild.js"></script>
   <div class="kkr-modal-backdrop" id="kkrInviteBackdrop" aria-hidden="true"></div>
