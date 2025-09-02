@@ -85,3 +85,10 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Ajuste fino: desloca levemente os campos do formulário */
+.kkr-field input,
+.kkr-field textarea {
+  margin-left: -4px; /* puxa só 4px para a esquerda */
+  width: calc(100% + 4px); /* compensa a largura para não cortar */
+}
