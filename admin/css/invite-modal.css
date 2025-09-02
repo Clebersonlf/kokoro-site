@@ -5,7 +5,7 @@
 @media (min-width: 768px){ .admin-toolbar{ padding-left:24px; } }
 
 .btn{ border:none; border-radius:12px; padding:12px 18px; font-weight:700; cursor:pointer; }
-.btn-primary{ background:#1e90ff; color:#fff; box-shadow:0 6px 18px rgba(30,144,255,.25); }
+.btn-primary{ background:#22c55e; color:#04121a; box-shadow:0 6px 18px rgba(30,144,255,.25); }
 .btn-primary:hover{ filter:brightness(1.05); }
 
 .kkr-modal-backdrop{
