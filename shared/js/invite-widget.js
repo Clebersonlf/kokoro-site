@@ -1,166 +1,147 @@
-// Widget "Enviar convite" — botão estilizado + modal funcional
-(() => {
-  const API = '/api/send-welcome';
+(function(){
+  const qs = sel => document.querySelector(sel);
+  const qsa = sel => Array.from(document.querySelectorAll(sel));
 
-  // util p/ criar elementos
-  function el(tag, attrs={}, children=[]) {
-    const e = document.createElement(tag);
-    Object.entries(attrs).forEach(([k,v])=>{
-      if (k==='style' && v && typeof v==='object') Object.assign(e.style, v);
-      else if (k in e) e[k]=v; else e.setAttribute(k,v);
-    });
-    children.forEach(c => e.appendChild(typeof c==='string'?document.createTextNode(c):c));
-    return e;
-  }
-
-  // modal com campos
-  function makeModal(){
-    const overlay = el('div',{style:{
-      position:'fixed', inset:'0', background:'rgba(0,0,0,.5)',
-      display:'grid', placeItems:'center', zIndex: 9999
-    }});
-
-    const box = el('div',{style:{
-      width:'min(520px, 92vw)', background:'#111827', color:'#e5e7eb',
-      borderRadius:'12px', padding:'18px 16px', boxShadow:'0 8px 28px rgba(0,0,0,.35)',
-      border:'1px solid rgba(255,255,255,.08)'
-    }});
-
-    const title = el('div',{style:{fontSize:'18px',fontWeight:'700',marginBottom:'6px'}},['Enviar convite']);
-    const sub   = el('div',{style:{fontSize:'12px',opacity:.8,marginBottom:'12px'}},
-                 ['Preencha os dados básicos; o aluno recebe o link para completar o cadastro.']);
-
-    const form  = el('form');
-
-    function row(labelTxt, inputEl){
-      const L = el('label',{style:{display:'block',fontSize:'12px',opacity:.9,margin:'10px 0 4px'}},[labelTxt]);
-      form.append(L, inputEl);
-    }
-
-    const inNome  = el('input',{type:'text',placeholder:'Nome do aluno',style:css.input});
-    const inEmail = el('input',{type:'email',placeholder:'email@exemplo.com',style:css.input});
-    const inTel   = el('input',{type:'tel',placeholder:'(DDD) 99999-9999',style:css.input});
-    const inWa    = el('input',{type:'tel',placeholder:'WhatsApp/Telegram (opcional)',style:css.input});
-    const inObs   = el('textarea',{placeholder:'Observações (opcional)',rows:3,style:css.textarea});
-
-    row('Nome*', inNome);
-    row('E-mail*', inEmail);
-    row('Telefone', inTel);
-    row('WhatsApp/Telegram', inWa);
-    row('Observações', inObs);
-
-    const msg = el('div',{id:'inviteMsg',style:{minHeight:'1.2em',marginTop:'8px',fontSize:'12px'}});
-    const actions = el('div',{style:{display:'flex',gap:'10px',justifyContent:'flex-end',marginTop:'14px'}});
-
-    const btnCancel = el('button',{type:'button',textContent:'Cancelar',style:css.btnGhost});
-    const btnSend   = el('button',{type:'submit',textContent:'Enviar',style:css.btnPrimary});
-    actions.append(btnCancel, btnSend);
-
-    box.append(title, sub, form, msg, actions);
-    overlay.appendChild(box);
-
-    btnCancel.onclick = () => overlay.remove();
-
-    form.addEventListener('submit', async (ev)=>{
-      ev.preventDefault();
-      const nome  = (inNome.value  || '').trim();
-      const email = (inEmail.value || '').trim().toLowerCase();
-      const tel   = (inTel.value   || '').trim();
-      const wa    = (inWa.value    || '').trim();
-      const obs   = (inObs.value   || '').trim();
-
-      if (!nome || !email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
-        msg.textContent = 'Preencha nome e um e-mail válido.'; msg.style.color = '#fecaca'; return;
-      }
-
-      btnSend.disabled = true; btnSend.textContent = 'Enviando...';
-      msg.textContent = '';
-
-      try{
-        const r = await fetch(API, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ nome, email, telefone: tel, whatsapp: wa, observacoes: obs })
-        });
-        const data = await r.json().catch(()=>({}));
-
-        if (r.ok && data && data.ok){
-          msg.textContent = 'Convite gerado e enviado com sucesso.'; msg.style.color = '#bbf7d0';
-          setTimeout(()=>overlay.remove(), 800);
-        } else {
-          msg.textContent = data && data.error ? String(data.error) : 'Falha ao enviar.';
-          msg.style.color = '#fecaca';
-        }
-      }catch(e){
-        msg.textContent = 'Erro de rede. Tente novamente.'; msg.style.color = '#fecaca';
-      }finally{
-        btnSend.disabled = false; btnSend.textContent = 'Enviar';
-      }
-    });
-
-    return overlay;
-  }
-
-  // estilos compartilhados
-  const css = {
-    input: {
-      width:'100%', padding:'10px 12px', borderRadius:'10px',
-      border:'1px solid #374151', background:'#0b1220', color:'#e5e7eb',
-      outline:'none'
-    },
-    textarea: {
-      width:'100%', padding:'10px 12px', borderRadius:'10px',
-      border:'1px solid #374151', background:'#0b1220', color:'#e5e7eb',
-      outline:'none', resize:'vertical'
-    },
-    btnPrimary: {
-      padding:'10px 18px', border:'none', borderRadius:'10px',
-      background:'#2563eb', color:'#fff', cursor:'pointer', fontWeight:'700',
-      boxShadow:'0 2px 6px rgba(0,0,0,.25)'
-    },
-    btnGhost: {
-      padding:'10px 18px', border:'1px solid #334155', borderRadius:'10px',
-      background:'transparent', color:'#e5e7eb', cursor:'pointer'
-    }
+  const sel = {
+    modal: '#kkrInviteModal',
+    backdrop: '#kkrInviteBackdrop',
+    nome: '#invNome',
+    email: '#invEmail',
+    fone: '#invFone',
+    app: '#invApp',
+    obs: '#invObs',
+    send: '#invSend',
+    cancel: '#invCancel',
+    openBtn: '#btnInvite,[data-action="invite-open"]'
   };
 
-  function injectButton(){
-    if (document.getElementById('btnInvite')) return;
+  function show(el){ el && el.removeAttribute('hidden'); }
+  function hide(el){ el && el.setAttribute('hidden',''); }
 
-    // barra com margem interna para afastar da lateral
-    const barWrap = el('div',{style:{
-      width:'100%', padding:'0 24px', margin:'20px 0 12px'
-    }});
-    const bar = el('div',{style:{
-      display:'flex', alignItems:'center', gap:'12px', maxWidth:'1200px'
-    }});
-    barWrap.appendChild(bar);
+  function openModal(){
+    const m = qs(sel.modal), b = qs(sel.backdrop);
+    if(!m) return;
+    show(m); if(b){ b.removeAttribute('aria-hidden'); b.style.display='block'; }
+    // foco no primeiro campo
+    const nome = qs(sel.nome); if(nome) setTimeout(()=>nome.focus(), 50);
+  }
 
-    const btn = el('button',{id:'btnInvite',textContent:'📨 Enviar convite',style:{
-      padding:'10px 18px', cursor:'pointer', borderRadius:'12px', border:'none',
-      background:'#2563eb', color:'#fff', fontSize:'14px', fontWeight:'700',
-      boxShadow:'0 2px 6px rgba(0,0,0,.25)', transition:'filter .15s ease'
-    }});
-    btn.onmouseover = ()=> btn.style.filter='brightness(0.95)';
-    btn.onmouseout  = ()=> btn.style.filter='';
+  function closeModal(){
+    const m = qs(sel.modal), b = qs(sel.backdrop);
+    if(!m) return;
+    hide(m); if(b){ b.setAttribute('aria-hidden','true'); b.style.display='none'; }
+  }
 
-    // removi o texto "(gera link + atalhos)"
-    btn.onclick = ()=> document.body.appendChild(makeModal());
+  function validEmail(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim());
+  }
 
-    bar.appendChild(btn);
+  async function criarConvite(payload){
+    const resp = await fetch('/api/convites/criar', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await resp.json().catch(()=> ({}));
+    if(!resp.ok || !data.ok) throw new Error(data.error || 'Falha ao criar convite');
+    return data; // { ok:true, id, token, link }
+  }
 
-    // tenta posicionar logo abaixo do título da página
-    const after = document.querySelector('h1, h2, .page-title');
-    if (after && after.parentElement){
-      after.parentElement.insertBefore(barWrap, after.nextSibling);
-    } else {
-      document.body.insertBefore(barWrap, document.body.firstChild);
+  function renderSucesso({link, token}){
+    const m = qs(sel.modal);
+    if(!m) return;
+    const html = `
+      <div class="kkr-card">
+        <h3>Convite gerado</h3>
+        <p class="sub" style="margin-top:4px">Envie o link para o aluno completar o cadastro.</p>
+
+        <div class="kkr-field">
+          <label>Link</label>
+          <div style="display:flex; gap:8px; align-items:center">
+            <input id="invLinkOut" value="${link}" readonly style="flex:1; padding:.6rem; border-radius:8px;">
+            <button class="kkr-btn secondary" id="btnCopy">Copiar</button>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px">
+          <a class="kkr-btn primary" id="btnWhats" href="#" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="kkr-btn secondary" id="btnTg" href="#" target="_blank" rel="noopener">Telegram</a>
+          <a class="kkr-btn secondary" id="btnMail" href="#" target="_blank" rel="noopener">E-mail</a>
+          <button class="kkr-btn" id="btnFechar">Fechar</button>
+        </div>
+
+        <p class="sub" style="margin-top:8px; opacity:.8">Token: <code>${token}</code></p>
+      </div>
+    `;
+    m.innerHTML = html;
+
+    // ligar botões
+    const linkEl = qs('#invLinkOut');
+    const btnCopy = qs('#btnCopy');
+    const btnFechar = qs('#btnFechar');
+    const btnWhats = qs('#btnWhats');
+    const btnTg = qs('#btnTg');
+    const btnMail = qs('#btnMail');
+
+    btnCopy?.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(link); btnCopy.textContent='Copiado!'; setTimeout(()=>btnCopy.textContent='Copiar',1200);}catch(_){}
+    });
+
+    btnFechar?.addEventListener('click', closeModal);
+
+    // montar mensagens
+    const msg = encodeURIComponent('Olá! Use este link para completar seu cadastro: ' + link);
+    btnWhats?.setAttribute('href', 'https://wa.me/?text=' + msg);
+    btnTg?.setAttribute('href', 'https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + msg);
+    btnMail?.setAttribute('href', 'mailto:?subject=' + encodeURIComponent('Convite para cadastro') + '&body=' + msg);
+  }
+
+  function setup(){
+    // Abrir modal (botão)
+    qsa(sel.openBtn).forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{ ev.preventDefault(); openModal(); });
+    });
+
+    // Fechar no Cancelar
+    const btnCancel = qs(sel.cancel);
+    btnCancel && btnCancel.addEventListener('click', (ev)=>{ ev.preventDefault(); closeModal(); });
+
+    // Habilitar/Desabilitar enviar
+    const nome = qs(sel.nome), email = qs(sel.email), send = qs(sel.send);
+    function reevaluate(){
+      const ok = (nome?.value?.trim()?.length>0) && validEmail(email?.value);
+      if(send){ send.disabled = !ok; }
     }
+    [nome,email].forEach(el => el && el.addEventListener('input', reevaluate));
+    reevaluate();
+
+    // Enviar
+    send && send.addEventListener('click', async (ev)=>{
+      ev.preventDefault();
+      if(send.disabled) return;
+
+      const payload = {
+        nome: qs(sel.nome)?.value?.trim() || '',
+        email: qs(sel.email)?.value?.trim() || '',
+        telefone: qs(sel.fone)?.value?.trim() || '',
+        whatsapp: qs(sel.app)?.value?.trim() || '',
+        observacoes: qs(sel.obs)?.value?.trim() || ''
+      };
+
+      send.disabled = true; const old = send.textContent; send.textContent = 'Enviando...';
+      try{
+        const data = await criarConvite(payload); // { ok, token, link }
+        renderSucesso(data);
+      }catch(e){
+        alert('Falha ao criar convite: ' + e.message);
+        send.disabled = false; send.textContent = old;
+      }
+    });
+
+    // Abrir via evento customizado (se algum script disparar)
+    document.addEventListener('kkr:invite:open', openModal);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectButton);
-  } else {
-    injectButton();
-  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup);
+  else setup();
 })();
