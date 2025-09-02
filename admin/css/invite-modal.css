@@ -113,3 +113,10 @@
   margin-left: -8px !important;
   width: calc(100% + 8px) !important;
 }
+
+/* --- micro-adjust v3 (mais específico) --- */
+.kkr-modal .kkr-field input,
+.kkr-modal .kkr-field textarea{
+  margin-left:-8px !important;
+  width:calc(100% + 8px) !important;
+}
