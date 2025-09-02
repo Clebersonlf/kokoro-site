@@ -1,4 +1,4 @@
-import { getClient } from './_dbflex';
+import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -8,56 +8,61 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{});
+    const { token, nome, email, telefone, whatsapp, endereco, nascimento, observacoes } = body;
 
-    const {
-      token, nome, email, telefone, whatsapp, endereco, nascimento, observacoes
-    } = body;
-
-    // Validações mínimas
     if (!token)  return res.status(400).json({ ok:false, error:'Falta token' });
     if (!nome)   return res.status(400).json({ ok:false, error:'Falta nome' });
     if (!email)  return res.status(400).json({ ok:false, error:'Falta email' });
 
-    const client = await getClient();
-
-    // Cria tabela se não existir (idempotente)
-    await client.query(`
+    // Tenta criar a tabela (idempotente, mas sem exigir extensões).
+    // Usa DEFAULT now() e deixa id como TEXT se necessário para não depender de extensão.
+    await sql`
       CREATE TABLE IF NOT EXISTS alunos (
-        id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        nome            TEXT NOT NULL,
-        email           TEXT UNIQUE,
-        telefone        TEXT,
-        whatsapp        TEXT,
-        endereco        TEXT,
-        nascimento      DATE,
-        observacoes     TEXT,
+        id               TEXT PRIMARY KEY,
+        nome             TEXT NOT NULL,
+        email            TEXT UNIQUE,
+        telefone         TEXT,
+        whatsapp         TEXT,
+        endereco         TEXT,
+        nascimento       DATE,
+        observacoes      TEXT,
         numero_vitalicio TEXT,
-        status          TEXT,
-        criado_em       TIMESTAMPTZ NOT NULL DEFAULT now()
+        status           TEXT,
+        criado_em        TIMESTAMPTZ NOT NULL DEFAULT now()
       );
-    `);
+    `;
 
-    // UPSERT por email (não cria duplicado)
-    const { rows } = await client.query(
-      `INSERT INTO alunos (nome,email,telefone,whatsapp,endereco,nascimento,observacoes)
-       VALUES ($1,$2,$3,$4,$5,$6,$7)
-       ON CONFLICT (email) DO UPDATE
-       SET nome=EXCLUDED.nome,
-           telefone=EXCLUDED.telefone,
-           whatsapp=EXCLUDED.whatsapp,
-           endereco=EXCLUDED.endereco,
-           nascimento=EXCLUDED.nascimento,
-           observacoes=EXCLUDED.observacoes
-       RETURNING id,nome,email,telefone,whatsapp,endereco,nascimento,observacoes,criado_em;`,
-      [nome, email, telefone||null, whatsapp||null, endereco||null, nascimento||null, observacoes||null]
-    );
+    // Gera um id simples se precisar (sem extensão):
+    const newId = 'a_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 
-    const aluno = rows[0] || null;
+    // UPSERT por email
+    const { rows } = await sql`
+      INSERT INTO alunos (id, nome, email, telefone, whatsapp, endereco, nascimento, observacoes)
+      VALUES (
+        ${newId},
+        ${nome},
+        ${email},
+        ${telefone || null},
+        ${whatsapp || null},
+        ${endereco || null},
+        ${nascimento || null},
+        ${observacoes || null}
+      )
+      ON CONFLICT (email) DO UPDATE
+      SET nome = EXCLUDED.nome,
+          telefone = EXCLUDED.telefone,
+          whatsapp = EXCLUDED.whatsapp,
+          endereco = EXCLUDED.endereco,
+          nascimento = EXCLUDED.nascimento,
+          observacoes = EXCLUDED.observacoes
+      RETURNING id, nome, email, telefone, whatsapp, endereco, nascimento, observacoes, criado_em;
+    `;
 
-    await client.end();
+    // Identifica qual variável foi usada (apenas fins de debug)
+    const used = process.env.POSTGRES_URL ? 'POSTGRES_URL' : (process.env.DATABASE_URL ? 'DATABASE_URL' : 'none');
 
-    return res.status(200).json({ ok:true, aluno, used: process.env.POSTGRES_URL ? 'POSTGRES_URL' : 'DATABASE_URL' });
+    return res.status(200).json({ ok:true, aluno: rows[0] || null, used });
   } catch (e) {
-    return res.status(500).json({ ok:false, error: String(e) });
+    return res.status(500).json({ ok:false, error:String(e) });
   }
 }
