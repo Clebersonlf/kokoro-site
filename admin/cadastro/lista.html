@@ -31,6 +31,7 @@
     .chevron{font-weight:600}
   </style>
 </head>
+  <link rel="stylesheet" href="/admin/css/invite-modal.css">
 <body>
 <header>
   <h1>Alunos • Lista</h1>
@@ -39,6 +40,11 @@
 </header>
 
 <main>
+  <div class="admin-toolbar">
+    <button id="btnInvite" class="btn btn-primary" type="button" aria-label="Enviar convite">
+      ✉️  Enviar convite
+    </button>
+  </div>
   <table aria-describedby="tableHint">
     <thead>
     <tr>
@@ -97,5 +103,21 @@
   document.addEventListener('DOMContentLoaded', load);
 </script>
 </body>
+  <div class="kkr-modal-backdrop" id="kkrInviteBackdrop" aria-hidden="true"></div>
+  <div class="kkr-modal" id="kkrInviteModal" role="dialog" aria-modal="true" aria-labelledby="kkrInviteTitle" hidden>
+    <div class="kkr-card">
+      <h3 id="kkrInviteTitle">Enviar convite</h3>
+      <p class="sub">Preencha os dados básicos; o aluno recebe o link para completar o cadastro.</p>
+      <div class="kkr-field"><label>Nome*</label><input id="invNome" placeholder="Nome do aluno" required></div>
+      <div class="kkr-field"><label>E-mail*</label><input id="invEmail" placeholder="email@exemplo.com" required></div>
+      <div class="kkr-field"><label>Telefone</label><input id="invFone" placeholder="(DDD) 99999-9999"></div>
+      <div class="kkr-field"><label>WhatsApp/Telegram</label><input id="invApp" placeholder="WhatsApp/Telegram (opcional)"></div>
+      <div class="kkr-field"><label>Observações</label><textarea id="invObs" rows="3" placeholder="Observações (opcional)"></textarea></div>
+      <div class="kkr-actions">
+        <button class="kkr-btn secondary" id="invCancel">Cancelar</button>
+        <button class="kkr-btn primary" id="invSend" disabled>Enviar</button>
+      </div>
+    </div>
+  </div>
   <script src="/shared/js/invite-widget.js"></script>
 </html>
