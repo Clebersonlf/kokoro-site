@@ -7,6 +7,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    // 🔒 força uso do POSTGRES_URL
+    if (!process.env.POSTGRES_URL) {
+      return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
+    }
+
     const body = typeof req.body === 'string'
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
@@ -32,7 +37,9 @@ export default async function handler(req, res) {
         criado_em        TIMESTAMPTZ NOT NULL DEFAULT now()
       );
     `;
-const newId = 'a_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+
+// ID simples
+    const newId = 'a_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
 
     const { rows } = await sql`
       INSERT INTO alunos (id, nome, email, telefone, whatsapp, endereco, nascimento, observacoes)
@@ -56,11 +63,7 @@ const newId = 'a_' + Math.random().toString(36).slice(2,10) + Date.now().toStrin
       RETURNING id, nome, email, telefone, whatsapp, endereco, nascimento, observacoes, criado_em;
     `;
 
-    const used = process.env.POSTGRES_URL
-      ? 'POSTGRES_URL'
-      : (process.env.DATABASE_URL ? 'DATABASE_URL' : 'none');
-
-    return res.status(200).json({ ok:true, aluno: rows[0] || null, used });
+    return res.status(200).json({ ok:true, aluno: rows[0] || null, used:'POSTGRES_URL' });
   } catch (e) {
     return res.status(500).json({ ok:false, error:String(e) });
   }
