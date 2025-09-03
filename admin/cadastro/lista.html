@@ -9,17 +9,17 @@
       --bg:#0c0f14; --ink:#eaeaea; --line:#1f2530;
       --card:#111827; --thead:#0f141b;
       --btn-bg:#111827; --btn-br:#334155; --btn-ink:#bfdbfe; --btn-hover:#1e293b;
+      --green:#16a34a; --green-br:#12813c; --muted:#9ad1ff;
     }
     body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
     header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line)}
     main{padding:16px 24px}
     table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
     th,td{padding:12px 10px;border-bottom:1px solid var(--line);font-size:14px}
-    th{color:#9ad1ff;text-align:left;background:var(--thead)}
+    th{color:var(--muted);text-align:left;background:var(--thead)}
     tr:last-child td{border-bottom:0}
     a.btn{color:#60a5fa;text-decoration:none}
     .muted{opacity:.7}
-
     .btn-back{
       display:inline-flex;align-items:center;gap:.5rem;
       padding:.55rem .9rem;background:var(--btn-bg);
@@ -28,35 +28,50 @@
     }
     .btn-back:hover{background:var(--btn-hover)}
     .chevron{font-weight:600}
+    .admin-toolbar{margin:12px 0 16px}
+    .btn-primary{
+      appearance:none;border:1px solid var(--btn-br);background:var(--btn-bg);
+      color:var(--btn-ink);border-radius:.6rem;padding:.55rem .9rem;cursor:pointer
+    }
+    .btn-primary:hover{background:var(--btn-hover)}
+
+    /* Modal */
+    .kkr-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none}
+    .kkr-modal{position:fixed;inset:0;display:none;place-items:center;padding:16px}
+    .kkr-modal[aria-modal="true"][data-open="1"]{display:grid}
+    .kkr-modal-backdrop[data-open="1"]{display:block}
+    .kkr-card{
+      width:min(720px,95vw);background:#0f141b;border:1px solid #1e2633;border-radius:12px;
+      padding:16px
+    }
+    .kkr-card h3{margin:0 0 6px}
+    .kkr-card .sub{margin:0 0 12px;opacity:.8}
+    .kkr-field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+    .kkr-field input,.kkr-field textarea{
+      background:#0b1220;border:1px solid #223047;color:#cfe7ff;border-radius:8px;padding:10px
+    }
+    .kkr-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .kkr-btn{border:1px solid var(--btn-br);background:var(--btn-bg);color:var(--btn-ink);
+      border-radius:8px;padding:.6rem .9rem;cursor:pointer}
+    .kkr-btn.primary{background:var(--green);border-color:var(--green-br);color:#fff}
+    .kkr-btn:disabled{opacity:.6;cursor:not-allowed}
 
     /* Caixinha do link curto */
     #inviteLinkBox{
-      margin-top:12px;
-      background:#0b1220;
-      border:1px solid #223047;
-      border-radius:10px;
-      padding:10px;
-      display:none; /* começa escondida */
+      margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px;display:none
     }
-    #inviteLinkBox label{
-      color:#9be28d;font-weight:600;margin-bottom:6px;display:block;
-    }
-    #inviteLinkBox input{
-      flex:1;min-width:0;background:#0e1830;
-      border:1px solid #2a3d60;border-radius:8px;
-      padding:8px;color:#cfe7ff;
+    #inviteLinkBox label{color:#9be28d;font-weight:600;margin-bottom:6px;display:block}
+    #inviteLinkBox .row{display:flex;gap:8px;align-items:center}
+    #inviteShortLink{
+      flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;
+      font-size:.9rem
     }
     #inviteCopyBtn{
-      white-space:nowrap;background:#16a34a;
-      border:1px solid #12813c;color:white;
-      border-radius:8px;padding:8px 12px;cursor:pointer;
-      
+      white-space:nowrap;background:var(--green);border:1px solid var(--green-br);
+      color:white;border-radius:8px;padding:8px 12px;cursor:pointer
     }
+    #inviteError{margin-top:8px;color:#fca5a5;display:none}
   </style>
-
-  <link rel="stylesheet" href="/admin/css/invite-modal.css?v=nudge1">
-  <link rel="stylesheet" href="/admin/css/invite-nudge.css?v=2">
-  <link rel="stylesheet" href="/admin/css/invite-tiny.css">
 </head>
 <body>
 <header>
@@ -66,20 +81,13 @@
 
 <main>
   <div class="admin-toolbar">
-    <button id="btnInvite" class="btn btn-primary" type="button" aria-label="Enviar convite">
-      ✉️  Enviar convite
-    </button>
+    <button id="btnInvite" class="btn-primary" type="button" aria-label="Enviar convite">✉️ Enviar convite</button>
   </div>
 
   <table aria-describedby="tableHint">
     <thead>
     <tr>
-      <th>Nome</th>
-      <th>Email</th>
-      <th>Telefone</th>
-      <th>Nº Cadastro</th>
-      <th>Criado</th>
-      <th></th>
+      <th>Nome</th><th>Email</th><th>Telefone</th><th>Nº Cadastro</th><th>Criado</th><th></th>
     </tr>
     </thead>
     <tbody id="tb">
@@ -89,25 +97,86 @@
   <p id="tableHint" class="muted" style="margin:.6rem 0 0">Use “Editar” para alterar um cadastro.</p>
 </main>
 
-<script>
-  function fmtData(v){
-    if(!v) return '';
-    const d = new Date(v);
-    return isNaN(d) ? '' : d.toLocaleString();
-  }
+<!-- Modal de convite -->
+<div class="kkr-modal-backdrop" id="kkrInviteBackdrop" aria-hidden="true"></div>
+<div class="kkr-modal" id="kkrInviteModal" role="dialog" aria-modal="true" aria-labelledby="kkrInviteTitle">
+  <div class="kkr-card">
+    <h3 id="kkrInviteTitle">Enviar convite</h3>
+    <p class="sub">Preencha os dados básicos; o aluno recebe o link para completar o cadastro.</p>
 
-  async function load(){
+    <div class="kkr-field"><label for="invNome">Nome*</label><input id="invNome" placeholder="Nome do aluno" required></div>
+    <div class="kkr-field"><label for="invEmail">E-mail*</label><input id="invEmail" placeholder="email@exemplo.com" required></div>
+    <div class="kkr-field"><label for="invFone">Telefone</label><input id="invFone" placeholder="(DDD) 99999-9999"></div>
+    <div class="kkr-field"><label for="invApp">WhatsApp/Telegram</label><input id="invApp" placeholder="WhatsApp/Telegram (opcional)"></div>
+    <div class="kkr-field"><label for="invObs">Observações</label><textarea id="invObs" rows="3" placeholder="Observações (opcional)"></textarea></div>
+
+    <!-- Caixinha do link -->
+    <div id="inviteLinkBox" style="display:none;margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px">
+      <label style="color:#9be28d;font-weight:600;margin-bottom:6px;display:block">Link gerado:</label>
+      <div class="row" style="display:flex;gap:8px;align-items:center">
+        <input id="inviteShortLink" type="text" readonly value=""
+               style="flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;font-size:.9rem">
+        <button id="inviteCopyBtn" type="button"
+                style="white-space:nowrap;background:#16a34a;border:1px solid #12813c;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
+          Copiar link
+        </button>
+        <button id="inviteCancelBtn" type="button"
+                style="white-space:nowrap;background:#e11d48;border:1px solid #9f1239;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
+          Cancelar convite
+        </button>
+      </div>
+      <p id="inviteError" style="display:none;margin-top:8px;color:#fca5a5"></p>
+      <p id="inviteOk"    style="display:none;margin-top:8px;color:#86efac"></p>
+    </div>
+
+    <div class="kkr-actions">
+      <!-- botão padrão para fechar o modal -->
+      <button class="kkr-btn" id="invCancel" type="button">Cancelar</button>
+
+      <!-- botão que gera o convite -->
+      <button class="kkr-btn primary" id="invSend" type="button" disabled>
+        Gerar link + enviar
+      </button>
+    </div>
+
+    <!-- Caixinha de link gerado (vem logo depois das ações) -->
+    <div id="inviteLinkBox" style="display:none;margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px">
+      <label style="color:#9be28d;font-weight:600;margin-bottom:6px;display:block">Link gerado:</label>
+      <div class="row" style="display:flex;gap:8px;align-items:center">
+        <input id="inviteShortLink" type="text" readonly value=""
+               style="flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;font-size:.9rem">
+        <button id="inviteCopyBtn" type="button"
+                style="white-space:nowrap;background:#16a34a;border:1px solid #12813c;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
+          Copiar link
+        </button>
+        <button id="inviteCancelBtn" type="button"
+                style="white-space:nowrap;background:#e11d48;border:1px solid #9f1239;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
+          Cancelar convite
+        </button>
+      </div>
+      <p id="inviteError" style="display:none;margin-top:8px;color:#fca5a5"></p>
+      <p id="inviteOk"    style="display:none;margin-top:8px;color:#86efac"></p>
+    </div>
+
+<script>
+  // === Se rodar local (WebStorm 63342 ou file:), usa API de produção ===
+  const USING_LOCAL = location.origin.startsWith('http://localhost:63342') || location.protocol === 'file:';
+  const API_BASE    = USING_LOCAL ? 'https://www.planckkokoro.com' : '';
+  const SITE_ORIGIN = USING_LOCAL ? 'https://www.planckkokoro.com' : location.origin;
+
+  // === Tabela (tolera HTTP 500) ===
+  function fmtData(v){ if(!v) return ''; const d=new Date(v); return isNaN(d)?'':d.toLocaleString(); }
+  async function loadTable(){
     const tb = document.getElementById('tb');
     try{
-      const r = await fetch('/api/alunos/list');
+      const r = await fetch(`${API_BASE}/api/alunos/list`, {cache:'no-store'});
+      if(!r.ok) throw new Error('HTTP '+r.status);
       const j = await r.json().catch(()=> ({}));
       const rows = j.data || j.rows || [];
-
       if(!Array.isArray(rows) || rows.length === 0){
         tb.innerHTML = '<tr><td class="muted" colspan="6">Nenhum aluno encontrado.</td></tr>';
         return;
       }
-
       tb.innerHTML = '';
       rows.forEach(a=>{
         const tr = document.createElement('tr');
@@ -125,238 +194,92 @@
       tb.innerHTML = '<tr><td class="muted" colspan="6">Falha ao carregar a lista.</td></tr>';
     }
   }
-  document.addEventListener('DOMContentLoaded', load);
-</script>
 
-<!-- MANTÉM apenas o script que constrói/abre o modal -->
-<script src="/shared/js/invite-rebuild.js"></script>
+  // === Modal open/close ===
+  const backdrop = document.getElementById('kkrInviteBackdrop');
+  const modal    = document.getElementById('kkrInviteModal');
+  function openInvite(){ backdrop.setAttribute('data-open','1'); modal.setAttribute('data-open','1'); }
+  function closeInvite(){ backdrop.removeAttribute('data-open'); modal.removeAttribute('data-open'); }
+  document.getElementById('btnInvite')?.addEventListener('click', openInvite);
+  document.getElementById('invCancel')?.addEventListener('click', closeInvite);
+  backdrop?.addEventListener('click', closeInvite);
 
-<!-- Modal de convite -->
-<div class="kkr-modal-backdrop" id="kkrInviteBackdrop" aria-hidden="true"></div>
-<div class="kkr-modal" id="kkrInviteModal" role="dialog" aria-labelledby="kkrInviteTitle" hidden>
-  <div class="kkr-card">
-    <h3 id="kkrInviteTitle">Enviar convite</h3>
-    <p class="sub">Preencha os dados básicos; o aluno recebe o link para completar o cadastro.</p>
+  // Evita Enter recarregar a página dentro do modal
+  modal?.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); } });
 
-    <div class="kkr-field"><label>Nome*</label><input id="invNome" placeholder="Nome do aluno" required></div>
-    <div class="kkr-field"><label>E-mail*</label><input id="invEmail" placeholder="email@exemplo.com" required></div>
-    <div class="kkr-field"><label>Telefone</label><input id="invFone" placeholder="(DDD) 99999-9999"></div>
-    <div class="kkr-field"><label>WhatsApp/Telegram</label><input id="invApp" placeholder="WhatsApp/Telegram (opcional)"></div>
-    <div class="kkr-field"><label>Observações</label><textarea id="invObs" rows="3" placeholder="Observações (opcional)"></textarea></div>
-
-    <!-- Caixinha do link curto -->
-    <div id="inviteLinkBox">
-      <label>Link gerado:</label>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="inviteShortLink" type="text" readonly value="">
-        <button id="inviteCopyBtn" type="button">Copiar link</button>
-      </div>
-    </div>
-
-    <div class="kkr-actions">
-      <button class="kkr-btn secondary" id="invCancel">Cancelar</button>
-      <button class="kkr-btn primary" id="invSend" disabled>Gerar link + enviar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Habilita o botão quando nome e e-mail estiverem preenchidos -->
-<script>
+  // === Habilitar botão somente com Nome+Email ===
   (function(){
     const nome  = document.getElementById('invNome');
     const email = document.getElementById('invEmail');
     const send  = document.getElementById('invSend');
     function toggle(){ send.disabled = !(nome.value.trim() && email.value.trim()); }
-    if (nome && email && send){
-      nome.addEventListener('input', toggle);
-      email.addEventListener('input', toggle);
-      toggle();
-    }
+    ['input','change'].forEach(ev=>{
+      nome.addEventListener(ev, toggle);
+      email.addEventListener(ev, toggle);
+    });
+    toggle();
   })();
-</script>
 
-<!-- Script que gera o token curto e preenche a caixinha -->
-<script>
-  (function(){
-    const sendBtn = document.getElementById('invSend');
-    const box     = document.getElementById('inviteLinkBox');
-    const input   = document.getElementById('inviteShortLink');
-    const copyBtn = document.getElementById('inviteCopyBtn');
+  // === Gerar convite e preencher a caixinha ===
+  document.getElementById('invSend')?.addEventListener('click', async ()=>{
+    const nome  = document.getElementById('invNome').value.trim();
+    const email = document.getElementById('invEmail').value.trim();
+    const tel   = document.getElementById('invFone').value.trim();
+    const wa    = document.getElementById('invApp').value.trim();
+    const obs   = document.getElementById('invObs').value.trim();
 
-    // Esconde qualquer linha “Link gerado: …” antiga que algum script coloque
-    const modal = document.getElementById('kkrInviteModal');
-    const hideOldShareLines = () => {
-      if (!modal) return;
-      modal.querySelectorAll('p,div,span,code').forEach(el=>{
-        const t = (el.textContent || '').trim();
-        if (t.startsWith('Link gerado:') && /https?:\/\//.test(t)) el.style.display='none';
+    const box   = document.getElementById('inviteLinkBox');
+    const inp   = document.getElementById('inviteShortLink');
+    const errEl = document.getElementById('inviteError');
+    const btn   = document.getElementById('invSend');
+
+    errEl.style.display='none'; errEl.textContent='';
+    btn.disabled = true; btn.textContent = 'Gerando...';
+
+    try{
+      const r = await fetch(`${API_BASE}/api/convites/criar`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ nome, email, telefone: tel, whatsapp: wa, obs })
       });
-    };
-    const obs = new MutationObserver(hideOldShareLines);
-    obs.observe(modal, {childList:true,subtree:true,characterData:true});
+      const j = await r.json().catch(()=> ({}));
+      if(!j.ok){ throw new Error(j.error || 'Falha ao gerar convite'); }
 
-    async function criarConvite(){
-      const nome  = document.getElementById('invNome').value.trim();
-      const email = document.getElementById('invEmail').value.trim();
-      const fone  = document.getElementById('invFone').value.trim();
-      const wa    = document.getElementById('invApp').value.trim();
-      const obsrv = document.getElementById('invObs').value.trim();
+      const token = j.token || (j.data && j.data.token) || '';
+      const urlFromApi = j.url || j.short || j.link || '';
+      const finalUrl = urlFromApi || (token ? (`${SITE_ORIGIN}/cadastro/index.html?token=${encodeURIComponent(token)}`) : '');
 
-      if(!nome || !email) return;
+      if(!finalUrl) throw new Error('Convite criado, mas não recebi URL/token.');
 
-      // feedback visual
-      const oldLabel = sendBtn.textContent;
-      sendBtn.disabled = true;
-      sendBtn.textContent = 'Gerando…';
-
-      try{
-        const r = await fetch('/api/convites/criar', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({
-            nome, email,
-            telefone: fone || null,
-            whatsapp: wa || null,
-            obs: obsrv || null
-          })
-        });
-        const j = await r.json().catch(()=> ({}));
-
-        if(!j.ok){
-          alert('Falha ao gerar convite: ' + (j.error || 'erro desconhecido'));
-          return;
-        }
-
-        // usa j.url se vier; senão monta a partir do token
-        const url = j.url || (location.origin + '/cadastro.html?token=' + encodeURIComponent(j.token) + '&email=' + encodeURIComponent(email));
-        input.value = url;
-        box.style.display = 'block';
-        hideOldShareLines(); // esconde a linha comprida
-
-      }catch(e){
-        alert('Erro inesperado ao criar convite.');
-      }finally{
-        sendBtn.textContent = oldLabel;
-        sendBtn.disabled = false;
-      }
-    }
-
-    if (sendBtn){
-      sendBtn.addEventListener('click', function(ev){
-        ev.preventDefault();
-        criarConvite();
-      });
-    }
-
-    if (copyBtn){
-      copyBtn.addEventListener('click', async ()=>{
-        if(!input.value) return;
-        try{
-          await navigator.clipboard.writeText(input.value);
-          const old = copyBtn.textContent;
-          copyBtn.textContent = 'Copiado!';
-          setTimeout(()=> copyBtn.textContent = old, 1200);
-        }catch(_){
-          input.select(); document.execCommand('copy');
-        }
-      });
-    }
-  })();
-</script>
-<script>
-  (() => {
-    // cria a caixinha se ainda não existir
-    function ensureBox() {
-      let box = document.getElementById('inviteLinkBox');
-      if (box) return box;
-
-      const card = document.querySelector('#kkrInviteModal .kkr-card');
-      if (!card) return null;
-
-      box = document.createElement('div');
-      box.id = 'inviteLinkBox';
-      box.style.cssText = 'display:none;margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px';
-
-      box.innerHTML = `
-      <label style="color:#9be28d;font-weight:600;margin-bottom:6px;display:block">Link gerado:</label>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="inviteShortLink" type="text" readonly value=""
-               style="flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;font-size:.85rem">
-        <button id="inviteCopyBtn" type="button"
-                style="white-space:nowrap;background:#16a34a;border:1px solid #12813c;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
-          Copiar link
-        </button>
-      </div>
-    `;
-      // insere a caixinha logo DEPOIS da área de Observações
-      const obs = document.getElementById('invObs');
-      if (obs && obs.closest('.kkr-field')) {
-        obs.closest('.kkr-field').after(box);
-      } else {
-        card.appendChild(box);
-      }
-
-      // copiar para área de transferência
-      const btn = box.querySelector('#inviteCopyBtn');
-      btn.addEventListener('click', async () => {
-        const inp = box.querySelector('#inviteShortLink');
-        if (!inp.value) return;
-        try {
-          await navigator.clipboard.writeText(inp.value);
-          const old = btn.textContent; btn.textContent = 'Copiado!';
-          setTimeout(() => btn.textContent = old, 1200);
-        } catch {
-          inp.select(); document.execCommand('copy');
-          const old = btn.textContent; btn.textContent = 'Copiado!';
-          setTimeout(() => btn.textContent = old, 1200);
-        }
-      });
-
-      return box;
-    }
-
-    // acha a linha antiga "Link gerado: https://..."
-    function findLongLine() {
-      const card = document.querySelector('#kkrInviteModal .kkr-card');
-      if (!card) return null;
-      const nodes = card.querySelectorAll('p,div,span');
-      for (const el of nodes) {
-        if (el.id === 'inviteLinkBox' || el.closest('#inviteLinkBox')) continue;
-        const t = (el.textContent || '').trim();
-        if (t.startsWith('Link gerado:') && /https?:\/\/\S+/.test(t)) return el;
-      }
-      return null;
-    }
-
-    // move a URL para a caixinha e esconde a linha antiga
-    function adoptUrl() {
-      const line = findLongLine();
-      if (!line) return;
-      const m = line.textContent.match(/(https?:\/\/\S+)/);
-      if (!m) return;
-      const url = m[1];
-
-      const box = ensureBox();
-      if (!box) return;
-
-      box.querySelector('#inviteShortLink').value = url;
+      inp.value = finalUrl;
       box.style.display = 'block';
-      line.style.display = 'none';
+      btn.textContent = 'Gerar link + enviar';
+    }catch(e){
+      errEl.textContent = String(e.message || e);
+      errEl.style.display = 'block';
+      btn.textContent = 'Gerar link + enviar';
+    }finally{
+      btn.disabled = false;
     }
+  });
 
-    // observa mudanças no modal (o link é inserido de forma dinâmica)
-    const modal = document.getElementById('kkrInviteModal');
-    if (!modal) return;
-    const obs = new MutationObserver(adoptUrl);
-    obs.observe(modal, { childList:true, subtree:true, characterData:true });
+  // === Copiar link ===
+  document.getElementById('inviteCopyBtn')?.addEventListener('click', async ()=>{
+    const inp = document.getElementById('inviteShortLink');
+    const val = inp.value;
+    if(!val) return;
+    try{
+      await navigator.clipboard.writeText(val);
+      const btn = document.getElementById('inviteCopyBtn');
+      const old = btn.textContent; btn.textContent = 'Copiado!'; setTimeout(()=>btn.textContent=old,1500);
+    }catch{
+      inp.select(); document.execCommand('copy');
+      const btn = document.getElementById('inviteCopyBtn');
+      const old = btn.textContent; btn.textContent = 'Copiado!'; setTimeout(()=>btn.textContent=old,1500);
+    }
+  });
 
-    // também tenta capturar logo após clicar no botão "Gerar link + enviar"
-    document.addEventListener('click', (ev) => {
-      if (ev.target && ev.target.closest('#invSend')) {
-        setTimeout(adoptUrl, 120);
-      }
-    }, true);
-  })();
+  document.addEventListener('DOMContentLoaded', loadTable);
 </script>
 </body>
 </html>
