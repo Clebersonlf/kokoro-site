@@ -9,7 +9,8 @@
       --bg:#0c0f14; --ink:#eaeaea; --line:#1f2530;
       --card:#111827; --thead:#0f141b;
       --btn-bg:#111827; --btn-br:#334155; --btn-ink:#bfdbfe; --btn-hover:#1e293b;
-      --green:#16a34a; --green-br:#12813c; --muted:#9ad1ff;
+      --green:#16a34a; --green-br:#12813c;
+      --muted:#9ad1ff;
     }
     body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
     header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line)}
@@ -20,6 +21,8 @@
     tr:last-child td{border-bottom:0}
     a.btn{color:#60a5fa;text-decoration:none}
     .muted{opacity:.7}
+
+    /* Botão voltar */
     .btn-back{
       display:inline-flex;align-items:center;gap:.5rem;
       padding:.55rem .9rem;background:var(--btn-bg);
@@ -28,6 +31,7 @@
     }
     .btn-back:hover{background:var(--btn-hover)}
     .chevron{font-weight:600}
+
     .admin-toolbar{margin:12px 0 16px}
     .btn-primary{
       appearance:none;border:1px solid var(--btn-br);background:var(--btn-bg);
@@ -35,15 +39,12 @@
     }
     .btn-primary:hover{background:var(--btn-hover)}
 
-    /* Modal */
-    .kkr-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none}
-    .kkr-modal{position:fixed;inset:0;display:none;place-items:center;padding:16px}
+    /* Modal básico */
+    .kkr-modal-backdrop{ position:fixed;inset:0;background:rgba(0,0,0,.45);display:none }
+    .kkr-modal{ position:fixed;inset:0;display:none;place-items:center;padding:16px }
     .kkr-modal[aria-modal="true"][data-open="1"]{display:grid}
     .kkr-modal-backdrop[data-open="1"]{display:block}
-    .kkr-card{
-      width:min(720px,95vw);background:#0f141b;border:1px solid #1e2633;border-radius:12px;
-      padding:16px
-    }
+    .kkr-card{ width:min(720px,95vw);background:#0f141b;border:1px solid #1e2633;border-radius:12px;padding:16px }
     .kkr-card h3{margin:0 0 6px}
     .kkr-card .sub{margin:0 0 12px;opacity:.8}
     .kkr-field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
@@ -61,13 +62,17 @@
       margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px;display:none
     }
     #inviteLinkBox label{color:#9be28d;font-weight:600;margin-bottom:6px;display:block}
-    #inviteLinkBox .row{display:flex;gap:8px;align-items:center}
+    #inviteLinkBox .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     #inviteShortLink{
-      flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;
+      flex:1;min-width:280px;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;
       font-size:.9rem
     }
     #inviteCopyBtn{
       white-space:nowrap;background:var(--green);border:1px solid var(--green-br);
+      color:white;border-radius:8px;padding:8px 12px;cursor:pointer
+    }
+    #inviteCancelBtn{
+      white-space:nowrap;background:#ef4444;border:1px solid #b91c1c;
       color:white;border-radius:8px;padding:8px 12px;cursor:pointer
     }
     #inviteError{margin-top:8px;color:#fca5a5;display:none}
@@ -87,7 +92,12 @@
   <table aria-describedby="tableHint">
     <thead>
     <tr>
-      <th>Nome</th><th>Email</th><th>Telefone</th><th>Nº Cadastro</th><th>Criado</th><th></th>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefone</th>
+      <th>Nº Cadastro</th>
+      <th>Criado</th>
+      <th></th>
     </tr>
     </thead>
     <tbody id="tb">
@@ -111,65 +121,31 @@
     <div class="kkr-field"><label for="invObs">Observações</label><textarea id="invObs" rows="3" placeholder="Observações (opcional)"></textarea></div>
 
     <!-- Caixinha do link -->
-    <div id="inviteLinkBox" style="display:none;margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px">
-      <label style="color:#9be28d;font-weight:600;margin-bottom:6px;display:block">Link gerado:</label>
-      <div class="row" style="display:flex;gap:8px;align-items:center">
-        <input id="inviteShortLink" type="text" readonly value=""
-               style="flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;font-size:.9rem">
-        <button id="inviteCopyBtn" type="button"
-                style="white-space:nowrap;background:#16a34a;border:1px solid #12813c;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
-          Copiar link
-        </button>
-        <button id="inviteCancelBtn" type="button"
-                style="white-space:nowrap;background:#e11d48;border:1px solid #9f1239;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
-          Cancelar convite
-        </button>
+    <div id="inviteLinkBox">
+      <label>Link gerado:</label>
+      <div class="row">
+        <input id="inviteShortLink" type="text" readonly value="">
+        <button id="inviteCopyBtn" type="button">Copiar link</button>
+        <button id="inviteCancelBtn" type="button" disabled>Cancelar convite</button>
       </div>
-      <p id="inviteError" style="display:none;margin-top:8px;color:#fca5a5"></p>
-      <p id="inviteOk"    style="display:none;margin-top:8px;color:#86efac"></p>
+      <p id="inviteError"></p>
+      <p id="inviteStatus" class="muted" style="margin-top:6px;opacity:.8"></p>
     </div>
 
     <div class="kkr-actions">
-      <!-- botão padrão para fechar o modal -->
       <button class="kkr-btn" id="invCancel" type="button">Cancelar</button>
-
-      <!-- botão que gera o convite -->
-      <button class="kkr-btn primary" id="invSend" type="button" disabled>
-        Gerar link + enviar
-      </button>
+      <button class="kkr-btn primary" id="invSend" type="button" disabled>Gerar link + enviar</button>
     </div>
-
-    <!-- Caixinha de link gerado (vem logo depois das ações) -->
-    <div id="inviteLinkBox" style="display:none;margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px">
-      <label style="color:#9be28d;font-weight:600;margin-bottom:6px;display:block">Link gerado:</label>
-      <div class="row" style="display:flex;gap:8px;align-items:center">
-        <input id="inviteShortLink" type="text" readonly value=""
-               style="flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;font-size:.9rem">
-        <button id="inviteCopyBtn" type="button"
-                style="white-space:nowrap;background:#16a34a;border:1px solid #12813c;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
-          Copiar link
-        </button>
-        <button id="inviteCancelBtn" type="button"
-                style="white-space:nowrap;background:#e11d48;border:1px solid #9f1239;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
-          Cancelar convite
-        </button>
-      </div>
-      <p id="inviteError" style="display:none;margin-top:8px;color:#fca5a5"></p>
-      <p id="inviteOk"    style="display:none;margin-top:8px;color:#86efac"></p>
-    </div>
+  </div>
+</div>
 
 <script>
-  // === Se rodar local (WebStorm 63342 ou file:), usa API de produção ===
-  const USING_LOCAL = location.origin.startsWith('http://localhost:63342') || location.protocol === 'file:';
-  const API_BASE    = USING_LOCAL ? 'https://www.planckkokoro.com' : '';
-  const SITE_ORIGIN = USING_LOCAL ? 'https://www.planckkokoro.com' : location.origin;
-
-  // === Tabela (tolera HTTP 500) ===
+  // ==== Tabela (tolera erro 500 e mostra mensagem) ====
   function fmtData(v){ if(!v) return ''; const d=new Date(v); return isNaN(d)?'':d.toLocaleString(); }
   async function loadTable(){
     const tb = document.getElementById('tb');
     try{
-      const r = await fetch(`${API_BASE}/api/alunos/list`, {cache:'no-store'});
+      const r = await fetch('/api/alunos/list', {cache:'no-store'});
       if(!r.ok) throw new Error('HTTP '+r.status);
       const j = await r.json().catch(()=> ({}));
       const rows = j.data || j.rows || [];
@@ -195,7 +171,7 @@
     }
   }
 
-  // === Modal open/close ===
+  // ==== Modal open/close ====
   const backdrop = document.getElementById('kkrInviteBackdrop');
   const modal    = document.getElementById('kkrInviteModal');
   function openInvite(){ backdrop.setAttribute('data-open','1'); modal.setAttribute('data-open','1'); }
@@ -204,10 +180,7 @@
   document.getElementById('invCancel')?.addEventListener('click', closeInvite);
   backdrop?.addEventListener('click', closeInvite);
 
-  // Evita Enter recarregar a página dentro do modal
-  modal?.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); } });
-
-  // === Habilitar botão somente com Nome+Email ===
+  // ==== Habilitar botão quando campos obrigatórios ok ====
   (function(){
     const nome  = document.getElementById('invNome');
     const email = document.getElementById('invEmail');
@@ -220,7 +193,10 @@
     toggle();
   })();
 
-  // === Gerar convite e preencher a caixinha ===
+  // ==== estado global do token ====
+  let lastInviteToken = '';
+
+  // ==== Gerar convite e preencher a caixinha ====
   document.getElementById('invSend')?.addEventListener('click', async ()=>{
     const nome  = document.getElementById('invNome').value.trim();
     const email = document.getElementById('invEmail').value.trim();
@@ -232,27 +208,37 @@
     const inp   = document.getElementById('inviteShortLink');
     const errEl = document.getElementById('inviteError');
     const btn   = document.getElementById('invSend');
+    const cancelBtn = document.getElementById('inviteCancelBtn');
+    const statusEl  = document.getElementById('inviteStatus');
 
     errEl.style.display='none'; errEl.textContent='';
+    if (statusEl) statusEl.textContent = '';
     btn.disabled = true; btn.textContent = 'Gerando...';
+    cancelBtn.disabled = true;
 
     try{
-      const r = await fetch(`${API_BASE}/api/convites/criar`, {
+      const r = await fetch('/api/convites/criar', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ nome, email, telefone: tel, whatsapp: wa, obs })
       });
       const j = await r.json().catch(()=> ({}));
-      if(!j.ok){ throw new Error(j.error || 'Falha ao gerar convite'); }
+      if(!j.ok){
+        throw new Error(j.error || 'Falha ao gerar convite');
+      }
 
+      // aceita diferentes formatos de resposta:
       const token = j.token || (j.data && j.data.token) || '';
       const urlFromApi = j.url || j.short || j.link || '';
-      const finalUrl = urlFromApi || (token ? (`${SITE_ORIGIN}/cadastro/index.html?token=${encodeURIComponent(token)}`) : '');
+      const finalUrl = urlFromApi || (token ? (location.origin + '/cadastro/index.html?token=' + encodeURIComponent(token)) : '');
 
       if(!finalUrl) throw new Error('Convite criado, mas não recebi URL/token.');
 
+      lastInviteToken = token || '';
       inp.value = finalUrl;
       box.style.display = 'block';
+      if (statusEl) statusEl.textContent = lastInviteToken ? 'Status: ativo (aguardando uso)' : '';
+      cancelBtn.disabled = !lastInviteToken;
       btn.textContent = 'Gerar link + enviar';
     }catch(e){
       errEl.textContent = String(e.message || e);
@@ -263,7 +249,7 @@
     }
   });
 
-  // === Copiar link ===
+  // ==== Copiar link ====
   document.getElementById('inviteCopyBtn')?.addEventListener('click', async ()=>{
     const inp = document.getElementById('inviteShortLink');
     const val = inp.value;
@@ -276,6 +262,44 @@
       inp.select(); document.execCommand('copy');
       const btn = document.getElementById('inviteCopyBtn');
       const old = btn.textContent; btn.textContent = 'Copiado!'; setTimeout(()=>btn.textContent=old,1500);
+    }
+  });
+
+  // ==== Cancelar convite ====
+  document.getElementById('inviteCancelBtn')?.addEventListener('click', async ()=>{
+    const cancelBtn = document.getElementById('inviteCancelBtn');
+    const statusEl  = document.getElementById('inviteStatus');
+    const errEl     = document.getElementById('inviteError');
+
+    errEl.style.display='none'; errEl.textContent='';
+
+    if (!lastInviteToken) {
+      errEl.textContent = 'Não há token para cancelar.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    try{
+      cancelBtn.disabled = true;
+      const old = cancelBtn.textContent;
+      cancelBtn.textContent = 'Cancelando...';
+
+      const r = await fetch('/api/convites/cancelar', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ token: lastInviteToken })
+      });
+      const j = await r.json().catch(()=> ({}));
+      if(!j.ok) throw new Error(j.error || 'Falha ao cancelar convite');
+
+      if (statusEl) statusEl.textContent = 'Status: cancelado';
+      cancelBtn.textContent = 'Cancelado';
+      cancelBtn.disabled = true;
+    }catch(e){
+      errEl.textContent = String(e.message || e);
+      errEl.style.display = 'block';
+      cancelBtn.disabled = false;
+      cancelBtn.textContent = 'Cancelar convite';
     }
   });
 
