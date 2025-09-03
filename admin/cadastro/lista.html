@@ -50,6 +50,7 @@
       white-space:nowrap;background:#16a34a;
       border:1px solid #12813c;color:white;
       border-radius:8px;padding:8px 12px;cursor:pointer;
+      
     }
   </style>
 
@@ -262,6 +263,100 @@
     }
   })();
 </script>
+<script>
+  (() => {
+    // cria a caixinha se ainda não existir
+    function ensureBox() {
+      let box = document.getElementById('inviteLinkBox');
+      if (box) return box;
 
+      const card = document.querySelector('#kkrInviteModal .kkr-card');
+      if (!card) return null;
+
+      box = document.createElement('div');
+      box.id = 'inviteLinkBox';
+      box.style.cssText = 'display:none;margin-top:12px;background:#0b1220;border:1px solid #223047;border-radius:10px;padding:10px';
+
+      box.innerHTML = `
+      <label style="color:#9be28d;font-weight:600;margin-bottom:6px;display:block">Link gerado:</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="inviteShortLink" type="text" readonly value=""
+               style="flex:1;min-width:0;background:#0e1830;border:1px solid #2a3d60;border-radius:8px;padding:8px;color:#cfe7ff;font-size:.85rem">
+        <button id="inviteCopyBtn" type="button"
+                style="white-space:nowrap;background:#16a34a;border:1px solid #12813c;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer">
+          Copiar link
+        </button>
+      </div>
+    `;
+      // insere a caixinha logo DEPOIS da área de Observações
+      const obs = document.getElementById('invObs');
+      if (obs && obs.closest('.kkr-field')) {
+        obs.closest('.kkr-field').after(box);
+      } else {
+        card.appendChild(box);
+      }
+
+      // copiar para área de transferência
+      const btn = box.querySelector('#inviteCopyBtn');
+      btn.addEventListener('click', async () => {
+        const inp = box.querySelector('#inviteShortLink');
+        if (!inp.value) return;
+        try {
+          await navigator.clipboard.writeText(inp.value);
+          const old = btn.textContent; btn.textContent = 'Copiado!';
+          setTimeout(() => btn.textContent = old, 1200);
+        } catch {
+          inp.select(); document.execCommand('copy');
+          const old = btn.textContent; btn.textContent = 'Copiado!';
+          setTimeout(() => btn.textContent = old, 1200);
+        }
+      });
+
+      return box;
+    }
+
+    // acha a linha antiga "Link gerado: https://..."
+    function findLongLine() {
+      const card = document.querySelector('#kkrInviteModal .kkr-card');
+      if (!card) return null;
+      const nodes = card.querySelectorAll('p,div,span');
+      for (const el of nodes) {
+        if (el.id === 'inviteLinkBox' || el.closest('#inviteLinkBox')) continue;
+        const t = (el.textContent || '').trim();
+        if (t.startsWith('Link gerado:') && /https?:\/\/\S+/.test(t)) return el;
+      }
+      return null;
+    }
+
+    // move a URL para a caixinha e esconde a linha antiga
+    function adoptUrl() {
+      const line = findLongLine();
+      if (!line) return;
+      const m = line.textContent.match(/(https?:\/\/\S+)/);
+      if (!m) return;
+      const url = m[1];
+
+      const box = ensureBox();
+      if (!box) return;
+
+      box.querySelector('#inviteShortLink').value = url;
+      box.style.display = 'block';
+      line.style.display = 'none';
+    }
+
+    // observa mudanças no modal (o link é inserido de forma dinâmica)
+    const modal = document.getElementById('kkrInviteModal');
+    if (!modal) return;
+    const obs = new MutationObserver(adoptUrl);
+    obs.observe(modal, { childList:true, subtree:true, characterData:true });
+
+    // também tenta capturar logo após clicar no botão "Gerar link + enviar"
+    document.addEventListener('click', (ev) => {
+      if (ev.target && ev.target.closest('#invSend')) {
+        setTimeout(adoptUrl, 120);
+      }
+    }, true);
+  })();
+</script>
 </body>
 </html>
