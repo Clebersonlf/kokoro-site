@@ -132,6 +132,10 @@
       <p id="inviteStatus" class="muted" style="margin-top:6px;opacity:.8"></p>
     </div>
 
+  <!-- Botão para cancelar convite (auto-inserido) -->
+  <div class="kkr-actions" style="justify-content:flex-start; margin-top:8px;">
+    <button class="kkr-btn" id="invCancelInvite" type="button" style="display:none;background:#7f1d1d;border-color:#991b1b;color:#fff">Cancelar convite</button>
+  </div>
     <div class="kkr-actions">
       <button class="kkr-btn" id="invCancel" type="button">Cancelar</button>
       <button class="kkr-btn primary" id="invSend" type="button" disabled>Gerar link + enviar</button>
@@ -305,5 +309,6 @@
 
   document.addEventListener('DOMContentLoaded', loadTable);
 </script>
+  <script src="/shared/js/invite-cancel.js?v=1"></script>
 </body>
 </html>
