@@ -313,24 +313,3 @@
   <script src="/admin/_session_timer.js" defer></script>
 </body>
 </html>
-
-<script>
-async function carregarAlunos(){
-  const res = await fetch('/api/alunos');
-  const dados = await res.json();
-  const tbody = document.querySelector('tbody') || document.getElementById('tbody-alunos');
-  if (!tbody) return;
-  tbody.innerHTML = '';
-  for (const a of dados){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${a.nome || ''}</td>
-      <td>${a.email || ''}</td>
-      <td>${a.cpf || ''}</td>
-      <td>${(a.data_nasc || '').toString().slice(0,10)}</td>
-    `;
-    tbody.appendChild(tr);
-  }
-}
-document.addEventListener('DOMContentLoaded', carregarAlunos);
-</script>

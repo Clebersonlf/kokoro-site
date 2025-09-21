@@ -657,3 +657,17 @@ document.addEventListener("DOMContentLoaded", function() {
         }, true);
     }
 })();
+
+// ====== SALVAR VIA API (substitui o localStorage) ======
+async function salvarAlunoAPI(payload){
+  const res = await fetch('/api/alunos', {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if(!res.ok){ const t = await res.text(); throw new Error('Falha ao salvar: ' + t); }
+  return await res.json();
+}
+
+// Exemplo de uso (chame onde antes empilhava no localStorage):
+// await salvarAlunoAPI({ nome, email, cpf, data_nasc });

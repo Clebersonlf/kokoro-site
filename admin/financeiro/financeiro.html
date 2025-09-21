@@ -426,3 +426,39 @@
   <script src="/admin/_session_timer.js" defer></script>
 </body>
 </html>
+<script>
+// ---- API Financeiro ----
+async function listarLancamentos(){
+  const res = await fetch('/api/financeiro/lancamentos');
+  return await res.json();
+}
+
+async function salvarLancamento({ aluno_id, tipo, valor, descricao, data }){
+  const res = await fetch('/api/financeiro/lancamentos', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ aluno_id, tipo, valor, descricao, data })
+  });
+  if(!res.ok){ throw new Error(await res.text()); }
+  return await res.json();
+}
+
+// Exemplo de renderização:
+async function renderLancamentos(){
+  const itens = await listarLancamentos();
+  const tbody = document.querySelector('#tbody-financeiro') || document.querySelector('tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  for (const l of itens){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${(l.data || '').toString().slice(0,10)}</td>
+      <td>${l.tipo}</td>
+      <td>${l.valor}</td>
+      <td>${l.descricao || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+document.addEventListener('DOMContentLoaded', renderLancamentos);
+</script>
