@@ -77,18 +77,25 @@
     <!-- seus estilos globais (se existirem) -->
     <link rel="stylesheet" href="/admin/css/linkbtn.css">
     <link rel="stylesheet" href="/admin/css/btns.css">
+  <script src="/admin/_auth.js"></script>
 </head>
 <body>
 
 <!-- UM ÚNICO LINK estilizado como botão (sem <a> dentro de <a>) -->
 <nav class="topbar">
     <a class="btn-back" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a>
+  <a class="btn-back" href="/admin/financeiro/relatorios.html">📊 Relatórios</a>
 </nav>
 
 <div class="container">
     <h1>Sistema de Controle Financeiro</h1>
 
-    <div class="card resumo-financeiro">
+    
+    <div class="card" style="display:flex;justify-content:flex-start;gap:10px;align-items:center">
+      <a class="btn-back" href="/admin/financeiro/repasses.html">↗ Repasses (Colaboradores)</a>
+      <span class="hint">Gerar/Enviar recibos com cálculo automático de título por faixa.</span>
+    </div>
+<div class="card resumo-financeiro">
         <div class="resumo-card"><h3><span style="color:var(--cor-verde)">●</span> Total de Receitas</h3><p id="total-receitas" class="receita">R$ 0,00</p></div>
         <div class="resumo-card"><h3><span style="color:var(--cor-vermelho)">●</span> Total de Despesas</h3><p id="total-despesas" class="despesa">R$ 0,00</p></div>
         <div class="resumo-card"><h3><span style="color:var(--cor-azul)">●</span> Saldo Final</h3><p id="saldo-final" class="saldo">R$ 0,00</p></div>
@@ -415,5 +422,7 @@
         aplicarPlanoDefault();
     });
 </script>
+<script>document.addEventListener("DOMContentLoaded",function(){var b=document.getElementById("btn-logout");if(b){b.addEventListener("click",function(){window.adminLogout();});}});</script>
+  <script src="/admin/_session_timer.js" defer></script>
 </body>
 </html>

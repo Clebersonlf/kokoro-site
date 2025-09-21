@@ -1,0 +1,119 @@
+# Todos
+/api/_db.js
+/api/admin/auth.js
+/api/admin/check.js
+/api/admin/env.js
+/api/admin/login.js
+/api/admin/ping.js
+/api/admin/summary.js
+/api/admin/users.js
+/api/alunos.js
+/api/alunos/complete.js
+/api/alunos/delete.js
+/api/alunos/finalizar.js
+/api/alunos/get.js
+/api/alunos/index.js
+/api/alunos/list.js
+/api/alunos/update.js
+/api/auth/login.js
+/api/convites/buscar.js
+/api/convites/cancelar.js
+/api/convites/criar.js
+/api/convites/enviar-email.js
+/api/convites/ping.js
+/api/convites/status.js
+/api/convites/ultimos.js
+/api/convites/usar.js
+/api/convites/validar.js
+/api/db-check.js
+/api/dbtest/_dbflex.js
+/api/dbtest/finalizar.js
+/api/email/teste.js
+/api/env.js
+/api/financeiro/extrato-professor.js
+/api/financeiro/payouts.js
+/api/financeiro/preview.js
+/api/financeiro/recibo.js
+/api/financeiro/recibo_email.js
+/api/financeiro/recibo_sms.js
+/api/financeiro/recibo_whatsapp.js
+/api/financeiro/resumo.js
+/api/financeiro/saldo-professor.js
+/api/graduacoes/[id].js
+/api/graduacoes/[id]/index.js
+/api/graduacoes/index.js
+/api/graduacoes/next.js
+/api/health.js
+/api/invite.js
+/api/notify/send-template.js
+/api/notify/whatsapp.js
+/api/pagamentos/index.js
+/api/professores/index.js
+/api/rateio/index.js
+/api/send-welcome.js
+/api/upload-selfie.js
+
+# Foco em /api/financeiro
+— api/financeiro/extrato-professor.js
+8:export default async function handler(req, res) {
+9:  if (req.method !== 'GET') {
+39:    // PAGOS (payouts) ao professor
+
+— api/financeiro/payouts.js
+8:export default async function handler(req, res) {
+9:  if (req.method !== 'POST') {
+
+— api/financeiro/preview.js
+4:export default async function handler(req, res) {
+
+— api/financeiro/recibo.js
+86:  export default async function handler(req,res){
+87:  const method = req.method;
+88:  if (!['GET','POST'].includes(method)) {
+93:  const src = method === 'GET' ? Object.fromEntries(new URL(req.url, `https://${req.headers.host}`).searchParams) : (req.body||{});
+103:      SELECT id, nome, tipo, telefone, email, pix_chave, banco_nome, agencia, conta, favorecido_nome, doc_favorecido
+134:    if (method==='POST' && !isAdmin(req)) return res.status(401).json({ok:false,error:'unauthorized'});
+136:    return res.json({ ok:true, texto, professor: { id:p.id, nome:p.nome, email:p.email, telefone:p.telefone } });
+
+— api/financeiro/recibo_email.js
+67:  const resp = await fetch('https://api.resend.com/emails', {
+68:    method: 'POST',
+105:  export default async function handler(req,res){
+106:  if (req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({ok:false,error:'Method not allowed'});}
+109:  const { professor_id, valor_pago, metodo='PIX', pago_em, para_email, observacao } = req.body || {};
+110:  if (!professor_id || !para_email || !(Number(valor_pago)>0)) {
+111:    return res.status(400).json({ok:false,error:'professor_id, para_email e valor_pago são obrigatórios'});
+143:    const envio = await sendEmail({ to: para_email, subject: 'Recibo de Repasse', text: texto });
+144:    return res.json({ ok:true, email: envio, preview_texto: texto });
+
+— api/financeiro/recibo_sms.js
+17:    method: 'POST',
+29:export default async function handler(req,res){
+30:  if (req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({ok:false,error:'Method not allowed'});}
+33:  const { professor_id, valor_pago, metodo='PIX', pago_em, destino_sms, observacao } = req.body || {};
+34:  if (!professor_id || !destino_sms || !(Number(valor_pago)>0)) {
+35:    return res.status(400).json({ok:false,error:'professor_id, destino_sms e valor_pago são obrigatórios'});
+57:    const envio = await sendSMS({ to: destino_sms, body: texto });
+58:    return res.json({ ok:true, sms: envio, preview_texto: texto });
+
+— api/financeiro/recibo_whatsapp.js
+66:  const from = process.env.TWILIO_FROM_WA; // tipo: whatsapp:+1xxxxxxxxxx
+70:  params.append('To', `whatsapp:${to.replace(/^whatsapp:/,'')}`);
+75:    method: 'POST',
+110:  export default async function handler(req,res){
+111:  if (req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({ok:false,error:'Method not allowed'});}
+114:  const { professor_id, valor_pago, metodo='PIX', pago_em, destino_whatsapp, observacao } = req.body || {};
+115:  if (!professor_id || !destino_whatsapp || !(Number(valor_pago)>0)) {
+116:    return res.status(400).json({ok:false,error:'professor_id, destino_whatsapp e valor_pago são obrigatórios'});
+122:      SELECT id, nome, tipo, telefone, email, pix_chave, banco_nome, agencia, conta, favorecido_nome, doc_favorecido
+148:    const envio = await sendWhatsApp({ to: destino_whatsapp, body: texto });
+149:    return res.json({ ok:true, whatsapp: envio, preview_texto: texto });
+
+— api/financeiro/resumo.js
+3:export default async function handler(req,res){
+4:  if (req.method !== 'GET') {
+
+— api/financeiro/saldo-professor.js
+8:export default async function handler(req, res) {
+9:  if (req.method !== 'GET') {
+

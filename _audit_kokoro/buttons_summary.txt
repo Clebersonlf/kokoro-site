@@ -1,0 +1,2 @@
+# <button>, role='button', e Links com aparência de botão
+Arquivos inspecionados e possíveis rótulos em: _audit_kokoro/buttons_clean.txt

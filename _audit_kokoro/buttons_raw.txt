@@ -1,0 +1,229 @@
+/admin/cadastro/editar.html:48:  <nav><a class="btn" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a></nav>
+/admin/cadastro/editar.html:74:    <div class="actions">
+/admin/cadastro/editar.html:75:      <button type="submit">Salvar</button>
+/admin/cadastro/editar.html:76:      <button type="button" class="danger" id="btnDel">Excluir</button>
+/admin/cadastro/lista.html:84:  <a class="btn-back" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a>
+/admin/cadastro/lista.html:89:    <button id="btnInvite" class="btn-primary" type="button" aria-label="Enviar convite">✉️ Enviar convite</button>
+/admin/cadastro/lista.html:128:        <button id="inviteCopyBtn" type="button">Copiar link</button>
+/admin/cadastro/lista.html:129:        <button id="inviteCancelBtn" type="button" disabled>Cancelar convite</button>
+/admin/cadastro/lista.html:136:  <div class="kkr-actions" style="justify-content:flex-start; margin-top:8px;">
+/admin/cadastro/lista.html:137:    <button class="kkr-btn" id="invCancelInvite" type="button" style="display:none;background:#7f1d1d;border-color:#991b1b;color:#fff">Cancelar convite</button>
+/admin/cadastro/lista.html:139:    <div class="kkr-actions">
+/admin/cadastro/lista.html:140:      <button class="kkr-btn" id="invCancel" type="button">Cancelar</button>
+/admin/cadastro/lista.html:141:      <button class="kkr-btn primary" id="invSend" type="button" disabled>Gerar link + enviar</button>
+/admin/cadastro/lista.html:169:          <td><a class="btn" href="/admin/cadastro/editar.html?id=${encodeURIComponent(a.id)}">Editar</a></td>
+/admin/financeiro/financeiro.html:85:    <a class="btn-back" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a>
+/admin/financeiro/financeiro.html:152:                        <div class="form-actions">
+/admin/financeiro/financeiro.html:153:                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+/admin/financeiro/financeiro.html:154:                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+/admin/financeiro/financeiro.html:174:                        <div class="form-actions">
+/admin/financeiro/financeiro.html:175:                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+/admin/financeiro/financeiro.html:338:              <button class="acao acao-pagar" data-id="${l.id}" data-action="pagar">Pago</button>
+/admin/financeiro/financeiro.html:339:              <button class="acao acao-pendente" data-id="${l.id}" data-action="pendente">Pendente</button>
+/admin/financeiro/financeiro.html:340:              <button class="acao acao-editar" data-id="${l.id}" data-action="editar">Editar</button>
+/admin/financeiro/financeiro.html:341:              <button class="acao acao-excluir" data-id="${l.id}" data-action="excluir">Excluir</button>
+/admin/financeiro/financeiro.html:342:              ${isReceita && l.status==='pago' ? `<button class="acao acao-recibo" data-id="${l.id}" data-action="recibo">Recibo</button>`:''}
+/admin/graduacao/editar.html:17:    <a class="btn-back" href="/admin/cadastro/lista.html">← <a class="btn-nav" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a></a>
+/admin/graduacao/editar.html:18:    <a class="btn-back" href="/admin/index.html">← <a class="btn-nav" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a></a>
+/admin/graduacao/editar.html:34:    <button onclick="salvar()">Salvar alterações</button>
+/admin/graduacao/lista.html:42:    <a class="btn-back" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a>
+/admin/graduacao/lista.html:45:    <a class="btn-primary" href="/admin/graduacao/nova.html">+ Adicionar graduação</a>
+/admin/graduacao/lista.html:99:              <td class="actions">
+/admin/graduacao/nova.html:42:    <a class="btn" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a>
+/admin/graduacao/nova.html:43:    <a class="btn" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a>
+/admin/graduacao/nova.html:92:    <button onclick="salvar()">Salvar</button>
+/admin/index.html:30:    <nav><a class="btn-nav" href="/"><span class="chevron">←</span> Voltar ao site</a></nav>
+/admin/invite.html:40:    <div class="actions">
+/admin/invite.html:41:      <button id="btnEnviar">Gerar convite</button>
+/admin-status.html:22:    <button id="btnPing">Testar</button>
+/admin-status.html:29:    <button id="btnUsers">Listar</button>
+/admin.bak.2025-08-28-141303/cadastro/editar.html:42:    <div class="actions">
+/admin.bak.2025-08-28-141303/cadastro/editar.html:43:      <button type="submit">Salvar</button>
+/admin.bak.2025-08-28-141303/cadastro/editar.html:44:      <button type="button" class="danger" id="btnDel">Excluir</button>
+/admin.bak.2025-08-28-141303/cadastro/lista.html:42:      <td><a class="btn" href="/admin/cadastro/editar.html?id=${a.id}">Editar</a></td>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:132:                        <div class="form-actions">
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:133:                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:134:                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:154:                        <div class="form-actions">
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:155:                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:323:              <button class="acao acao-pagar" data-id="${l.id}" data-action="pagar">Pago</button>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:324:              <button class="acao acao-pendente" data-id="${l.id}" data-action="pendente">Pendente</button>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:325:              <button class="acao acao-editar" data-id="${l.id}" data-action="editar">Editar</button>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:326:              <button class="acao acao-excluir" data-id="${l.id}" data-action="excluir">Excluir</button>
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:327:              ${isReceita && l.status === 'pago' ? `<button class="acao acao-recibo" data-id="${l.id}" data-action="recibo">Recibo</button>` : ''}
+/admin.bak.2025-08-29-152441/cadastro/editar.html:21:  <nav><a class="btn btn--sm" href="/admin/cadastro/lista.html">← Voltar à Lista</a></nav>
+/admin.bak.2025-08-29-152441/cadastro/editar.html:42:    <div class="actions">
+/admin.bak.2025-08-29-152441/cadastro/editar.html:43:      <button type="submit">Salvar</button>
+/admin.bak.2025-08-29-152441/cadastro/editar.html:44:      <button type="button" class="danger" id="btnDel">Excluir</button>
+/admin.bak.2025-08-29-152441/cadastro/lista.html:23:  <a href="/admin/index.html" class="btn-back">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-152441/cadastro/lista.html:73:            <td><a class="btn" href="/admin/cadastro/editar.html?id=${encodeURIComponent(a.id)}">Editar</a></td>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:67:<nav class="topbar"><a class="btn-back" href="/admin/index.html">← Voltar ao Admin</a></nav>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:136:                        <div class="form-actions">
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:137:                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:138:                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:158:                        <div class="form-actions">
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:159:                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:327:              <button class="acao acao-pagar" data-id="${l.id}" data-action="pagar">Pago</button>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:328:              <button class="acao acao-pendente" data-id="${l.id}" data-action="pendente">Pendente</button>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:329:              <button class="acao acao-editar" data-id="${l.id}" data-action="editar">Editar</button>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:330:              <button class="acao acao-excluir" data-id="${l.id}" data-action="excluir">Excluir</button>
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:331:              ${isReceita && l.status === 'pago' ? `<button class="acao acao-recibo" data-id="${l.id}" data-action="recibo">Recibo</button>` : ''}
+/admin.bak.2025-08-29-152441/graduacao/editar.html:16:    <a class="btn btn-ghost" href="/admin/graduacao/lista.html">← Voltar à Lista</a>
+/admin.bak.2025-08-29-152441/graduacao/editar.html:17:    <a class="btn btn-ghost" href="/admin/index.html">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-152441/graduacao/editar.html:33:    <button onclick="salvar()">Salvar alterações</button>
+/admin.bak.2025-08-29-152441/graduacao/lista.html:16:    <a class="btn btn-ghost" href="/admin/index.html">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-152441/graduacao/lista.html:18:      <a class="btn btn-primary" href="/admin/graduacao/nova.html">+ Adicionar graduação</a>
+/admin.bak.2025-08-29-152441/graduacao/lista.html:51:        <td class="actions">
+/admin.bak.2025-08-29-152441/graduacao/nova.html:16:    <a class="btn btn-ghost" href="/admin/graduacao/lista.html">← Voltar à Lista</a>
+/admin.bak.2025-08-29-152441/graduacao/nova.html:17:    <a class="btn btn-ghost" href="/admin/index.html">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-152441/graduacao/nova.html:36:    <button onclick="salvar()">Salvar</button>
+/admin.bak.2025-08-29-153024/cadastro/editar.html:21:  <nav><a class="btn btn--sm" href="/admin/cadastro/lista.html">← Voltar à Lista</a></nav>
+/admin.bak.2025-08-29-153024/cadastro/editar.html:42:    <div class="actions">
+/admin.bak.2025-08-29-153024/cadastro/editar.html:43:      <button type="submit">Salvar</button>
+/admin.bak.2025-08-29-153024/cadastro/editar.html:44:      <button type="button" class="danger" id="btnDel">Excluir</button>
+/admin.bak.2025-08-29-153024/cadastro/lista.html:23:  <a href="/admin/index.html" class="btn-back">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-153024/cadastro/lista.html:73:            <td><a class="btn" href="/admin/cadastro/editar.html?id=${encodeURIComponent(a.id)}">Editar</a></td>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:67:<nav class="topbar"><a class="btn-back" href="/admin/index.html">← Voltar ao Admin</a></nav>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:136:                        <div class="form-actions">
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:137:                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:138:                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:158:                        <div class="form-actions">
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:159:                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:327:              <button class="acao acao-pagar" data-id="${l.id}" data-action="pagar">Pago</button>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:328:              <button class="acao acao-pendente" data-id="${l.id}" data-action="pendente">Pendente</button>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:329:              <button class="acao acao-editar" data-id="${l.id}" data-action="editar">Editar</button>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:330:              <button class="acao acao-excluir" data-id="${l.id}" data-action="excluir">Excluir</button>
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:331:              ${isReceita && l.status === 'pago' ? `<button class="acao acao-recibo" data-id="${l.id}" data-action="recibo">Recibo</button>` : ''}
+/admin.bak.2025-08-29-153024/graduacao/editar.html:16:    <a class="btn btn-ghost" href="/admin/graduacao/lista.html">← Voltar à Lista</a>
+/admin.bak.2025-08-29-153024/graduacao/editar.html:17:    <a class="btn btn-ghost" href="/admin/index.html">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-153024/graduacao/editar.html:33:    <button onclick="salvar()">Salvar alterações</button>
+/admin.bak.2025-08-29-153024/graduacao/lista.html:16:    <a class="btn btn-ghost" href="/admin/index.html">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-153024/graduacao/lista.html:18:      <a class="btn btn-primary" href="/admin/graduacao/nova.html">+ Adicionar graduação</a>
+/admin.bak.2025-08-29-153024/graduacao/lista.html:51:        <td class="actions">
+/admin.bak.2025-08-29-153024/graduacao/nova.html:16:    <a class="btn btn-ghost" href="/admin/graduacao/lista.html">← Voltar à Lista</a>
+/admin.bak.2025-08-29-153024/graduacao/nova.html:17:    <a class="btn btn-ghost" href="/admin/index.html">← Voltar ao Admin</a>
+/admin.bak.2025-08-29-153024/graduacao/nova.html:36:    <button onclick="salvar()">Salvar</button>
+/admin.bak.2025-08-30-012025/cadastro/editar.html:26:  <nav><a class="btn-back" href="/admin/cadastro/lista.html">← <a class="btn-nav" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a></a></nav>
+/admin.bak.2025-08-30-012025/cadastro/editar.html:47:    <div class="actions">
+/admin.bak.2025-08-30-012025/cadastro/editar.html:48:      <button type="submit">Salvar</button>
+/admin.bak.2025-08-30-012025/cadastro/editar.html:49:      <button type="button" class="danger" id="btnDel">Excluir</button>
+/admin.bak.2025-08-30-012025/cadastro/lista.html:27:  <a class="btn-back" href="/admin/index.html">← <a class="btn-nav" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a></a>
+/admin.bak.2025-08-30-012025/cadastro/lista.html:77:            <td><a class="btn" href="/admin/cadastro/editar.html?id=${encodeURIComponent(a.id)}">Editar</a></td>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:71:<nav class="topbar"><a class="btn-back" href="/admin/index.html">← <a class="btn-nav" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a></a></nav>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:140:                        <div class="form-actions">
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:141:                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:142:                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:162:                        <div class="form-actions">
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:163:                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:331:              <button class="acao acao-pagar" data-id="${l.id}" data-action="pagar">Pago</button>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:332:              <button class="acao acao-pendente" data-id="${l.id}" data-action="pendente">Pendente</button>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:333:              <button class="acao acao-editar" data-id="${l.id}" data-action="editar">Editar</button>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:334:              <button class="acao acao-excluir" data-id="${l.id}" data-action="excluir">Excluir</button>
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:335:              ${isReceita && l.status === 'pago' ? `<button class="acao acao-recibo" data-id="${l.id}" data-action="recibo">Recibo</button>` : ''}
+/admin.bak.2025-08-30-012025/graduacao/editar.html:17:    <a class="btn-back" href="/admin/cadastro/lista.html">← <a class="btn-nav" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a></a>
+/admin.bak.2025-08-30-012025/graduacao/editar.html:18:    <a class="btn-back" href="/admin/index.html">← <a class="btn-nav" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a></a>
+/admin.bak.2025-08-30-012025/graduacao/editar.html:34:    <button onclick="salvar()">Salvar alterações</button>
+/admin.bak.2025-08-30-012025/graduacao/lista.html:21:    <a class="btn-back" href="/admin/index.html">← <a class="btn-nav" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a></a>
+/admin.bak.2025-08-30-012025/graduacao/lista.html:23:      <a class="btn btn-primary" href="/admin/graduacao/nova.html"><a class="btn-nav" href="/admin/graduacao/nova.html" class="primary-btn">+ Adicionar graduação</a></a>
+/admin.bak.2025-08-30-012025/graduacao/lista.html:56:        <td class="actions">
+/admin.bak.2025-08-30-012025/graduacao/nova.html:21:    <a class="btn-back" href="/admin/cadastro/lista.html">← <a class="btn-nav" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a></a>
+/admin.bak.2025-08-30-012025/graduacao/nova.html:22:    <a class="btn-back" href="/admin/index.html">← <a class="btn-nav" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a></a>
+/admin.bak.2025-08-30-012025/graduacao/nova.html:71:    <button onclick="salvar()">Salvar</button>
+/admin.bak.2025-08-30-012025/index.html:30:    <nav><a class="btn-nav" href="/"><span class="chevron">←</span> Voltar ao site</a></nav>
+/assets/script.js:52:        pageElement.innerHTML = `<div class="search-page-header"><h1>${pageTitle}</h1><div class="search-bar"><input type="search" id="search-input-${pageId}" placeholder="Busque em ${pageTitle}..."><button id="search-button-${pageId}">Buscar</button></div></div><div class="search-page-content"><div class="word-cloud-container"><h3>Tópicos Populares</h3><div class="word-cloud" id="nuvem-${pageId}"></div></div><div class="results-container"><h3>Documentos</h3><div class="search-results"><p>Busque por um termo ou clique em um tópico para ver os resultados.</p></div></div></div>`;
+/cadastro/continuar.html:27:      <button type="submit">Finalizar Cadastro</button>
+/completar-cadastro.html:118:    <div class="actions">
+/completar-cadastro.html:119:      <button type="submit">Enviar</button>
+/index.html:53:        <button id="loginBtn" class="auth-btn" aria-label="Login">Login</button>
+/index.html:54:        <button id="registerBtn" class="auth-btn" aria-label="Cadastrar-se">Cadastre-se</button>
+/index.html:55:        <button id="btnLogout" class="auth-btn" aria-label="Sair">Sair</button>
+/index.html:62:    <div class="kanji" role="img" aria-label="Kanji Kokoro - Coração/Mente">心</div>
+/index.html:66:        <button class="close-button" id="motivacionalClose" aria-label="Fechar mensagem motivacional">×</button>
+/index.html:83:    <a href="https://instagram.com/seu_perfil" target="_blank" class="social-icon" aria-label="Siga-nos no Instagram"><i class="fab fa-instagram"></i></a>
+/index.html:84:    <a href="https://facebook.com/sua_pagina" target="_blank" class="social-icon" aria-label="Curta nossa página no Facebook"><i class="fab fa-facebook"></i></a>
+/index.html:85:    <a href="https://youtube.com/seu_canal" target="_blank" class="social-icon" aria-label="Inscreva-se no YouTube"><i class="fab fa-youtube"></i></a>
+/index.html:86:    <a href="https://wa.me/seu_numero" target="_blank" class="social-icon" aria-label="Contate-nos pelo WhatsApp"><i class="fab fa-whatsapp"></i></a>
+/index.html:92:        <span class="close" data-close="loginModal" aria-label="Fechar modal">&times;</span>
+/index.html:104:                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="password">
+/index.html:109:            <button type="submit" class="submit-btn">Entrar</button>
+/index.html:117:        <span class="close" data-close="registerModal" aria-label="Fechar modal">&times;</span>
+/index.html:133:                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="newPassword">
+/index.html:154:                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-target="newPassword2">
+/index.html:171:            <button type="submit" id="registerSubmit" class="submit-btn" disabled>Cadastrar</button>
+/js/script.js:23:                        <button id="loginBtn" class="auth-btn">
+/login.html:22:    <button type="submit">Login</button>
+/public/cadastro/index.html:20:    <button id="btnConcluir" disabled>Concluir cadastro</button>
+/public/invite-tokenonly.js:78:            `<button class="btn" id="btnCopy">Copiar link</button>`+
+/public/invite-tokenonly.js:79:            `<button class="btn" id="btnUndo" data-token="${token}">Desfazer convite</button>`+
+/shared/js/invite-rebuild.js:47:  btn.className='kkr-invite-btn btn-success';
+/shared/js/invite-rebuild.js:62:        <button class="close" type="button" aria-label="Fechar">×</button></header>
+/shared/js/invite-rebuild.js:77:      <div class="kkr-actions">
+/shared/js/invite-rebuild.js:78:        <button type="button" class="kkr-secondary" id="inviteCancel">Cancelar</button>
+/shared/js/invite-rebuild.js:79:        <button type="button" class="kkr-invite-btn btn-success" id="inviteSend">Gerar link + enviar</button>
+/shared/js/invite-widget.js:62:            <button class="kkr-btn secondary" id="btnCopy">Copiar</button>
+/shared/js/invite-widget.js:67:          <a class="kkr-btn primary" id="btnWhats" href="#" target="_blank" rel="noopener">WhatsApp</a>
+/shared/js/invite-widget.js:68:          <a class="kkr-btn secondary" id="btnTg" href="#" target="_blank" rel="noopener">Telegram</a>
+/shared/js/invite-widget.js:69:          <a class="kkr-btn secondary" id="btnMail" href="#" target="_blank" rel="noopener">E-mail</a>
+/shared/js/invite-widget.js:70:          <button class="kkr-btn" id="btnFechar">Fechar</button>
+/user/cadastro/cadastro.html:711:                        <div class="button-area">
+/user/cadastro/cadastro.html:712:                            <label for="fileInput" class="btn">Escolher Arquivo</label>
+/user/cadastro/cadastro.html:714:                            <button type="button" id="cameraButton" class="btn">Abrir Câmera</button>
+/user/cadastro/cadastro.html:715:                            <button type="button" id="captureButton" class="btn" style="display: none;">Tirar Foto</button>
+/user/cadastro/cadastro.html:716:                            <button type="button" id="photoSubmitButton" class="btn" style="display: none;">
+/user/cadastro/cadastro.html:719:                            <button type="button" id="retakeButton" class="btn" style="display: none;">Refazer Foto</button>
+/user/cadastro/cadastro.html:720:                            <button type="button" id="cropButton" class="btn" style="display: none;">Recortar Foto</button>
+/user/cadastro/cadastro.html:786:                    <button type="button" id="addEntidadeBtn" class="add-button">+ Adicionar Registro</button>
+/user/cadastro/cadastro.html:805:                        <button type="button" id="imcInfoIcon" class="tooltip-icon" aria-label="Mais informações sobre IMC">?</button>
+/user/cadastro/cadastro.html:923:            <button type="submit" class="submit-button">Cadastrar</button>
+/user/cadastro/cadastro.html:930:        <button type="button" class="remove-button" aria-label="Remover este registro">&times;</button>
+/user/cadastro/cadastro.html:984:        <button id="adminPasswordConfirm" class="modal-button">Confirmar</button>
+/user/cadastro/cadastro.html:985:        <button id="adminPasswordCancel" class="modal-button modal-button-secondary">Cancelar</button>
+/user/cadastro/cadastro.html:994:        <button id="successModalClose" class="modal-button">Fechar</button>
+/user/cadastro/cadastro.html:1002:        <button id="imcInfoClose" class="modal-button">Entendi</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:711:                        <div class="button-area">
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:712:                            <label for="fileInput" class="btn">Escolher Arquivo</label>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:714:                            <button type="button" id="cameraButton" class="btn">Abrir Câmera</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:715:                            <button type="button" id="captureButton" class="btn" style="display: none;">Tirar Foto</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:716:                            <button type="button" id="photoSubmitButton" class="btn" style="display: none;">
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:719:                            <button type="button" id="retakeButton" class="btn" style="display: none;">Refazer Foto</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:720:                            <button type="button" id="cropButton" class="btn" style="display: none;">Recortar Foto</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:786:                    <button type="button" id="addEntidadeBtn" class="add-button">+ Adicionar Registro</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:805:                        <button type="button" id="imcInfoIcon" class="tooltip-icon" aria-label="Mais informações sobre IMC">?</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:923:            <button type="submit" class="submit-button">Cadastrar</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:930:        <button type="button" class="remove-button" aria-label="Remover este registro">&times;</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:984:        <button id="adminPasswordConfirm" class="modal-button">Confirmar</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:985:        <button id="adminPasswordCancel" class="modal-button modal-button-secondary">Cancelar</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:994:        <button id="successModalClose" class="modal-button">Fechar</button>
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:1002:        <button id="imcInfoClose" class="modal-button">Entendi</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:711:                        <div class="button-area">
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:712:                            <label for="fileInput" class="btn">Escolher Arquivo</label>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:714:                            <button type="button" id="cameraButton" class="btn">Abrir Câmera</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:715:                            <button type="button" id="captureButton" class="btn" style="display: none;">Tirar Foto</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:716:                            <button type="button" id="photoSubmitButton" class="btn" style="display: none;">
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:719:                            <button type="button" id="retakeButton" class="btn" style="display: none;">Refazer Foto</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:720:                            <button type="button" id="cropButton" class="btn" style="display: none;">Recortar Foto</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:786:                    <button type="button" id="addEntidadeBtn" class="add-button">+ Adicionar Registro</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:805:                        <button type="button" id="imcInfoIcon" class="tooltip-icon" aria-label="Mais informações sobre IMC">?</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:923:            <button type="submit" class="submit-button">Cadastrar</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:930:        <button type="button" class="remove-button" aria-label="Remover este registro">&times;</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:984:        <button id="adminPasswordConfirm" class="modal-button">Confirmar</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:985:        <button id="adminPasswordCancel" class="modal-button modal-button-secondary">Cancelar</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:994:        <button id="successModalClose" class="modal-button">Fechar</button>
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:1002:        <button id="imcInfoClose" class="modal-button">Entendi</button>
+/user/pages/dashboard.html:36:                    <button id="btn-artes-marciais" class="module-button active">Artes Marciais</button>
+/user/pages/dashboard.html:37:                    <button id="btn-autodefesa" class="module-button">Autodefesa</button>
+/user/pages/dashboard.html:67:            <span class="close-button">×</span>
+/user/pages/dashboard.html:74:            <button id="btn-gerar-ia">✨ Gerar Imagem com IA</button>
+/user/pages/jiujitsu.html:88:                            <button class="watch-btn">
+/user/pages/jiujitsu.html:102:                            <button class="watch-btn">
+/user/pages/jiujitsu.html:130:                            <button type="submit" class="submit-btn">Verificar Resposta</button>
+/user/pages/mentoria.html:24:    <button onclick="alert('Sistema de pagamento será integrado futuramente.')">Solicitar Mentoria</button>
+/user/pages/preparacao.html:99:                <button>Nova Avaliação</button>
+/user/pages/preparacao.html:100:                <button>Carregar Avaliação Anterior</button>
+/user/pages/preparacao.html:104:                <button data-test="anamnese">Anamnese</button>
+/user/pages/preparacao.html:105:                <button data-test="postural">Avaliação Postural</button>
+/user/pages/preparacao.html:106:                <button data-test="antropometria">Antropometria</button>
+/user/pages/preparacao.html:107:                <button data-test="dobras">Dobras Cutâneas</button>
+/user/pages/preparacao.html:108:                <button data-test="cardio">Cardiorrespiratório</button>
+/user/pages/preparacao.html:109:                <button data-test="neuromotor">Neuromotor</button>
+/user/pages/preparacao.html:110:                <button data-test="nutricional">Avaliação Nutricional</button>

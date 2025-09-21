@@ -1,0 +1,147 @@
+/admin/cadastro/editar.html:74 :: /admin/cadastro/editar.html:74:    <div class="actions">
+/admin/cadastro/editar.html:75 :: Salvar
+/admin/cadastro/editar.html:76 :: Excluir
+/admin/cadastro/lista.html:89 :: ✉️ Enviar convite
+/admin/cadastro/lista.html:128 :: Copiar link
+/admin/cadastro/lista.html:129 :: Cancelar convite
+/admin/cadastro/lista.html:137 :: Cancelar convite
+/admin/cadastro/lista.html:139 :: /admin/cadastro/lista.html:139:    <div class="kkr-actions">
+/admin/cadastro/lista.html:140 :: Cancelar
+/admin/cadastro/lista.html:141 :: Gerar link + enviar
+/admin/financeiro/financeiro.html:153 :: Atualizar lista de alunos
+/admin/financeiro/financeiro.html:154 :: Adicionar Receita
+/admin/financeiro/financeiro.html:175 :: Adicionar Despesa
+/admin/financeiro/financeiro.html:338 :: Pago
+/admin/financeiro/financeiro.html:339 :: Pendente
+/admin/financeiro/financeiro.html:340 :: Editar
+/admin/financeiro/financeiro.html:341 :: Excluir
+/admin/financeiro/financeiro.html:342 :: Recibo
+/admin/graduacao/editar.html:34 :: Salvar alterações
+/admin/graduacao/lista.html:99 :: /admin/graduacao/lista.html:99:              <td class="actions">
+/admin/graduacao/nova.html:92 :: Salvar
+/admin/invite.html:40 :: /admin/invite.html:40:    <div class="actions">
+/admin/invite.html:41 :: Gerar convite
+/admin-status.html:22 :: Testar
+/admin-status.html:29 :: Listar
+/admin.bak.2025-08-28-141303/cadastro/editar.html:42 :: /admin.bak.2025-08-28-141303/cadastro/editar.html:42:    <div class="actions">
+/admin.bak.2025-08-28-141303/cadastro/editar.html:43 :: Salvar
+/admin.bak.2025-08-28-141303/cadastro/editar.html:44 :: Excluir
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:133 :: Atualizar lista de alunos
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:134 :: Adicionar Receita
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:155 :: Adicionar Despesa
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:323 :: Pago
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:324 :: Pendente
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:325 :: Editar
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:326 :: Excluir
+/admin.bak.2025-08-28-141303/financeiro/financeiro.html:327 :: Recibo
+/admin.bak.2025-08-29-152441/cadastro/editar.html:42 :: /admin.bak.2025-08-29-152441/cadastro/editar.html:42:    <div class="actions">
+/admin.bak.2025-08-29-152441/cadastro/editar.html:43 :: Salvar
+/admin.bak.2025-08-29-152441/cadastro/editar.html:44 :: Excluir
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:137 :: Atualizar lista de alunos
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:138 :: Adicionar Receita
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:159 :: Adicionar Despesa
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:327 :: Pago
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:328 :: Pendente
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:329 :: Editar
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:330 :: Excluir
+/admin.bak.2025-08-29-152441/financeiro/financeiro.html:331 :: Recibo
+/admin.bak.2025-08-29-152441/graduacao/editar.html:33 :: Salvar alterações
+/admin.bak.2025-08-29-152441/graduacao/nova.html:36 :: Salvar
+/admin.bak.2025-08-29-153024/cadastro/editar.html:42 :: /admin.bak.2025-08-29-153024/cadastro/editar.html:42:    <div class="actions">
+/admin.bak.2025-08-29-153024/cadastro/editar.html:43 :: Salvar
+/admin.bak.2025-08-29-153024/cadastro/editar.html:44 :: Excluir
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:137 :: Atualizar lista de alunos
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:138 :: Adicionar Receita
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:159 :: Adicionar Despesa
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:327 :: Pago
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:328 :: Pendente
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:329 :: Editar
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:330 :: Excluir
+/admin.bak.2025-08-29-153024/financeiro/financeiro.html:331 :: Recibo
+/admin.bak.2025-08-29-153024/graduacao/editar.html:33 :: Salvar alterações
+/admin.bak.2025-08-29-153024/graduacao/nova.html:36 :: Salvar
+/admin.bak.2025-08-30-012025/cadastro/editar.html:47 :: /admin.bak.2025-08-30-012025/cadastro/editar.html:47:    <div class="actions">
+/admin.bak.2025-08-30-012025/cadastro/editar.html:48 :: Salvar
+/admin.bak.2025-08-30-012025/cadastro/editar.html:49 :: Excluir
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:141 :: Atualizar lista de alunos
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:142 :: Adicionar Receita
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:163 :: Adicionar Despesa
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:331 :: Pago
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:332 :: Pendente
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:333 :: Editar
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:334 :: Excluir
+/admin.bak.2025-08-30-012025/financeiro/financeiro.html:335 :: Recibo
+/admin.bak.2025-08-30-012025/graduacao/editar.html:34 :: Salvar alterações
+/admin.bak.2025-08-30-012025/graduacao/nova.html:71 :: Salvar
+/assets/script.js:52 :: Buscar
+/cadastro/continuar.html:27 :: Finalizar Cadastro
+/completar-cadastro.html:118 :: /completar-cadastro.html:118:    <div class="actions">
+/completar-cadastro.html:119 :: Enviar
+/index.html:53 :: Login
+/index.html:54 :: Cadastre-se
+/index.html:55 :: Sair
+/index.html:66 :: ×
+/index.html:109 :: Entrar
+/index.html:171 :: Cadastrar
+/login.html:22 :: Login
+/public/cadastro/index.html:20 :: Concluir cadastro
+/public/invite-tokenonly.js:78 :: Copiar link
+/public/invite-tokenonly.js:79 :: Desfazer convite
+/shared/js/invite-rebuild.js:47 :: /shared/js/invite-rebuild.js:47:  btn.className='kkr-invite-btn btn-success';
+/shared/js/invite-rebuild.js:62 :: ×
+/shared/js/invite-rebuild.js:77 :: /shared/js/invite-rebuild.js:77:      <div class="kkr-actions">
+/shared/js/invite-rebuild.js:78 :: Cancelar
+/shared/js/invite-rebuild.js:79 :: Gerar link + enviar
+/shared/js/invite-widget.js:62 :: Copiar
+/shared/js/invite-widget.js:70 :: Fechar
+/user/cadastro/cadastro.html:714 :: Abrir Câmera
+/user/cadastro/cadastro.html:715 :: Tirar Foto
+/user/cadastro/cadastro.html:719 :: Refazer Foto
+/user/cadastro/cadastro.html:720 :: Recortar Foto
+/user/cadastro/cadastro.html:786 :: + Adicionar Registro
+/user/cadastro/cadastro.html:805 :: ?
+/user/cadastro/cadastro.html:923 :: Cadastrar
+/user/cadastro/cadastro.html:930 :: &times;
+/user/cadastro/cadastro.html:984 :: Confirmar
+/user/cadastro/cadastro.html:985 :: Cancelar
+/user/cadastro/cadastro.html:994 :: Fechar
+/user/cadastro/cadastro.html:1002 :: Entendi
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:714 :: Abrir Câmera
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:715 :: Tirar Foto
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:719 :: Refazer Foto
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:720 :: Recortar Foto
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:786 :: + Adicionar Registro
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:805 :: ?
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:923 :: Cadastrar
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:930 :: &times;
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:984 :: Confirmar
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:985 :: Cancelar
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:994 :: Fechar
+/user/cadastro.bak.2025-08-28-235442/cadastro.html:1002 :: Entendi
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:714 :: Abrir Câmera
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:715 :: Tirar Foto
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:719 :: Refazer Foto
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:720 :: Recortar Foto
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:786 :: + Adicionar Registro
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:805 :: ?
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:923 :: Cadastrar
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:930 :: &times;
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:984 :: Confirmar
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:985 :: Cancelar
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:994 :: Fechar
+/user/cadastro.bak.2025-08-29-000602/cadastro.html:1002 :: Entendi
+/user/pages/dashboard.html:36 :: Artes Marciais
+/user/pages/dashboard.html:37 :: Autodefesa
+/user/pages/dashboard.html:67 :: /user/pages/dashboard.html:67:            <span class="close-button">×</span>
+/user/pages/dashboard.html:74 :: ✨ Gerar Imagem com IA
+/user/pages/jiujitsu.html:130 :: Verificar Resposta
+/user/pages/mentoria.html:24 :: Solicitar Mentoria
+/user/pages/preparacao.html:99 :: Nova Avaliação
+/user/pages/preparacao.html:100 :: Carregar Avaliação Anterior
+/user/pages/preparacao.html:104 :: Anamnese
+/user/pages/preparacao.html:105 :: Avaliação Postural
+/user/pages/preparacao.html:106 :: Antropometria
+/user/pages/preparacao.html:107 :: Dobras Cutâneas
+/user/pages/preparacao.html:108 :: Cardiorrespiratório
+/user/pages/preparacao.html:109 :: Neuromotor
+/user/pages/preparacao.html:110 :: Avaliação Nutricional

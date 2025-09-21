@@ -1,0 +1,519 @@
+----- ./api/financeiro/recibo.js -----
+     1	import { getClient } from '../../lib/db.js';
+     2	function fmtDoc(s){
+     3	  const raw = String(s||'').replace(/\D/g,'');
+     4	  if (raw.length === 11) { // CPF
+     5	    return raw.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+     6	  }
+     7	  return s || '—';
+     8	}
+     9	
+    10	
+    11	function labelTitle(p, extra){
+    12	  const e = extra || {};
+    13	  const rawFaixa = String(e.faixa || (p && p.faixa) || '').toLowerCase();
+    14	  const tipoRaw  = String(e.tipo  || (p && p.tipo)  || '').toLowerCase();
+    15	  const titular  = !!(e.eh_titular || e.is_titular || (p && (p.eh_titular || p.is_titular)));
+    16	
+    17	  const deAcento = s => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    18	  const f = deAcento(rawFaixa);
+    19	
+    20	  // 0) Titular tem prioridade
+    21	  if (titular) return 'Prof. Titular';
+    22	
+    23	  // 1) Mapa por FAIXA
+    24	  // Azul / Roxa -> Mon.
+    25	  if (/azul/.test(f) || /roxa?/.test(f)) return 'Mon.';
+    26	
+    27	  // Marrom -> Instr.
+    28	  if (/marrom/.test(f)) return 'Instr.';
+    29	
+    30	  // Faixa Preta
+    31	  if (/preta/.test(f)) {
+    32	    // 3º–6º -> Prof.
+    33	    if (/\b(3|3o|3º|4|4o|4º|5|5o|5º|6|6o|6º)\b/.test(f)) return 'Prof.';
+    34	    // Lisa, 1º ou 2º -> Instr.
+    35	    if (/lisa/.test(f) || /\b(1|1o|1º|2|2o|2º)\b/.test(f)) return 'Instr.';
+    36	    return 'Instr.'; // sem grau: Instr.
+    37	  }
+    38	
+    39	  // 7º (Vermelha e Preta) -> Mestre
+    40	  if (/vermelha\s*e\s*preta/.test(f) || /\b7\b/.test(f)) return 'M.';
+    41	
+    42	  // 8º (Vermelha e Branca) -> Grande Mestre
+    43	  if (/vermelha\s*e\s*branca/.test(f) || /\b8\b/.test(f)) return 'G.M.';
+    44	
+    45	  // 9º (Vermelha) -> Grão-Mestre
+    46	  if (/vermelha/.test(f) && /\b9\b/.test(f)) return 'G.M.';
+    47	
+    48	  // 10º (Vermelha) -> Venerável Mestre
+    49	  if (/vermelha/.test(f) && /\b10\b/.test(f)) return 'V.M.';
+    50	
+    51	  // 2) Fallback por TIPO explícito (permite exceções)
+    52	  if (tipoRaw === 'monitor' || tipoRaw === 'monitora' || tipoRaw === 'monitor(a)') return 'Mon.';
+    53	  if (tipoRaw.startsWith('instrut')) return 'Instr.';
+    54	  if (tipoRaw.startsWith('prof'))    return 'Prof.';
+    55	
+    56	  // 3) Fallback geral
+    57	  return 'Colaborador';
+    58	}
+    59	
+    60	function fmt(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+    61	function isAdmin(req){const s=req.headers['x-admin-secret'];return s && s===process.env.ADMIN_SECRET;}
+    62	
+    63	function labelAux(p){
+    64	  const tipo   = String((p && p.tipo)   || '').toLowerCase();
+    65	  const faixa  = String((p && p.faixa)  || '').toLowerCase();
+    66	  const titular = !!(p && (p.eh_titular || p.is_titular));
+    67	
+    68	  // 1) Titular tem prioridade
+    69	  if (titular) return 'Prof. Titular';
+    70	
+    71	  // 2) Auxiliar com faixa
+    72	  if (tipo === 'auxiliar') {
+    73	    if (faixa === 'preta' || faixa === 'faixa preta' || faixa === 'black') {
+    74	      return 'Prof. Auxiliar';
+    75	    }
+    76	    if (faixa === 'marrom' || faixa === 'faixa marrom' || faixa === 'brown') {
+    77	      return 'Inst. Auxiliar';
+    78	    }
+    79	    // auxiliar sem faixa conhecida
+    80	    return 'Colaborador';
+    81	  }
+    82	
+    83	  // 3) Demais casos
+    84	  return 'Colaborador';
+    85	}
+    86	  export default async function handler(req,res){
+    87	  const method = req.method;
+    88	  if (!['GET','POST'].includes(method)) {
+    89	    res.setHeader('Allow','GET, POST'); return res.status(405).json({ok:false,error:'Method not allowed'});
+    90	  }
+    91	
+    92	  // Aceita GET (query) ou POST (JSON)
+    93	  const src = method === 'GET' ? Object.fromEntries(new URL(req.url, `https://${req.headers.host}`).searchParams) : (req.body||{});
+    94	  const { professor_id, valor_pago, metodo='PIX', pago_em, observacao } = src;
+    95	
+    96	  if (!professor_id || !(Number(valor_pago)>0)) {
+    97	    return res.status(400).json({ok:false,error:'professor_id e valor_pago são obrigatórios'});
+    98	  }
+    99	
+   100	  const client = getClient(); await client.connect();
+   101	  try {
+   102	    const { rows: profRows } = await client.sql`
+   103	      SELECT id, nome, tipo, telefone, email, pix_chave, banco_nome, agencia, conta, favorecido_nome, doc_favorecido
+   104	      FROM professores WHERE id=${professor_id} LIMIT 1;`;
+   105	    if (!profRows.length) return res.status(404).json({ok:false,error:'Professor não encontrado'});
+   106	    const p = profRows[0];
+   107	
+   108	    // PIX da escola (opcional, se tiver settings)
+   109	    let orgPix = '—';
+   110	    try {
+   111	      const { rows: set } = await client.sql`SELECT value FROM settings WHERE key='org_pix_chave' LIMIT 1;`;
+   112	      orgPix = set[0]?.value || orgPix;
+   113	    } catch(_) {}
+   114	
+   115	    const dt = pago_em ? new Date(pago_em) : new Date();
+   116	    const dataBR = dt.toLocaleString('pt-BR',{ timeZone: 'America/Sao_Paulo' });
+   117	
+   118	    const texto = [
+   119	      `*Recibo de Repasse*`,
+   120	      `Colaborador: ${ String((p.nome||"")).replace(/\s*\([^)]*\)\s*$/,"").trim() } (${labelTitle(p, src)})`,
+   121	      `Valor: ${fmt(valor_pago)}`,
+   122	      `Método: ${metodo}`,
+   123	      `Data/Hora: ${dataBR}`,
+   124	      `Obs.: ${ (observacao && observacao.trim()) || ('Repasse ' + new Date(pago_em || Date.now()).toLocaleDateString('pt-BR',{month:'2-digit',year:'numeric'})) }`,
+   125	      `—`,
+   126	      `PIX do colaborador: ${p.pix_chave || '—'}`,
+   127	      `Banco: ${p.banco_nome || '—'} / Ag.: ${p.agencia || '—'} / Conta: ${p.conta || '—'}`,
+   128	      `Favorecido: ${p.favorecido_nome || "—"} (${fmtDoc(p.doc_favorecido)})`,
+   129	      `—`,
+   130	      `Chave PIX - Planck Kokoro: ${orgPix}`
+   131	    ].filter(Boolean).join('\n');
+   132	
+   133	    // Se for POST e tiver admin, devolve o texto igual — (o envio automático é por outros endpoints)
+   134	    if (method==='POST' && !isAdmin(req)) return res.status(401).json({ok:false,error:'unauthorized'});
+   135	
+   136	    return res.json({ ok:true, texto, professor: { id:p.id, nome:p.nome, email:p.email, telefone:p.telefone } });
+   137	  } catch(e){
+   138	    return res.status(500).json({ok:false,error:String(e)});
+   139	  } finally {
+   140	    await client.end();
+   141	  }
+   142	}
+
+----- ./api/financeiro/recibo_email.js -----
+     1	import { getClient } from '../../lib/db.js';
+     2	function fmtDoc(s){
+     3	  const raw = String(s||'').replace(/\D/g,'');
+     4	  if (raw.length === 11) { // CPF
+     5	    return raw.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+     6	  }
+     7	  return s || '—';
+     8	}
+     9	
+    10	
+    11	function labelTitle(p, extra){
+    12	  const e = extra || {};
+    13	  const rawFaixa = String(e.faixa || (p && p.faixa) || '').toLowerCase();
+    14	  const tipoRaw  = String(e.tipo  || (p && p.tipo)  || '').toLowerCase();
+    15	  const titular  = !!(e.eh_titular || e.is_titular || (p && (p.eh_titular || p.is_titular)));
+    16	
+    17	  const deAcento = s => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    18	  const f = deAcento(rawFaixa);
+    19	
+    20	  // 0) Titular tem prioridade
+    21	  if (titular) return 'Prof. Titular';
+    22	
+    23	  // 1) Mapa por FAIXA
+    24	  // Azul / Roxa -> Mon.
+    25	  if (/azul/.test(f) || /roxa?/.test(f)) return 'Mon.';
+    26	
+    27	  // Marrom -> Instr.
+    28	  if (/marrom/.test(f)) return 'Instr.';
+    29	
+    30	  // Faixa Preta
+    31	  if (/preta/.test(f)) {
+    32	    // 3º–6º -> Prof.
+    33	    if (/\b(3|3o|3º|4|4o|4º|5|5o|5º|6|6o|6º)\b/.test(f)) return 'Prof.';
+    34	    // Lisa, 1º ou 2º -> Instr.
+    35	    if (/lisa/.test(f) || /\b(1|1o|1º|2|2o|2º)\b/.test(f)) return 'Instr.';
+    36	    return 'Instr.'; // sem grau: Instr.
+    37	  }
+    38	
+    39	  // 7º (Vermelha e Preta) -> Mestre
+    40	  if (/vermelha\s*e\s*preta/.test(f) || /\b7\b/.test(f)) return 'M.';
+    41	
+    42	  // 8º (Vermelha e Branca) -> Grande Mestre
+    43	  if (/vermelha\s*e\s*branca/.test(f) || /\b8\b/.test(f)) return 'G.M.';
+    44	
+    45	  // 9º (Vermelha) -> Grão-Mestre
+    46	  if (/vermelha/.test(f) && /\b9\b/.test(f)) return 'G.M.';
+    47	
+    48	  // 10º (Vermelha) -> Venerável Mestre
+    49	  if (/vermelha/.test(f) && /\b10\b/.test(f)) return 'V.M.';
+    50	
+    51	  // 2) Fallback por TIPO explícito (permite exceções)
+    52	  if (tipoRaw === 'monitor' || tipoRaw === 'monitora' || tipoRaw === 'monitor(a)') return 'Mon.';
+    53	  if (tipoRaw.startsWith('instrut')) return 'Instr.';
+    54	  if (tipoRaw.startsWith('prof'))    return 'Prof.';
+    55	
+    56	  // 3) Fallback geral
+    57	  return 'Colaborador';
+    58	}
+    59	
+    60	function isAdmin(req){const s=req.headers['x-admin-secret'];return s && s===process.env.ADMIN_SECRET;}
+    61	function fmt(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+    62	
+    63	async function sendEmail({to, subject, text}) {
+    64	  const apiKey = process.env.RESEND_API_KEY;
+    65	  if(!apiKey) throw new Error('RESEND_API_KEY não configurado');
+    66	
+    67	  const resp = await fetch('https://api.resend.com/emails', {
+    68	    method: 'POST',
+    69	    headers: {'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+    70	    body: JSON.stringify({
+    71	      from: process.env.RESEND_FROM || 'Planck Kokoro <no-reply@planckkokoro.com>',
+    72	      to: [to],
+    73	      subject,
+    74	      text
+    75	    })
+    76	  });
+    77	  const data = await resp.json();
+    78	  if(!resp.ok) throw new Error(`Resend erro: ${resp.status} ${JSON.stringify(data)}`);
+    79	  return data;
+    80	}
+    81	
+    82	function labelAux(p){
+    83	  const tipo   = String((p && p.tipo)   || '').toLowerCase();
+    84	  const faixa  = String((p && p.faixa)  || '').toLowerCase();
+    85	  const titular = !!(p && (p.eh_titular || p.is_titular));
+    86	
+    87	  // 1) Titular tem prioridade
+    88	  if (titular) return 'Prof. Titular';
+    89	
+    90	  // 2) Auxiliar com faixa
+    91	  if (tipo === 'auxiliar') {
+    92	    if (faixa === 'preta' || faixa === 'faixa preta' || faixa === 'black') {
+    93	      return 'Prof. Auxiliar';
+    94	    }
+    95	    if (faixa === 'marrom' || faixa === 'faixa marrom' || faixa === 'brown') {
+    96	      return 'Inst. Auxiliar';
+    97	    }
+    98	    // auxiliar sem faixa conhecida
+    99	    return 'Colaborador';
+   100	  }
+   101	
+   102	  // 3) Demais casos
+   103	  return 'Colaborador';
+   104	}
+   105	  export default async function handler(req,res){
+   106	  if (req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({ok:false,error:'Method not allowed'});}
+   107	  if (!isAdmin(req)) return res.status(401).json({ok:false,error:'unauthorized'});
+   108	
+   109	  const { professor_id, valor_pago, metodo='PIX', pago_em, para_email, observacao } = req.body || {};
+   110	  if (!professor_id || !para_email || !(Number(valor_pago)>0)) {
+   111	    return res.status(400).json({ok:false,error:'professor_id, para_email e valor_pago são obrigatórios'});
+   112	  }
+   113	
+   114	  const client = getClient(); await client.connect();
+   115	  try {
+   116	    const { rows: profRows } = await client.sql`
+   117	      SELECT id, nome, tipo, pix_chave, banco_nome, agencia, conta, favorecido_nome, doc_favorecido
+   118	      FROM professores WHERE id=${professor_id} LIMIT 1;`;
+   119	    if (!profRows.length) return res.status(404).json({ok:false,error:'Professor não encontrado'});
+   120	    const p = profRows[0];
+   121	
+   122	    let orgPix = '—';
+   123	    try { const { rows: s } = await client.sql`SELECT value FROM settings WHERE key='org_pix_chave' LIMIT 1;`; orgPix = s[0]?.value || orgPix; } catch(_){}
+   124	
+   125	    const dt = pago_em ? new Date(pago_em) : new Date();
+   126	    const dataBR = dt.toLocaleString('pt-BR',{ timeZone: 'America/Sao_Paulo' });
+   127	
+   128	    const texto = [
+   129	      `Recibo de Repasse`,
+   130	      `Colaborador: ${ String((p.nome||"")).replace(/\s*\([^)]*\)\s*$/,"").trim() } (${labelTitle(p, (req.body || {}))})`,
+   131	      `Valor: ${fmt(valor_pago)}`,
+   132	      `Método: ${metodo}`,
+   133	      `Data/Hora: ${dataBR}`,
+   134	      `Obs.: ${ (observacao && observacao.trim()) || ('Repasse ' + new Date(pago_em || Date.now()).toLocaleDateString('pt-BR',{month:'2-digit',year:'numeric'})) }`,
+   135	      `—`,
+   136	      `PIX do colaborador: ${p.pix_chave || '—'}`,
+   137	      `Banco: ${p.banco_nome || '—'} / Ag.: ${p.agencia || '—'} / Conta: ${p.conta || '—'}`,
+   138	      `Favorecido: ${p.favorecido_nome || "—"} (${fmtDoc(p.doc_favorecido)})`,
+   139	      `—`,
+   140	      `Chave PIX - Planck Kokoro: ${orgPix}`
+   141	    ].filter(Boolean).join('\n');
+   142	
+   143	    const envio = await sendEmail({ to: para_email, subject: 'Recibo de Repasse', text: texto });
+   144	    return res.json({ ok:true, email: envio, preview_texto: texto });
+   145	  } catch(e){
+   146	    return res.status(500).json({ok:false,error:String(e)});
+   147	  } finally {
+   148	    await client.end();
+   149	  }
+   150	}
+
+----- ./api/financeiro/recibo_sms.js -----
+     1	import { getClient } from '../../lib/db.js';
+     2	function isAdmin(req){const s=req.headers['x-admin-secret'];return s && s===process.env.ADMIN_SECRET;}
+     3	function fmt(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+     4	
+     5	async function sendSMS({to, body}) {
+     6	  const sid = process.env.TWILIO_ACCOUNT_SID;
+     7	  const token = process.env.TWILIO_AUTH_TOKEN;
+     8	  const from = process.env.TWILIO_FROM_SMS; // ex: +1xxxxxxxxxx
+     9	  if(!sid || !token || !from) throw new Error('TWILIO_* não configurado');
+    10	
+    11	  const params = new URLSearchParams();
+    12	  params.append('To', to);
+    13	  params.append('From', from);
+    14	  params.append('Body', body);
+    15	
+    16	  const resp = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+    17	    method: 'POST',
+    18	    headers: {
+    19	      'Authorization': 'Basic ' + Buffer.from(`${sid}:${token}`).toString('base64'),
+    20	      'Content-Type': 'application/x-www-form-urlencoded'
+    21	    },
+    22	    body: params
+    23	  });
+    24	  const data = await resp.json();
+    25	  if(!resp.ok) throw new Error(`Twilio erro: ${resp.status} ${JSON.stringify(data)}`);
+    26	  return data;
+    27	}
+    28	
+    29	export default async function handler(req,res){
+    30	  if (req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({ok:false,error:'Method not allowed'});}
+    31	  if (!isAdmin(req)) return res.status(401).json({ok:false,error:'unauthorized'});
+    32	
+    33	  const { professor_id, valor_pago, metodo='PIX', pago_em, destino_sms, observacao } = req.body || {};
+    34	  if (!professor_id || !destino_sms || !(Number(valor_pago)>0)) {
+    35	    return res.status(400).json({ok:false,error:'professor_id, destino_sms e valor_pago são obrigatórios'});
+    36	  }
+    37	
+    38	  const client = getClient(); await client.connect();
+    39	  try {
+    40	    const { rows: profRows } = await client.sql`
+    41	      SELECT id, nome, tipo, pix_chave
+    42	      FROM professores WHERE id=${professor_id} LIMIT 1;`;
+    43	    if (!profRows.length) return res.status(404).json({ok:false,error:'Professor não encontrado'});
+    44	    const p = profRows[0];
+    45	
+    46	    const dt = pago_em ? new Date(pago_em) : new Date();
+    47	    const dataBR = dt.toLocaleString('pt-BR',{ timeZone: 'America/Sao_Paulo' });
+    48	
+    49	    const texto = [
+    50	      `Recibo de Repasse`,
+    51	      `Colab: ${p.nome} (${p.tipo})`,
+    52	      `Valor: ${fmt(valor_pago)} | Método: ${metodo}`,
+    53	      `Quando: ${dataBR}`,
+    54	      observacao ? `Obs.: ${observacao}` : null
+    55	    ].filter(Boolean).join(' | ');
+    56	
+    57	    const envio = await sendSMS({ to: destino_sms, body: texto });
+    58	    return res.json({ ok:true, sms: envio, preview_texto: texto });
+    59	  } catch(e){
+    60	    return res.status(500).json({ok:false,error:String(e)});
+    61	  } finally {
+    62	    await client.end();
+    63	  }
+    64	}
+
+----- ./api/financeiro/recibo_whatsapp.js -----
+     1	import { getClient } from '../../lib/db.js';
+     2	function fmtDoc(s){
+     3	  const raw = String(s||'').replace(/\D/g,'');
+     4	  if (raw.length === 11) { // CPF
+     5	    return raw.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+     6	  }
+     7	  return s || '—';
+     8	}
+     9	
+    10	
+    11	function labelTitle(p, extra){
+    12	  const e = extra || {};
+    13	  const rawFaixa = String(e.faixa || (p && p.faixa) || '').toLowerCase();
+    14	  const tipoRaw  = String(e.tipo  || (p && p.tipo)  || '').toLowerCase();
+    15	  const titular  = !!(e.eh_titular || e.is_titular || (p && (p.eh_titular || p.is_titular)));
+    16	
+    17	  const deAcento = s => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    18	  const f = deAcento(rawFaixa);
+    19	
+    20	  // 0) Titular tem prioridade
+    21	  if (titular) return 'Prof. Titular';
+    22	
+    23	  // 1) Mapa por FAIXA
+    24	  // Azul / Roxa -> Mon.
+    25	  if (/azul/.test(f) || /roxa?/.test(f)) return 'Mon.';
+    26	
+    27	  // Marrom -> Instr.
+    28	  if (/marrom/.test(f)) return 'Instr.';
+    29	
+    30	  // Faixa Preta
+    31	  if (/preta/.test(f)) {
+    32	    // 3º–6º -> Prof.
+    33	    if (/\b(3|3o|3º|4|4o|4º|5|5o|5º|6|6o|6º)\b/.test(f)) return 'Prof.';
+    34	    // Lisa, 1º ou 2º -> Instr.
+    35	    if (/lisa/.test(f) || /\b(1|1o|1º|2|2o|2º)\b/.test(f)) return 'Instr.';
+    36	    return 'Instr.'; // sem grau: Instr.
+    37	  }
+    38	
+    39	  // 7º (Vermelha e Preta) -> Mestre
+    40	  if (/vermelha\s*e\s*preta/.test(f) || /\b7\b/.test(f)) return 'M.';
+    41	
+    42	  // 8º (Vermelha e Branca) -> Grande Mestre
+    43	  if (/vermelha\s*e\s*branca/.test(f) || /\b8\b/.test(f)) return 'G.M.';
+    44	
+    45	  // 9º (Vermelha) -> Grão-Mestre
+    46	  if (/vermelha/.test(f) && /\b9\b/.test(f)) return 'G.M.';
+    47	
+    48	  // 10º (Vermelha) -> Venerável Mestre
+    49	  if (/vermelha/.test(f) && /\b10\b/.test(f)) return 'V.M.';
+    50	
+    51	  // 2) Fallback por TIPO explícito (permite exceções)
+    52	  if (tipoRaw === 'monitor' || tipoRaw === 'monitora' || tipoRaw === 'monitor(a)') return 'Mon.';
+    53	  if (tipoRaw.startsWith('instrut')) return 'Instr.';
+    54	  if (tipoRaw.startsWith('prof'))    return 'Prof.';
+    55	
+    56	  // 3) Fallback geral
+    57	  return 'Colaborador';
+    58	}
+    59	
+    60	function isAdmin(req){const s=req.headers['x-admin-secret'];return s && s===process.env.ADMIN_SECRET;}
+    61	function fmt(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+    62	
+    63	async function sendWhatsApp({to, body}) {
+    64	  const sid = process.env.TWILIO_ACCOUNT_SID;
+    65	  const token = process.env.TWILIO_AUTH_TOKEN;
+    66	  const from = process.env.TWILIO_FROM_WA; // tipo: whatsapp:+1xxxxxxxxxx
+    67	  if(!sid || !token || !from) throw new Error('TWILIO_* não configurado');
+    68	
+    69	  const params = new URLSearchParams();
+    70	  params.append('To', `whatsapp:${to.replace(/^whatsapp:/,'')}`);
+    71	  params.append('From', from);
+    72	  params.append('Body', body);
+    73	
+    74	  const resp = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+    75	    method: 'POST',
+    76	    headers: {
+    77	      'Authorization': 'Basic ' + Buffer.from(`${sid}:${token}`).toString('base64'),
+    78	      'Content-Type': 'application/x-www-form-urlencoded'
+    79	    },
+    80	    body: params
+    81	  });
+    82	  const data = await resp.json();
+    83	  if(!resp.ok) throw new Error(`Twilio erro: ${resp.status} ${JSON.stringify(data)}`);
+    84	  return data;
+    85	}
+    86	
+    87	function labelAux(p){
+    88	  const tipo   = String((p && p.tipo)   || '').toLowerCase();
+    89	  const faixa  = String((p && p.faixa)  || '').toLowerCase();
+    90	  const titular = !!(p && (p.eh_titular || p.is_titular));
+    91	
+    92	  // 1) Titular tem prioridade
+    93	  if (titular) return 'Prof. Titular';
+    94	
+    95	  // 2) Auxiliar com faixa
+    96	  if (tipo === 'auxiliar') {
+    97	    if (faixa === 'preta' || faixa === 'faixa preta' || faixa === 'black') {
+    98	      return 'Prof. Auxiliar';
+    99	    }
+   100	    if (faixa === 'marrom' || faixa === 'faixa marrom' || faixa === 'brown') {
+   101	      return 'Inst. Auxiliar';
+   102	    }
+   103	    // auxiliar sem faixa conhecida
+   104	    return 'Colaborador';
+   105	  }
+   106	
+   107	  // 3) Demais casos
+   108	  return 'Colaborador';
+   109	}
+   110	  export default async function handler(req,res){
+   111	  if (req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({ok:false,error:'Method not allowed'});}
+   112	  if (!isAdmin(req)) return res.status(401).json({ok:false,error:'unauthorized'});
+   113	
+   114	  const { professor_id, valor_pago, metodo='PIX', pago_em, destino_whatsapp, observacao } = req.body || {};
+   115	  if (!professor_id || !destino_whatsapp || !(Number(valor_pago)>0)) {
+   116	    return res.status(400).json({ok:false,error:'professor_id, destino_whatsapp e valor_pago são obrigatórios'});
+   117	  }
+   118	
+   119	  const client = getClient(); await client.connect();
+   120	  try {
+   121	    const { rows: profRows } = await client.sql`
+   122	      SELECT id, nome, tipo, telefone, email, pix_chave, banco_nome, agencia, conta, favorecido_nome, doc_favorecido
+   123	      FROM professores WHERE id=${professor_id} LIMIT 1;`;
+   124	    if (!profRows.length) return res.status(404).json({ok:false,error:'Professor não encontrado'});
+   125	    const p = profRows[0];
+   126	
+   127	    let orgPix = '—';
+   128	    try { const { rows: s } = await client.sql`SELECT value FROM settings WHERE key='org_pix_chave' LIMIT 1;`; orgPix = s[0]?.value || orgPix; } catch(_){}
+   129	
+   130	    const dt = pago_em ? new Date(pago_em) : new Date();
+   131	    const dataBR = dt.toLocaleString('pt-BR',{ timeZone: 'America/Sao_Paulo' });
+   132	
+   133	    const texto = [
+   134	      `*Recibo de Repasse*`,
+   135	      `Colaborador: ${ String((p.nome||"")).replace(/\s*\([^)]*\)\s*$/,"").trim() } (${labelTitle(p, (req.body || {}))})`,
+   136	      `Valor: ${fmt(valor_pago)}`,
+   137	      `Método: ${metodo}`,
+   138	      `Data/Hora: ${dataBR}`,
+   139	      `Obs.: ${ (observacao && observacao.trim()) || ('Repasse ' + new Date(pago_em || Date.now()).toLocaleDateString('pt-BR',{month:'2-digit',year:'numeric'})) }`,
+   140	      `—`,
+   141	      `PIX do colaborador: ${p.pix_chave || '—'}`,
+   142	      `Banco: ${p.banco_nome || '—'} / Ag.: ${p.agencia || '—'} / Conta: ${p.conta || '—'}`,
+   143	      `Favorecido: ${p.favorecido_nome || "—"} (${fmtDoc(p.doc_favorecido)})`,
+   144	      `—`,
+   145	      `Chave PIX - Planck Kokoro: ${orgPix}`
+   146	    ].filter(Boolean).join('\n');
+   147	
+   148	    const envio = await sendWhatsApp({ to: destino_whatsapp, body: texto });
+   149	    return res.json({ ok:true, whatsapp: envio, preview_texto: texto });
+   150	  } catch(e){
+   151	    return res.status(500).json({ok:false,error:String(e)});
+   152	  } finally {
+   153	    await client.end();
+   154	  }
+   155	}
+

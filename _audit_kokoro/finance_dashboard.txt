@@ -1,0 +1,1378 @@
+----- ./admin/financeiro/financeiro.html -----
+     1	<!DOCTYPE html>
+     2	<html lang="pt-br">
+     3	<head>
+     4	    <meta charset="UTF-8" />
+     5	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     6	    <title>KOKORO 心 - Controle Financeiro (v2)</title>
+     7	
+     8	    <style>
+     9	        :root {
+    10	            --cor-fundo:#121212; --cor-container:#1a1a1a; --cor-borda:#333;
+    11	            --cor-texto-principal:#f0f0f0; --cor-texto-secundario:#bdc3c7;
+    12	            --cor-azul:#3498db; --cor-verde:#2ecc71; --cor-vermelho:#e74c3c;
+    13	            --cor-amarelo:#f1c40f; --cor-roxo:#8e44ad; --cor-laranja:#f39c12;
+    14	        }
+    15	        *{box-sizing:border-box}
+    16	        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,'Noto Sans','Apple Color Emoji','Segoe UI Emoji'; background:var(--cor-fundo); color:var(--cor-texto-principal); margin:0; padding:24px;}
+    17	        .container{max-width:1600px;margin:auto}
+    18	        h1,h2{text-align:center;color:var(--cor-azul)}
+    19	        .card{background:linear-gradient(180deg,#1a1a1a,#171717); border:1px solid var(--cor-borda); padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 8px 24px rgba(0,0,0,.25)}
+    20	        .card h2{margin:0 0 12px; border-bottom:1px solid #255b7a; padding-bottom:10px}
+    21	        .form-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; align-items:end}
+    22	        .form-group{display:flex; flex-direction:column; gap:6px}
+    23	        label{font-size:13px; color:var(--cor-texto-secundario)}
+    24	        input,select{padding:11px 12px; background:#2a2a2a; color:#f0f0f0; border:1px solid #484848; border-radius:8px; font-size:15px; outline:none}
+    25	        input:focus,select:focus{border-color:var(--cor-azul); box-shadow:0 0 0 3px rgba(52,152,219,.15)}
+    26	        .form-actions{grid-column:1 / -1; display:flex; justify-content:flex-end; gap:10px}
+    27	        .btn{border:none; padding:12px 18px; border-radius:10px; font-size:15px; cursor:pointer; transition:.18s ease}
+    28	        .btn:active{transform:translateY(1px)}
+    29	        .btn-principal{background:var(--cor-azul); color:#fff}
+    30	        .btn-principal:hover{filter:brightness(1.05)}
+    31	        .btn-ghost{background:transparent; color:#dcdcdc; border:1px solid #555}
+    32	        .resumo-financeiro{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; text-align:center}
+    33	        .resumo-card h3{margin:0; color:var(--cor-texto-secundario); font-size:.95rem}
+    34	        .resumo-card p{font-size:1.8rem; font-weight:700; margin:6px 0 0}
+    35	        .colunas-horizontais{display:flex; gap:20px; align-items:stretch}
+    36	        .coluna{flex:1}
+    37	
+    38	        table{width:100%; border-collapse:collapse; margin-top:10px}
+    39	        th,td{padding:12px 14px; text-align:left; border-bottom:1px solid var(--cor-borda); vertical-align:middle}
+    40	        thead th{background-color:#22313f; color:#fff; font-weight:600; letter-spacing:.3px}
+    41	        tbody tr:hover{background-color:#232a34}
+    42	        .valor{text-align:right; white-space:nowrap}
+    43	        .receita{color:var(--cor-verde)}
+    44	        .despesa{color:var(--cor-vermelho)}
+    45	
+    46	        .badge{display:inline-flex; align-items:center; gap:6px; font-weight:700; border-radius:999px; padding:6px 10px; font-size:12px; text-transform:uppercase; letter-spacing:.3px}
+    47	        .badge.pago{background:rgba(46,204,113,.12); color:#b8f5d2; border:1px solid rgba(46,204,113,.35)}
+    48	        .badge.pendente{background:rgba(241,196,15,.12); color:#f6e7a4; border:1px solid rgba(241,196,15,.35)}
+    49	
+    50	        .acoes{display:flex; gap:8px; flex-wrap:wrap}
+    51	        .acao{border:none; padding:8px 10px; border-radius:8px; font-size:12px; color:#fff; cursor:pointer}
+    52	        .acao-pagar{background:var(--cor-verde)}
+    53	        .acao-pendente{background:var(--cor-amarelo); color:#222}
+    54	        .acao-editar{background:var(--cor-laranja)}
+    55	        .acao-excluir{background:var(--cor-vermelho)}
+    56	        .acao-recibo{background:var(--cor-roxo)}
+    57	
+    58	        .dias-wrapper{display:flex; gap:8px; flex-wrap:wrap}
+    59	        .dias-wrapper label{display:inline-flex; align-items:center; gap:6px; background:#232323; border:1px solid #3a3a3a; padding:6px 10px; border-radius:999px; color:#e5e5e5; cursor:pointer}
+    60	        .dias-wrapper input{accent-color:var(--cor-azul)}
+    61	
+    62	        .hint{font-size:12px; color:#9aa7b5}
+    63	        .linkado{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:#9ad1ff}
+    64	
+    65	        /* Topbar: botão voltar */
+    66	        .topbar{display:flex; justify-content:flex-end; padding:10px 16px}
+    67	        .btn-back{
+    68	            display:inline-flex; align-items:center; gap:.5rem;
+    69	            padding:.55rem .9rem; background:#111827;
+    70	            border:1px solid #334155; border-radius:.6rem;
+    71	            color:#bfdbfe; text-decoration:none; line-height:1
+    72	        }
+    73	        .btn-back:hover{border-color:#3b82f6; color:#dbeafe}
+    74	        .chevron{font-weight:600}
+    75	    </style>
+    76	
+    77	    <!-- seus estilos globais (se existirem) -->
+    78	    <link rel="stylesheet" href="/admin/css/linkbtn.css">
+    79	    <link rel="stylesheet" href="/admin/css/btns.css">
+    80	</head>
+    81	<body>
+    82	
+    83	<!-- UM ÚNICO LINK estilizado como botão (sem <a> dentro de <a>) -->
+    84	<nav class="topbar">
+    85	    <a class="btn-back" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a>
+    86	</nav>
+    87	
+    88	<div class="container">
+    89	    <h1>Sistema de Controle Financeiro</h1>
+    90	
+    91	    <div class="card resumo-financeiro">
+    92	        <div class="resumo-card"><h3><span style="color:var(--cor-verde)">●</span> Total de Receitas</h3><p id="total-receitas" class="receita">R$ 0,00</p></div>
+    93	        <div class="resumo-card"><h3><span style="color:var(--cor-vermelho)">●</span> Total de Despesas</h3><p id="total-despesas" class="despesa">R$ 0,00</p></div>
+    94	        <div class="resumo-card"><h3><span style="color:var(--cor-azul)">●</span> Saldo Final</h3><p id="saldo-final" class="saldo">R$ 0,00</p></div>
+    95	    </div>
+    96	
+    97	    <div class="colunas-horizontais">
+    98	        <div class="coluna">
+    99	            <div class="card">
+   100	                <h2>Adicionar Receita</h2>
+   101	                <div class="hint linkado" id="status-integracao">🔗 Não conectado ao cadastro ainda</div>
+   102	                <form id="form-receita">
+   103	                    <div class="form-grid">
+   104	                        <div class="form-group">
+   105	                            <label for="aluno-select">Aluno (do cadastro)</label>
+   106	                            <select id="aluno-select"><option value="">— selecionar —</option></select>
+   107	                        </div>
+   108	                        <div class="form-group">
+   109	                            <label for="aluno">Nome (ou sobrescrever)</label>
+   110	                            <input type="text" id="aluno" placeholder="Digite manualmente se quiser" />
+   111	                        </div>
+   112	                        <div class="form-group">
+   113	                            <label for="cpf">CPF</label>
+   114	                            <input type="text" id="cpf" placeholder="Auto do cadastro, editável" />
+   115	                        </div>
+   116	                        <div class="form-group">
+   117	                            <label for="item-receita">Item</label>
+   118	                            <select id="item-receita" required>
+   119	                                <option value="Mensalidade">Mensalidade</option>
+   120	                                <option value="Kimono">Kimono</option>
+   121	                                <option value="Faixa">Faixa</option>
+   122	                                <option value="Vestuário">Vestuário</option>
+   123	                                <option value="Exame de Faixa">Exame de Faixa</option>
+   124	                                <option value="Certificado">Certificado</option>
+   125	                                <option value="Outro">Outro</option>
+   126	                            </select>
+   127	                        </div>
+   128	                        <div class="form-group">
+   129	                            <label for="plano-2025">Plano (2025)</label>
+   130	                            <select id="plano-2025">
+   131	                                <option value="livre">Livre (valor manual)</option>
+   132	                                <option value="2x">2025 • 2x/semana • R$ 100,00</option>
+   133	                                <option value="3x">2025 • 3x/semana • R$ 150,00</option>
+   134	                            </select>
+   135	                        </div>
+   136	                        <div class="form-group">
+   137	                            <label>Dias da semana</label>
+   138	                            <div class="dias-wrapper" id="dias-wrapper">
+   139	                                <label><input type="checkbox" value="Seg">Seg</label>
+   140	                                <label><input type="checkbox" value="Ter">Ter</label>
+   141	                                <label><input type="checkbox" value="Qua">Qua</label>
+   142	                                <label><input type="checkbox" value="Qui">Qui</label>
+   143	                                <label><input type="checkbox" value="Sex">Sex</label>
+   144	                                <label><input type="checkbox" value="Sáb">Sáb</label>
+   145	                            </div>
+   146	                            <div class="hint">Marque os dias da turma do aluno (opcional, fica salvo no lançamento).</div>
+   147	                        </div>
+   148	                        <div class="form-group">
+   149	                            <label for="valor-receita">Valor (R$)</label>
+   150	                            <input type="number" id="valor-receita" step="0.01" required />
+   151	                        </div>
+   152	                        <div class="form-actions">
+   153	                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+   154	                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+   155	                        </div>
+   156	                    </div>
+   157	                </form>
+   158	            </div>
+   159	        </div>
+   160	
+   161	        <div class="coluna">
+   162	            <div class="card">
+   163	                <h2>Adicionar Despesa</h2>
+   164	                <form id="form-despesa">
+   165	                    <div class="form-grid">
+   166	                        <div class="form-group" style="grid-column:1 / -1">
+   167	                            <label for="descricao-despesa">Descrição</label>
+   168	                            <input type="text" id="descricao-despesa" required />
+   169	                        </div>
+   170	                        <div class="form-group">
+   171	                            <label for="valor-despesa">Valor (R$)</label>
+   172	                            <input type="number" id="valor-despesa" step="0.01" required />
+   173	                        </div>
+   174	                        <div class="form-actions">
+   175	                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+   176	                        </div>
+   177	                    </div>
+   178	                </form>
+   179	            </div>
+   180	        </div>
+   181	    </div>
+   182	
+   183	    <div class="card">
+   184	        <h2>Histórico de Lançamentos</h2>
+   185	        <table>
+   186	            <thead>
+   187	            <tr>
+   188	                <th>Data</th>
+   189	                <th>Descrição / Aluno</th>
+   190	                <th>Plano / Dias</th>
+   191	                <th class="valor">Valor</th>
+   192	                <th>Status</th>
+   193	                <th>Ações</th>
+   194	            </tr>
+   195	            </thead>
+   196	            <tbody id="tabela-lancamentos"></tbody>
+   197	        </table>
+   198	    </div>
+   199	</div>
+   200	
+   201	<script>
+   202	    document.addEventListener('DOMContentLoaded', () => {
+   203	        const STORAGE_FIN = 'kokoro_financeiro_v2';
+   204	        const STORAGE_ALUNOS_KEYS = ['kokoro_alunos','alunos','kokoro_cadastro_alunos'];
+   205	
+   206	        const formReceita = document.getElementById('form-receita');
+   207	        const formDespesa = document.getElementById('form-despesa');
+   208	        const tabelaLancamentos = document.getElementById('tabela-lancamentos');
+   209	
+   210	        const totalReceitasEl = document.getElementById('total-receitas');
+   211	        const totalDespesasEl = document.getElementById('total-despesas');
+   212	        const saldoFinalEl = document.getElementById('saldo-final');
+   213	
+   214	        const alunoSelect = document.getElementById('aluno-select');
+   215	        const alunoInput = document.getElementById('aluno');
+   216	        const cpfInput = document.getElementById('cpf');
+   217	        const planoSelect = document.getElementById('plano-2025');
+   218	        const valorReceitaInput = document.getElementById('valor-receita');
+   219	        const diasWrapper = document.getElementById('dias-wrapper');
+   220	        const itemReceita = document.getElementById('item-receita');
+   221	        const btnAtualizarAlunos = document.getElementById('btn-atualizar-alunos');
+   222	        const statusIntegracao = document.getElementById('status-integracao');
+   223	
+   224	        let lancamentos = loadLancamentos();
+   225	        let nextId = lancamentos.reduce((max,l)=>Math.max(max,l.id),0)+1;
+   226	
+   227	        // ---- Integração com cadastro via localStorage ----
+   228	        function loadAlunos(){
+   229	            for(const key of STORAGE_ALUNOS_KEYS){
+   230	                try{
+   231	                    const raw = localStorage.getItem(key);
+   232	                    if(!raw) continue;
+   233	                    const data = JSON.parse(raw);
+   234	                    if(Array.isArray(data) && data.length){
+   235	                        return { key, alunos: normalizeAlunos(data) };
+   236	                    }
+   237	                }catch(e){}
+   238	            }
+   239	            return { key:null, alunos:[] };
+   240	        }
+
+----- ./admin.bak.2025-08-28-141303/financeiro/financeiro.html -----
+     1	<!DOCTYPE html>
+     2	<html lang="pt-br">
+     3	<head>
+     4	    <meta charset="UTF-8" />
+     5	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     6	    <title>KOKORO 心 - Controle Financeiro (v2)</title>
+     7	    <style>
+     8	        :root {
+     9	            --cor-fundo: #121212; --cor-container: #1a1a1a; --cor-borda: #333;
+    10	            --cor-texto-principal: #f0f0f0; --cor-texto-secundario: #bdc3c7;
+    11	            --cor-azul: #3498db; --cor-verde: #2ecc71; --cor-vermelho: #e74c3c;
+    12	            --cor-amarelo: #f1c40f; --cor-roxo: #8e44ad; --cor-laranja: #f39c12;
+    13	        }
+    14	        * { box-sizing: border-box; }
+    15	        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; background: var(--cor-fundo); color: var(--cor-texto-principal); margin: 0; padding: 24px; }
+    16	        .container { max-width: 1600px; margin: auto; }
+    17	        h1, h2 { text-align: center; color: var(--cor-azul); }
+    18	        .card { background: linear-gradient(180deg,#1a1a1a,#171717); border: 1px solid var(--cor-borda); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    19	        .card h2 { margin: 0 0 12px; border-bottom: 1px solid #255b7a; padding-bottom: 10px; }
+    20	        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: end; }
+    21	        .form-group { display: flex; flex-direction: column; gap: 6px; }
+    22	        label { font-size: 13px; color: var(--cor-texto-secundario); }
+    23	        input, select { padding: 11px 12px; background: #2a2a2a; color: #f0f0f0; border: 1px solid #484848; border-radius: 8px; font-size: 15px; outline: none; }
+    24	        input:focus, select:focus { border-color: var(--cor-azul); box-shadow: 0 0 0 3px rgba(52,152,219,.15); }
+    25	        .form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
+    26	        .btn { border: none; padding: 12px 18px; border-radius: 10px; font-size: 15px; cursor: pointer; transition: .18s ease; }
+    27	        .btn:active { transform: translateY(1px); }
+    28	        .btn-principal { background: var(--cor-azul); color: #fff; }
+    29	        .btn-principal:hover { filter: brightness(1.05); }
+    30	        .btn-ghost { background: transparent; color: #dcdcdc; border: 1px solid #555; }
+    31	        .resumo-financeiro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center; }
+    32	        .resumo-card h3 { margin: 0; color: var(--cor-texto-secundario); font-size: 0.95rem; }
+    33	        .resumo-card p { font-size: 1.8rem; font-weight: 700; margin: 6px 0 0; }
+    34	        .colunas-horizontais { display: flex; gap: 20px; align-items: stretch; }
+    35	        .coluna { flex: 1; }
+    36	
+    37	        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    38	        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--cor-borda); vertical-align: middle; }
+    39	        thead th { background-color: #22313f; color: #fff; font-weight: 600; letter-spacing: .3px; }
+    40	        tbody tr:hover { background-color: #232a34; }
+    41	        .valor { text-align: right; white-space: nowrap; }
+    42	        .receita { color: var(--cor-verde); }
+    43	        .despesa { color: var(--cor-vermelho); }
+    44	
+    45	        .badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-radius: 999px; padding: 6px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+    46	        .badge.pago { background: rgba(46,204,113,.12); color: #b8f5d2; border: 1px solid rgba(46,204,113,.35); }
+    47	        .badge.pendente { background: rgba(241,196,15,.12); color: #f6e7a4; border: 1px solid rgba(241,196,15,.35); }
+    48	
+    49	        .acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+    50	        .acao { border: none; padding: 8px 10px; border-radius: 8px; font-size: 12px; color: #fff; cursor: pointer; }
+    51	        .acao-pagar { background: var(--cor-verde); }
+    52	        .acao-pendente { background: var(--cor-amarelo); color: #222; }
+    53	        .acao-editar { background: var(--cor-laranja); }
+    54	        .acao-excluir { background: var(--cor-vermelho); }
+    55	        .acao-recibo { background: var(--cor-roxo); }
+    56	
+    57	        .dias-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
+    58	        .dias-wrapper label { display: inline-flex; align-items: center; gap: 6px; background: #232323; border: 1px solid #3a3a3a; padding: 6px 10px; border-radius: 999px; color: #e5e5e5; cursor: pointer; }
+    59	        .dias-wrapper input { accent-color: var(--cor-azul); }
+    60	
+    61	        .hint { font-size: 12px; color: #9aa7b5; }
+    62	        .linkado { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #9ad1ff; }
+    63	    </style>
+    64	</head>
+    65	<body>
+    66	<div class="container">
+    67	    <h1>Sistema de Controle Financeiro</h1>
+    68	
+    69	    <div class="card resumo-financeiro">
+    70	        <div class="resumo-card"><h3><span style="color: var(--cor-verde);">●</span> Total de Receitas</h3><p id="total-receitas" class="receita">R$ 0,00</p></div>
+    71	        <div class="resumo-card"><h3><span style="color: var(--cor-vermelho);">●</span> Total de Despesas</h3><p id="total-despesas" class="despesa">R$ 0,00</p></div>
+    72	        <div class="resumo-card"><h3><span style="color: var(--cor-azul);">●</span> Saldo Final</h3><p id="saldo-final" class="saldo">R$ 0,00</p></div>
+    73	    </div>
+    74	
+    75	    <div class="colunas-horizontais">
+    76	        <div class="coluna">
+    77	            <div class="card">
+    78	                <h2>Adicionar Receita</h2>
+    79	                <div class="hint linkado" id="status-integracao">🔗 Não conectado ao cadastro ainda</div>
+    80	                <form id="form-receita">
+    81	                    <div class="form-grid">
+    82	                        <div class="form-group">
+    83	                            <label for="aluno-select">Aluno (do cadastro)</label>
+    84	                            <select id="aluno-select">
+    85	                                <option value="">— selecionar —</option>
+    86	                            </select>
+    87	                        </div>
+    88	                        <div class="form-group">
+    89	                            <label for="aluno">Nome (ou sobrescrever)</label>
+    90	                            <input type="text" id="aluno" placeholder="Digite manualmente se quiser" />
+    91	                        </div>
+    92	                        <div class="form-group">
+    93	                            <label for="cpf">CPF</label>
+    94	                            <input type="text" id="cpf" placeholder="Auto do cadastro, editável" />
+    95	                        </div>
+    96	                        <div class="form-group">
+    97	                            <label for="item-receita">Item</label>
+    98	                            <select id="item-receita" required>
+    99	                                <option value="Mensalidade">Mensalidade</option>
+   100	                                <option value="Kimono">Kimono</option>
+   101	                                <option value="Faixa">Faixa</option>
+   102	                                <option value="Vestuário">Vestuário</option>
+   103	                                <option value="Exame de Faixa">Exame de Faixa</option>
+   104	                                <option value="Certificado">Certificado</option>
+   105	                                <option value="Outro">Outro</option>
+   106	                            </select>
+   107	                        </div>
+   108	                        <div class="form-group">
+   109	                            <label for="plano-2025">Plano (2025)</label>
+   110	                            <select id="plano-2025">
+   111	                                <option value="livre">Livre (valor manual)</option>
+   112	                                <option value="2x">2025 • 2x/semana • R$ 100,00</option>
+   113	                                <option value="3x">2025 • 3x/semana • R$ 150,00</option>
+   114	                            </select>
+   115	                        </div>
+   116	                        <div class="form-group">
+   117	                            <label>Dias da semana</label>
+   118	                            <div class="dias-wrapper" id="dias-wrapper">
+   119	                                <label><input type="checkbox" value="Seg">Seg</label>
+   120	                                <label><input type="checkbox" value="Ter">Ter</label>
+   121	                                <label><input type="checkbox" value="Qua">Qua</label>
+   122	                                <label><input type="checkbox" value="Qui">Qui</label>
+   123	                                <label><input type="checkbox" value="Sex">Sex</label>
+   124	                                <label><input type="checkbox" value="Sáb">Sáb</label>
+   125	                            </div>
+   126	                            <div class="hint">Marque os dias da turma do aluno (opcional, fica salvo no lançamento).</div>
+   127	                        </div>
+   128	                        <div class="form-group">
+   129	                            <label for="valor-receita">Valor (R$)</label>
+   130	                            <input type="number" id="valor-receita" step="0.01" required />
+   131	                        </div>
+   132	                        <div class="form-actions">
+   133	                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+   134	                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+   135	                        </div>
+   136	                    </div>
+   137	                </form>
+   138	            </div>
+   139	        </div>
+   140	
+   141	        <div class="coluna">
+   142	            <div class="card">
+   143	                <h2>Adicionar Despesa</h2>
+   144	                <form id="form-despesa">
+   145	                    <div class="form-grid">
+   146	                        <div class="form-group" style="grid-column: 1 / -1;">
+   147	                            <label for="descricao-despesa">Descrição</label>
+   148	                            <input type="text" id="descricao-despesa" required />
+   149	                        </div>
+   150	                        <div class="form-group">
+   151	                            <label for="valor-despesa">Valor (R$)</label>
+   152	                            <input type="number" id="valor-despesa" step="0.01" required />
+   153	                        </div>
+   154	                        <div class="form-actions">
+   155	                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+   156	                        </div>
+   157	                    </div>
+   158	                </form>
+   159	            </div>
+   160	        </div>
+   161	    </div>
+   162	
+   163	    <div class="card">
+   164	        <h2>Histórico de Lançamentos</h2>
+   165	        <table>
+   166	            <thead>
+   167	            <tr>
+   168	                <th>Data</th>
+   169	                <th>Descrição / Aluno</th>
+   170	                <th>Plano / Dias</th>
+   171	                <th class="valor">Valor</th>
+   172	                <th>Status</th>
+   173	                <th>Ações</th>
+   174	            </tr>
+   175	            </thead>
+   176	            <tbody id="tabela-lancamentos"></tbody>
+   177	        </table>
+   178	    </div>
+   179	</div>
+   180	
+   181	<script>
+   182	    document.addEventListener('DOMContentLoaded', () => {
+   183	        const STORAGE_FIN = 'kokoro_financeiro_v2';
+   184	        const STORAGE_ALUNOS_KEYS = ['kokoro_alunos', 'alunos', 'kokoro_cadastro_alunos']; // tentativas
+   185	
+   186	        const formReceita = document.getElementById('form-receita');
+   187	        const formDespesa = document.getElementById('form-despesa');
+   188	        const tabelaLancamentos = document.getElementById('tabela-lancamentos');
+   189	
+   190	        const totalReceitasEl = document.getElementById('total-receitas');
+   191	        const totalDespesasEl = document.getElementById('total-despesas');
+   192	        const saldoFinalEl = document.getElementById('saldo-final');
+   193	
+   194	        const alunoSelect = document.getElementById('aluno-select');
+   195	        const alunoInput = document.getElementById('aluno');
+   196	        const cpfInput = document.getElementById('cpf');
+   197	        const planoSelect = document.getElementById('plano-2025');
+   198	        const valorReceitaInput = document.getElementById('valor-receita');
+   199	        const diasWrapper = document.getElementById('dias-wrapper');
+   200	        const itemReceita = document.getElementById('item-receita');
+   201	        const btnAtualizarAlunos = document.getElementById('btn-atualizar-alunos');
+   202	        const statusIntegracao = document.getElementById('status-integracao');
+   203	
+   204	        let lancamentos = loadLancamentos();
+   205	        let nextId = lancamentos.reduce((max, l) => Math.max(max, l.id), 0) + 1;
+   206	
+   207	        // ————— Integração básica com a página de cadastro (via localStorage) —————
+   208	        function loadAlunos() {
+   209	            for (const key of STORAGE_ALUNOS_KEYS) {
+   210	                try {
+   211	                    const raw = localStorage.getItem(key);
+   212	                    if (!raw) continue;
+   213	                    const data = JSON.parse(raw);
+   214	                    if (Array.isArray(data) && data.length) {
+   215	                        return { key, alunos: normalizeAlunos(data) };
+   216	                    }
+   217	                } catch (e) { /* ignore */ }
+   218	            }
+   219	            return { key: null, alunos: [] };
+   220	        }
+   221	        function normalizeAlunos(arr) {
+   222	            return arr.map(a => ({
+   223	                nome: a.nome || a.name || a.aluno || '',
+   224	                cpf: a.cpf || a.CPF || a.documento || '',
+   225	                id: a.id || a.matricula || a.registro || null,
+   226	            })).filter(a => a.nome);
+   227	        }
+   228	        function populateAlunoSelect() {
+   229	            const { key, alunos } = loadAlunos();
+   230	            alunoSelect.innerHTML = '<option value="">— selecionar —</option>';
+   231	            if (alunos.length) {
+   232	                statusIntegracao.textContent = `🔗 Conectado ao cadastro via localStorage (chave: ${key})`;
+   233	                alunos.sort((a,b)=> a.nome.localeCompare(b.nome, 'pt-BR'));
+   234	                alunos.forEach((a, idx) => {
+   235	                    const opt = document.createElement('option');
+   236	                    opt.value = idx; // índice na lista atual
+   237	                    opt.textContent = a.nome + (a.cpf ? ` • ${a.cpf}` : '');
+   238	                    opt.dataset.cpf = a.cpf || '';
+   239	                    alunoSelect.appendChild(opt);
+   240	                });
+
+----- ./admin.bak.2025-08-29-152441/financeiro/financeiro.html -----
+     1	<!DOCTYPE html>
+     2	<html lang="pt-br">
+     3	<head>
+     4	    <meta charset="UTF-8" />
+     5	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     6	    <title>KOKORO 心 - Controle Financeiro (v2)</title>
+     7	    <style>
+     8	        :root {
+     9	            --cor-fundo: #121212; --cor-container: #1a1a1a; --cor-borda: #333;
+    10	            --cor-texto-principal: #f0f0f0; --cor-texto-secundario: #bdc3c7;
+    11	            --cor-azul: #3498db; --cor-verde: #2ecc71; --cor-vermelho: #e74c3c;
+    12	            --cor-amarelo: #f1c40f; --cor-roxo: #8e44ad; --cor-laranja: #f39c12;
+    13	        }
+    14	        * { box-sizing: border-box; }
+    15	        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; background: var(--cor-fundo); color: var(--cor-texto-principal); margin: 0; padding: 24px; }
+    16	        .container { max-width: 1600px; margin: auto; }
+    17	        h1, h2 { text-align: center; color: var(--cor-azul); }
+    18	        .card { background: linear-gradient(180deg,#1a1a1a,#171717); border: 1px solid var(--cor-borda); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    19	        .card h2 { margin: 0 0 12px; border-bottom: 1px solid #255b7a; padding-bottom: 10px; }
+    20	        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: end; }
+    21	        .form-group { display: flex; flex-direction: column; gap: 6px; }
+    22	        label { font-size: 13px; color: var(--cor-texto-secundario); }
+    23	        input, select { padding: 11px 12px; background: #2a2a2a; color: #f0f0f0; border: 1px solid #484848; border-radius: 8px; font-size: 15px; outline: none; }
+    24	        input:focus, select:focus { border-color: var(--cor-azul); box-shadow: 0 0 0 3px rgba(52,152,219,.15); }
+    25	        .form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
+    26	        .btn { border: none; padding: 12px 18px; border-radius: 10px; font-size: 15px; cursor: pointer; transition: .18s ease; }
+    27	        .btn:active { transform: translateY(1px); }
+    28	        .btn-principal { background: var(--cor-azul); color: #fff; }
+    29	        .btn-principal:hover { filter: brightness(1.05); }
+    30	        .btn-ghost { background: transparent; color: #dcdcdc; border: 1px solid #555; }
+    31	        .resumo-financeiro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center; }
+    32	        .resumo-card h3 { margin: 0; color: var(--cor-texto-secundario); font-size: 0.95rem; }
+    33	        .resumo-card p { font-size: 1.8rem; font-weight: 700; margin: 6px 0 0; }
+    34	        .colunas-horizontais { display: flex; gap: 20px; align-items: stretch; }
+    35	        .coluna { flex: 1; }
+    36	
+    37	        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    38	        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--cor-borda); vertical-align: middle; }
+    39	        thead th { background-color: #22313f; color: #fff; font-weight: 600; letter-spacing: .3px; }
+    40	        tbody tr:hover { background-color: #232a34; }
+    41	        .valor { text-align: right; white-space: nowrap; }
+    42	        .receita { color: var(--cor-verde); }
+    43	        .despesa { color: var(--cor-vermelho); }
+    44	
+    45	        .badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-radius: 999px; padding: 6px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+    46	        .badge.pago { background: rgba(46,204,113,.12); color: #b8f5d2; border: 1px solid rgba(46,204,113,.35); }
+    47	        .badge.pendente { background: rgba(241,196,15,.12); color: #f6e7a4; border: 1px solid rgba(241,196,15,.35); }
+    48	
+    49	        .acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+    50	        .acao { border: none; padding: 8px 10px; border-radius: 8px; font-size: 12px; color: #fff; cursor: pointer; }
+    51	        .acao-pagar { background: var(--cor-verde); }
+    52	        .acao-pendente { background: var(--cor-amarelo); color: #222; }
+    53	        .acao-editar { background: var(--cor-laranja); }
+    54	        .acao-excluir { background: var(--cor-vermelho); }
+    55	        .acao-recibo { background: var(--cor-roxo); }
+    56	
+    57	        .dias-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
+    58	        .dias-wrapper label { display: inline-flex; align-items: center; gap: 6px; background: #232323; border: 1px solid #3a3a3a; padding: 6px 10px; border-radius: 999px; color: #e5e5e5; cursor: pointer; }
+    59	        .dias-wrapper input { accent-color: var(--cor-azul); }
+    60	
+    61	        .hint { font-size: 12px; color: #9aa7b5; }
+    62	        .linkado { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #9ad1ff; }
+    63	    </style>
+    64	  <style>.topbar{display:flex;justify-content:flex-end;padding:10px 16px}.btn-back{display:inline-block;padding:.55rem .9rem;background:#111827;border:1px solid #334155;border-radius:.6rem;color:#bfdbfe;text-decoration:none;line-height:1}.btn-back:hover{border-color:#3b82f6;color:#dbeafe}</style>
+    65	</head>
+    66	<body>
+    67	<nav class="topbar"><a class="btn-back" href="/admin/index.html">← Voltar ao Admin</a></nav>
+    68	<nav style="text-align:right;padding:10px">
+    69	</nav>
+    70	<div class="container">
+    71	    <h1>Sistema de Controle Financeiro</h1>
+    72	
+    73	    <div class="card resumo-financeiro">
+    74	        <div class="resumo-card"><h3><span style="color: var(--cor-verde);">●</span> Total de Receitas</h3><p id="total-receitas" class="receita">R$ 0,00</p></div>
+    75	        <div class="resumo-card"><h3><span style="color: var(--cor-vermelho);">●</span> Total de Despesas</h3><p id="total-despesas" class="despesa">R$ 0,00</p></div>
+    76	        <div class="resumo-card"><h3><span style="color: var(--cor-azul);">●</span> Saldo Final</h3><p id="saldo-final" class="saldo">R$ 0,00</p></div>
+    77	    </div>
+    78	
+    79	    <div class="colunas-horizontais">
+    80	        <div class="coluna">
+    81	            <div class="card">
+    82	                <h2>Adicionar Receita</h2>
+    83	                <div class="hint linkado" id="status-integracao">🔗 Não conectado ao cadastro ainda</div>
+    84	                <form id="form-receita">
+    85	                    <div class="form-grid">
+    86	                        <div class="form-group">
+    87	                            <label for="aluno-select">Aluno (do cadastro)</label>
+    88	                            <select id="aluno-select">
+    89	                                <option value="">— selecionar —</option>
+    90	                            </select>
+    91	                        </div>
+    92	                        <div class="form-group">
+    93	                            <label for="aluno">Nome (ou sobrescrever)</label>
+    94	                            <input type="text" id="aluno" placeholder="Digite manualmente se quiser" />
+    95	                        </div>
+    96	                        <div class="form-group">
+    97	                            <label for="cpf">CPF</label>
+    98	                            <input type="text" id="cpf" placeholder="Auto do cadastro, editável" />
+    99	                        </div>
+   100	                        <div class="form-group">
+   101	                            <label for="item-receita">Item</label>
+   102	                            <select id="item-receita" required>
+   103	                                <option value="Mensalidade">Mensalidade</option>
+   104	                                <option value="Kimono">Kimono</option>
+   105	                                <option value="Faixa">Faixa</option>
+   106	                                <option value="Vestuário">Vestuário</option>
+   107	                                <option value="Exame de Faixa">Exame de Faixa</option>
+   108	                                <option value="Certificado">Certificado</option>
+   109	                                <option value="Outro">Outro</option>
+   110	                            </select>
+   111	                        </div>
+   112	                        <div class="form-group">
+   113	                            <label for="plano-2025">Plano (2025)</label>
+   114	                            <select id="plano-2025">
+   115	                                <option value="livre">Livre (valor manual)</option>
+   116	                                <option value="2x">2025 • 2x/semana • R$ 100,00</option>
+   117	                                <option value="3x">2025 • 3x/semana • R$ 150,00</option>
+   118	                            </select>
+   119	                        </div>
+   120	                        <div class="form-group">
+   121	                            <label>Dias da semana</label>
+   122	                            <div class="dias-wrapper" id="dias-wrapper">
+   123	                                <label><input type="checkbox" value="Seg">Seg</label>
+   124	                                <label><input type="checkbox" value="Ter">Ter</label>
+   125	                                <label><input type="checkbox" value="Qua">Qua</label>
+   126	                                <label><input type="checkbox" value="Qui">Qui</label>
+   127	                                <label><input type="checkbox" value="Sex">Sex</label>
+   128	                                <label><input type="checkbox" value="Sáb">Sáb</label>
+   129	                            </div>
+   130	                            <div class="hint">Marque os dias da turma do aluno (opcional, fica salvo no lançamento).</div>
+   131	                        </div>
+   132	                        <div class="form-group">
+   133	                            <label for="valor-receita">Valor (R$)</label>
+   134	                            <input type="number" id="valor-receita" step="0.01" required />
+   135	                        </div>
+   136	                        <div class="form-actions">
+   137	                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+   138	                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+   139	                        </div>
+   140	                    </div>
+   141	                </form>
+   142	            </div>
+   143	        </div>
+   144	
+   145	        <div class="coluna">
+   146	            <div class="card">
+   147	                <h2>Adicionar Despesa</h2>
+   148	                <form id="form-despesa">
+   149	                    <div class="form-grid">
+   150	                        <div class="form-group" style="grid-column: 1 / -1;">
+   151	                            <label for="descricao-despesa">Descrição</label>
+   152	                            <input type="text" id="descricao-despesa" required />
+   153	                        </div>
+   154	                        <div class="form-group">
+   155	                            <label for="valor-despesa">Valor (R$)</label>
+   156	                            <input type="number" id="valor-despesa" step="0.01" required />
+   157	                        </div>
+   158	                        <div class="form-actions">
+   159	                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+   160	                        </div>
+   161	                    </div>
+   162	                </form>
+   163	            </div>
+   164	        </div>
+   165	    </div>
+   166	
+   167	    <div class="card">
+   168	        <h2>Histórico de Lançamentos</h2>
+   169	        <table>
+   170	            <thead>
+   171	            <tr>
+   172	                <th>Data</th>
+   173	                <th>Descrição / Aluno</th>
+   174	                <th>Plano / Dias</th>
+   175	                <th class="valor">Valor</th>
+   176	                <th>Status</th>
+   177	                <th>Ações</th>
+   178	            </tr>
+   179	            </thead>
+   180	            <tbody id="tabela-lancamentos"></tbody>
+   181	        </table>
+   182	    </div>
+   183	</div>
+   184	
+   185	<script>
+   186	    document.addEventListener('DOMContentLoaded', () => {
+   187	        const STORAGE_FIN = 'kokoro_financeiro_v2';
+   188	        const STORAGE_ALUNOS_KEYS = ['kokoro_alunos', 'alunos', 'kokoro_cadastro_alunos']; // tentativas
+   189	
+   190	        const formReceita = document.getElementById('form-receita');
+   191	        const formDespesa = document.getElementById('form-despesa');
+   192	        const tabelaLancamentos = document.getElementById('tabela-lancamentos');
+   193	
+   194	        const totalReceitasEl = document.getElementById('total-receitas');
+   195	        const totalDespesasEl = document.getElementById('total-despesas');
+   196	        const saldoFinalEl = document.getElementById('saldo-final');
+   197	
+   198	        const alunoSelect = document.getElementById('aluno-select');
+   199	        const alunoInput = document.getElementById('aluno');
+   200	        const cpfInput = document.getElementById('cpf');
+   201	        const planoSelect = document.getElementById('plano-2025');
+   202	        const valorReceitaInput = document.getElementById('valor-receita');
+   203	        const diasWrapper = document.getElementById('dias-wrapper');
+   204	        const itemReceita = document.getElementById('item-receita');
+   205	        const btnAtualizarAlunos = document.getElementById('btn-atualizar-alunos');
+   206	        const statusIntegracao = document.getElementById('status-integracao');
+   207	
+   208	        let lancamentos = loadLancamentos();
+   209	        let nextId = lancamentos.reduce((max, l) => Math.max(max, l.id), 0) + 1;
+   210	
+   211	        // ————— Integração básica com a página de cadastro (via localStorage) —————
+   212	        function loadAlunos() {
+   213	            for (const key of STORAGE_ALUNOS_KEYS) {
+   214	                try {
+   215	                    const raw = localStorage.getItem(key);
+   216	                    if (!raw) continue;
+   217	                    const data = JSON.parse(raw);
+   218	                    if (Array.isArray(data) && data.length) {
+   219	                        return { key, alunos: normalizeAlunos(data) };
+   220	                    }
+   221	                } catch (e) { /* ignore */ }
+   222	            }
+   223	            return { key: null, alunos: [] };
+   224	        }
+   225	        function normalizeAlunos(arr) {
+   226	            return arr.map(a => ({
+   227	                nome: a.nome || a.name || a.aluno || '',
+   228	                cpf: a.cpf || a.CPF || a.documento || '',
+   229	                id: a.id || a.matricula || a.registro || null,
+   230	            })).filter(a => a.nome);
+   231	        }
+   232	        function populateAlunoSelect() {
+   233	            const { key, alunos } = loadAlunos();
+   234	            alunoSelect.innerHTML = '<option value="">— selecionar —</option>';
+   235	            if (alunos.length) {
+   236	                statusIntegracao.textContent = `🔗 Conectado ao cadastro via localStorage (chave: ${key})`;
+   237	                alunos.sort((a,b)=> a.nome.localeCompare(b.nome, 'pt-BR'));
+   238	                alunos.forEach((a, idx) => {
+   239	                    const opt = document.createElement('option');
+   240	                    opt.value = idx; // índice na lista atual
+
+----- ./admin.bak.2025-08-29-153024/financeiro/financeiro.html -----
+     1	<!DOCTYPE html>
+     2	<html lang="pt-br">
+     3	<head>
+     4	    <meta charset="UTF-8" />
+     5	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     6	    <title>KOKORO 心 - Controle Financeiro (v2)</title>
+     7	    <style>
+     8	        :root {
+     9	            --cor-fundo: #121212; --cor-container: #1a1a1a; --cor-borda: #333;
+    10	            --cor-texto-principal: #f0f0f0; --cor-texto-secundario: #bdc3c7;
+    11	            --cor-azul: #3498db; --cor-verde: #2ecc71; --cor-vermelho: #e74c3c;
+    12	            --cor-amarelo: #f1c40f; --cor-roxo: #8e44ad; --cor-laranja: #f39c12;
+    13	        }
+    14	        * { box-sizing: border-box; }
+    15	        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; background: var(--cor-fundo); color: var(--cor-texto-principal); margin: 0; padding: 24px; }
+    16	        .container { max-width: 1600px; margin: auto; }
+    17	        h1, h2 { text-align: center; color: var(--cor-azul); }
+    18	        .card { background: linear-gradient(180deg,#1a1a1a,#171717); border: 1px solid var(--cor-borda); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    19	        .card h2 { margin: 0 0 12px; border-bottom: 1px solid #255b7a; padding-bottom: 10px; }
+    20	        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: end; }
+    21	        .form-group { display: flex; flex-direction: column; gap: 6px; }
+    22	        label { font-size: 13px; color: var(--cor-texto-secundario); }
+    23	        input, select { padding: 11px 12px; background: #2a2a2a; color: #f0f0f0; border: 1px solid #484848; border-radius: 8px; font-size: 15px; outline: none; }
+    24	        input:focus, select:focus { border-color: var(--cor-azul); box-shadow: 0 0 0 3px rgba(52,152,219,.15); }
+    25	        .form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
+    26	        .btn { border: none; padding: 12px 18px; border-radius: 10px; font-size: 15px; cursor: pointer; transition: .18s ease; }
+    27	        .btn:active { transform: translateY(1px); }
+    28	        .btn-principal { background: var(--cor-azul); color: #fff; }
+    29	        .btn-principal:hover { filter: brightness(1.05); }
+    30	        .btn-ghost { background: transparent; color: #dcdcdc; border: 1px solid #555; }
+    31	        .resumo-financeiro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center; }
+    32	        .resumo-card h3 { margin: 0; color: var(--cor-texto-secundario); font-size: 0.95rem; }
+    33	        .resumo-card p { font-size: 1.8rem; font-weight: 700; margin: 6px 0 0; }
+    34	        .colunas-horizontais { display: flex; gap: 20px; align-items: stretch; }
+    35	        .coluna { flex: 1; }
+    36	
+    37	        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    38	        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--cor-borda); vertical-align: middle; }
+    39	        thead th { background-color: #22313f; color: #fff; font-weight: 600; letter-spacing: .3px; }
+    40	        tbody tr:hover { background-color: #232a34; }
+    41	        .valor { text-align: right; white-space: nowrap; }
+    42	        .receita { color: var(--cor-verde); }
+    43	        .despesa { color: var(--cor-vermelho); }
+    44	
+    45	        .badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-radius: 999px; padding: 6px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+    46	        .badge.pago { background: rgba(46,204,113,.12); color: #b8f5d2; border: 1px solid rgba(46,204,113,.35); }
+    47	        .badge.pendente { background: rgba(241,196,15,.12); color: #f6e7a4; border: 1px solid rgba(241,196,15,.35); }
+    48	
+    49	        .acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+    50	        .acao { border: none; padding: 8px 10px; border-radius: 8px; font-size: 12px; color: #fff; cursor: pointer; }
+    51	        .acao-pagar { background: var(--cor-verde); }
+    52	        .acao-pendente { background: var(--cor-amarelo); color: #222; }
+    53	        .acao-editar { background: var(--cor-laranja); }
+    54	        .acao-excluir { background: var(--cor-vermelho); }
+    55	        .acao-recibo { background: var(--cor-roxo); }
+    56	
+    57	        .dias-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
+    58	        .dias-wrapper label { display: inline-flex; align-items: center; gap: 6px; background: #232323; border: 1px solid #3a3a3a; padding: 6px 10px; border-radius: 999px; color: #e5e5e5; cursor: pointer; }
+    59	        .dias-wrapper input { accent-color: var(--cor-azul); }
+    60	
+    61	        .hint { font-size: 12px; color: #9aa7b5; }
+    62	        .linkado { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #9ad1ff; }
+    63	    </style>
+    64	  <style>.topbar{display:flex;justify-content:flex-end;padding:10px 16px}.btn-back{display:inline-block;padding:.55rem .9rem;background:#111827;border:1px solid #334155;border-radius:.6rem;color:#bfdbfe;text-decoration:none;line-height:1}.btn-back:hover{border-color:#3b82f6;color:#dbeafe}</style>
+    65	</head>
+    66	<body>
+    67	<nav class="topbar"><a class="btn-back" href="/admin/index.html">← Voltar ao Admin</a></nav>
+    68	<nav style="text-align:right;padding:10px">
+    69	</nav>
+    70	<div class="container">
+    71	    <h1>Sistema de Controle Financeiro</h1>
+    72	
+    73	    <div class="card resumo-financeiro">
+    74	        <div class="resumo-card"><h3><span style="color: var(--cor-verde);">●</span> Total de Receitas</h3><p id="total-receitas" class="receita">R$ 0,00</p></div>
+    75	        <div class="resumo-card"><h3><span style="color: var(--cor-vermelho);">●</span> Total de Despesas</h3><p id="total-despesas" class="despesa">R$ 0,00</p></div>
+    76	        <div class="resumo-card"><h3><span style="color: var(--cor-azul);">●</span> Saldo Final</h3><p id="saldo-final" class="saldo">R$ 0,00</p></div>
+    77	    </div>
+    78	
+    79	    <div class="colunas-horizontais">
+    80	        <div class="coluna">
+    81	            <div class="card">
+    82	                <h2>Adicionar Receita</h2>
+    83	                <div class="hint linkado" id="status-integracao">🔗 Não conectado ao cadastro ainda</div>
+    84	                <form id="form-receita">
+    85	                    <div class="form-grid">
+    86	                        <div class="form-group">
+    87	                            <label for="aluno-select">Aluno (do cadastro)</label>
+    88	                            <select id="aluno-select">
+    89	                                <option value="">— selecionar —</option>
+    90	                            </select>
+    91	                        </div>
+    92	                        <div class="form-group">
+    93	                            <label for="aluno">Nome (ou sobrescrever)</label>
+    94	                            <input type="text" id="aluno" placeholder="Digite manualmente se quiser" />
+    95	                        </div>
+    96	                        <div class="form-group">
+    97	                            <label for="cpf">CPF</label>
+    98	                            <input type="text" id="cpf" placeholder="Auto do cadastro, editável" />
+    99	                        </div>
+   100	                        <div class="form-group">
+   101	                            <label for="item-receita">Item</label>
+   102	                            <select id="item-receita" required>
+   103	                                <option value="Mensalidade">Mensalidade</option>
+   104	                                <option value="Kimono">Kimono</option>
+   105	                                <option value="Faixa">Faixa</option>
+   106	                                <option value="Vestuário">Vestuário</option>
+   107	                                <option value="Exame de Faixa">Exame de Faixa</option>
+   108	                                <option value="Certificado">Certificado</option>
+   109	                                <option value="Outro">Outro</option>
+   110	                            </select>
+   111	                        </div>
+   112	                        <div class="form-group">
+   113	                            <label for="plano-2025">Plano (2025)</label>
+   114	                            <select id="plano-2025">
+   115	                                <option value="livre">Livre (valor manual)</option>
+   116	                                <option value="2x">2025 • 2x/semana • R$ 100,00</option>
+   117	                                <option value="3x">2025 • 3x/semana • R$ 150,00</option>
+   118	                            </select>
+   119	                        </div>
+   120	                        <div class="form-group">
+   121	                            <label>Dias da semana</label>
+   122	                            <div class="dias-wrapper" id="dias-wrapper">
+   123	                                <label><input type="checkbox" value="Seg">Seg</label>
+   124	                                <label><input type="checkbox" value="Ter">Ter</label>
+   125	                                <label><input type="checkbox" value="Qua">Qua</label>
+   126	                                <label><input type="checkbox" value="Qui">Qui</label>
+   127	                                <label><input type="checkbox" value="Sex">Sex</label>
+   128	                                <label><input type="checkbox" value="Sáb">Sáb</label>
+   129	                            </div>
+   130	                            <div class="hint">Marque os dias da turma do aluno (opcional, fica salvo no lançamento).</div>
+   131	                        </div>
+   132	                        <div class="form-group">
+   133	                            <label for="valor-receita">Valor (R$)</label>
+   134	                            <input type="number" id="valor-receita" step="0.01" required />
+   135	                        </div>
+   136	                        <div class="form-actions">
+   137	                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+   138	                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+   139	                        </div>
+   140	                    </div>
+   141	                </form>
+   142	            </div>
+   143	        </div>
+   144	
+   145	        <div class="coluna">
+   146	            <div class="card">
+   147	                <h2>Adicionar Despesa</h2>
+   148	                <form id="form-despesa">
+   149	                    <div class="form-grid">
+   150	                        <div class="form-group" style="grid-column: 1 / -1;">
+   151	                            <label for="descricao-despesa">Descrição</label>
+   152	                            <input type="text" id="descricao-despesa" required />
+   153	                        </div>
+   154	                        <div class="form-group">
+   155	                            <label for="valor-despesa">Valor (R$)</label>
+   156	                            <input type="number" id="valor-despesa" step="0.01" required />
+   157	                        </div>
+   158	                        <div class="form-actions">
+   159	                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+   160	                        </div>
+   161	                    </div>
+   162	                </form>
+   163	            </div>
+   164	        </div>
+   165	    </div>
+   166	
+   167	    <div class="card">
+   168	        <h2>Histórico de Lançamentos</h2>
+   169	        <table>
+   170	            <thead>
+   171	            <tr>
+   172	                <th>Data</th>
+   173	                <th>Descrição / Aluno</th>
+   174	                <th>Plano / Dias</th>
+   175	                <th class="valor">Valor</th>
+   176	                <th>Status</th>
+   177	                <th>Ações</th>
+   178	            </tr>
+   179	            </thead>
+   180	            <tbody id="tabela-lancamentos"></tbody>
+   181	        </table>
+   182	    </div>
+   183	</div>
+   184	
+   185	<script>
+   186	    document.addEventListener('DOMContentLoaded', () => {
+   187	        const STORAGE_FIN = 'kokoro_financeiro_v2';
+   188	        const STORAGE_ALUNOS_KEYS = ['kokoro_alunos', 'alunos', 'kokoro_cadastro_alunos']; // tentativas
+   189	
+   190	        const formReceita = document.getElementById('form-receita');
+   191	        const formDespesa = document.getElementById('form-despesa');
+   192	        const tabelaLancamentos = document.getElementById('tabela-lancamentos');
+   193	
+   194	        const totalReceitasEl = document.getElementById('total-receitas');
+   195	        const totalDespesasEl = document.getElementById('total-despesas');
+   196	        const saldoFinalEl = document.getElementById('saldo-final');
+   197	
+   198	        const alunoSelect = document.getElementById('aluno-select');
+   199	        const alunoInput = document.getElementById('aluno');
+   200	        const cpfInput = document.getElementById('cpf');
+   201	        const planoSelect = document.getElementById('plano-2025');
+   202	        const valorReceitaInput = document.getElementById('valor-receita');
+   203	        const diasWrapper = document.getElementById('dias-wrapper');
+   204	        const itemReceita = document.getElementById('item-receita');
+   205	        const btnAtualizarAlunos = document.getElementById('btn-atualizar-alunos');
+   206	        const statusIntegracao = document.getElementById('status-integracao');
+   207	
+   208	        let lancamentos = loadLancamentos();
+   209	        let nextId = lancamentos.reduce((max, l) => Math.max(max, l.id), 0) + 1;
+   210	
+   211	        // ————— Integração básica com a página de cadastro (via localStorage) —————
+   212	        function loadAlunos() {
+   213	            for (const key of STORAGE_ALUNOS_KEYS) {
+   214	                try {
+   215	                    const raw = localStorage.getItem(key);
+   216	                    if (!raw) continue;
+   217	                    const data = JSON.parse(raw);
+   218	                    if (Array.isArray(data) && data.length) {
+   219	                        return { key, alunos: normalizeAlunos(data) };
+   220	                    }
+   221	                } catch (e) { /* ignore */ }
+   222	            }
+   223	            return { key: null, alunos: [] };
+   224	        }
+   225	        function normalizeAlunos(arr) {
+   226	            return arr.map(a => ({
+   227	                nome: a.nome || a.name || a.aluno || '',
+   228	                cpf: a.cpf || a.CPF || a.documento || '',
+   229	                id: a.id || a.matricula || a.registro || null,
+   230	            })).filter(a => a.nome);
+   231	        }
+   232	        function populateAlunoSelect() {
+   233	            const { key, alunos } = loadAlunos();
+   234	            alunoSelect.innerHTML = '<option value="">— selecionar —</option>';
+   235	            if (alunos.length) {
+   236	                statusIntegracao.textContent = `🔗 Conectado ao cadastro via localStorage (chave: ${key})`;
+   237	                alunos.sort((a,b)=> a.nome.localeCompare(b.nome, 'pt-BR'));
+   238	                alunos.forEach((a, idx) => {
+   239	                    const opt = document.createElement('option');
+   240	                    opt.value = idx; // índice na lista atual
+
+----- ./admin.bak.2025-08-30-012025/financeiro/financeiro.html -----
+     1	<!DOCTYPE html>
+     2	<html lang="pt-br">
+     3	<head>
+     4	    <meta charset="UTF-8" />
+     5	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     6	    <title>KOKORO 心 - Controle Financeiro (v2)</title>
+     7	    <style>
+     8	        :root {
+     9	            --cor-fundo: #121212; --cor-container: #1a1a1a; --cor-borda: #333;
+    10	            --cor-texto-principal: #f0f0f0; --cor-texto-secundario: #bdc3c7;
+    11	            --cor-azul: #3498db; --cor-verde: #2ecc71; --cor-vermelho: #e74c3c;
+    12	            --cor-amarelo: #f1c40f; --cor-roxo: #8e44ad; --cor-laranja: #f39c12;
+    13	        }
+    14	        * { box-sizing: border-box; }
+    15	        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; background: var(--cor-fundo); color: var(--cor-texto-principal); margin: 0; padding: 24px; }
+    16	        .container { max-width: 1600px; margin: auto; }
+    17	        h1, h2 { text-align: center; color: var(--cor-azul); }
+    18	        .card { background: linear-gradient(180deg,#1a1a1a,#171717); border: 1px solid var(--cor-borda); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    19	        .card h2 { margin: 0 0 12px; border-bottom: 1px solid #255b7a; padding-bottom: 10px; }
+    20	        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: end; }
+    21	        .form-group { display: flex; flex-direction: column; gap: 6px; }
+    22	        label { font-size: 13px; color: var(--cor-texto-secundario); }
+    23	        input, select { padding: 11px 12px; background: #2a2a2a; color: #f0f0f0; border: 1px solid #484848; border-radius: 8px; font-size: 15px; outline: none; }
+    24	        input:focus, select:focus { border-color: var(--cor-azul); box-shadow: 0 0 0 3px rgba(52,152,219,.15); }
+    25	        .form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
+    26	        .btn { border: none; padding: 12px 18px; border-radius: 10px; font-size: 15px; cursor: pointer; transition: .18s ease; }
+    27	        .btn:active { transform: translateY(1px); }
+    28	        .btn-principal { background: var(--cor-azul); color: #fff; }
+    29	        .btn-principal:hover { filter: brightness(1.05); }
+    30	        .btn-ghost { background: transparent; color: #dcdcdc; border: 1px solid #555; }
+    31	        .resumo-financeiro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center; }
+    32	        .resumo-card h3 { margin: 0; color: var(--cor-texto-secundario); font-size: 0.95rem; }
+    33	        .resumo-card p { font-size: 1.8rem; font-weight: 700; margin: 6px 0 0; }
+    34	        .colunas-horizontais { display: flex; gap: 20px; align-items: stretch; }
+    35	        .coluna { flex: 1; }
+    36	
+    37	        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    38	        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--cor-borda); vertical-align: middle; }
+    39	        thead th { background-color: #22313f; color: #fff; font-weight: 600; letter-spacing: .3px; }
+    40	        tbody tr:hover { background-color: #232a34; }
+    41	        .valor { text-align: right; white-space: nowrap; }
+    42	        .receita { color: var(--cor-verde); }
+    43	        .despesa { color: var(--cor-vermelho); }
+    44	
+    45	        .badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-radius: 999px; padding: 6px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+    46	        .badge.pago { background: rgba(46,204,113,.12); color: #b8f5d2; border: 1px solid rgba(46,204,113,.35); }
+    47	        .badge.pendente { background: rgba(241,196,15,.12); color: #f6e7a4; border: 1px solid rgba(241,196,15,.35); }
+    48	
+    49	        .acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+    50	        .acao { border: none; padding: 8px 10px; border-radius: 8px; font-size: 12px; color: #fff; cursor: pointer; }
+    51	        .acao-pagar { background: var(--cor-verde); }
+    52	        .acao-pendente { background: var(--cor-amarelo); color: #222; }
+    53	        .acao-editar { background: var(--cor-laranja); }
+    54	        .acao-excluir { background: var(--cor-vermelho); }
+    55	        .acao-recibo { background: var(--cor-roxo); }
+    56	
+    57	        .dias-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
+    58	        .dias-wrapper label { display: inline-flex; align-items: center; gap: 6px; background: #232323; border: 1px solid #3a3a3a; padding: 6px 10px; border-radius: 999px; color: #e5e5e5; cursor: pointer; }
+    59	        .dias-wrapper input { accent-color: var(--cor-azul); }
+    60	
+    61	        .hint { font-size: 12px; color: #9aa7b5; }
+    62	        .linkado { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #9ad1ff; }
+    63	    </style>
+    64	  <style>.topbar{display:flex;justify-content:flex-end;padding:10px 16px}.btn-back{display:inline-block;padding:.55rem .9rem;background:#111827;border:1px solid #334155;border-radius:.6rem;color:#bfdbfe;text-decoration:none;line-height:1}.btn-back:hover{border-color:#3b82f6;color:#dbeafe}</style>
+    65	
+    66	<link rel="stylesheet" href="/admin/css/linkbtn.css">
+    67	
+    68	<link rel="stylesheet" href="/admin/css/btns.css">
+    69	</head>
+    70	<body>
+    71	<nav class="topbar"><a class="btn-back" href="/admin/index.html">← <a class="btn-nav" href="/admin/index.html"><span class="chevron">←</span> Voltar ao Admin</a></a></nav>
+    72	<nav style="text-align:right;padding:10px">
+    73	</nav>
+    74	<div class="container">
+    75	    <h1>Sistema de Controle Financeiro</h1>
+    76	
+    77	    <div class="card resumo-financeiro">
+    78	        <div class="resumo-card"><h3><span style="color: var(--cor-verde);">●</span> Total de Receitas</h3><p id="total-receitas" class="receita">R$ 0,00</p></div>
+    79	        <div class="resumo-card"><h3><span style="color: var(--cor-vermelho);">●</span> Total de Despesas</h3><p id="total-despesas" class="despesa">R$ 0,00</p></div>
+    80	        <div class="resumo-card"><h3><span style="color: var(--cor-azul);">●</span> Saldo Final</h3><p id="saldo-final" class="saldo">R$ 0,00</p></div>
+    81	    </div>
+    82	
+    83	    <div class="colunas-horizontais">
+    84	        <div class="coluna">
+    85	            <div class="card">
+    86	                <h2>Adicionar Receita</h2>
+    87	                <div class="hint linkado" id="status-integracao">🔗 Não conectado ao cadastro ainda</div>
+    88	                <form id="form-receita">
+    89	                    <div class="form-grid">
+    90	                        <div class="form-group">
+    91	                            <label for="aluno-select">Aluno (do cadastro)</label>
+    92	                            <select id="aluno-select">
+    93	                                <option value="">— selecionar —</option>
+    94	                            </select>
+    95	                        </div>
+    96	                        <div class="form-group">
+    97	                            <label for="aluno">Nome (ou sobrescrever)</label>
+    98	                            <input type="text" id="aluno" placeholder="Digite manualmente se quiser" />
+    99	                        </div>
+   100	                        <div class="form-group">
+   101	                            <label for="cpf">CPF</label>
+   102	                            <input type="text" id="cpf" placeholder="Auto do cadastro, editável" />
+   103	                        </div>
+   104	                        <div class="form-group">
+   105	                            <label for="item-receita">Item</label>
+   106	                            <select id="item-receita" required>
+   107	                                <option value="Mensalidade">Mensalidade</option>
+   108	                                <option value="Kimono">Kimono</option>
+   109	                                <option value="Faixa">Faixa</option>
+   110	                                <option value="Vestuário">Vestuário</option>
+   111	                                <option value="Exame de Faixa">Exame de Faixa</option>
+   112	                                <option value="Certificado">Certificado</option>
+   113	                                <option value="Outro">Outro</option>
+   114	                            </select>
+   115	                        </div>
+   116	                        <div class="form-group">
+   117	                            <label for="plano-2025">Plano (2025)</label>
+   118	                            <select id="plano-2025">
+   119	                                <option value="livre">Livre (valor manual)</option>
+   120	                                <option value="2x">2025 • 2x/semana • R$ 100,00</option>
+   121	                                <option value="3x">2025 • 3x/semana • R$ 150,00</option>
+   122	                            </select>
+   123	                        </div>
+   124	                        <div class="form-group">
+   125	                            <label>Dias da semana</label>
+   126	                            <div class="dias-wrapper" id="dias-wrapper">
+   127	                                <label><input type="checkbox" value="Seg">Seg</label>
+   128	                                <label><input type="checkbox" value="Ter">Ter</label>
+   129	                                <label><input type="checkbox" value="Qua">Qua</label>
+   130	                                <label><input type="checkbox" value="Qui">Qui</label>
+   131	                                <label><input type="checkbox" value="Sex">Sex</label>
+   132	                                <label><input type="checkbox" value="Sáb">Sáb</label>
+   133	                            </div>
+   134	                            <div class="hint">Marque os dias da turma do aluno (opcional, fica salvo no lançamento).</div>
+   135	                        </div>
+   136	                        <div class="form-group">
+   137	                            <label for="valor-receita">Valor (R$)</label>
+   138	                            <input type="number" id="valor-receita" step="0.01" required />
+   139	                        </div>
+   140	                        <div class="form-actions">
+   141	                            <button type="button" class="btn btn-ghost" id="btn-atualizar-alunos">Atualizar lista de alunos</button>
+   142	                            <button type="submit" class="btn btn-principal">Adicionar Receita</button>
+   143	                        </div>
+   144	                    </div>
+   145	                </form>
+   146	            </div>
+   147	        </div>
+   148	
+   149	        <div class="coluna">
+   150	            <div class="card">
+   151	                <h2>Adicionar Despesa</h2>
+   152	                <form id="form-despesa">
+   153	                    <div class="form-grid">
+   154	                        <div class="form-group" style="grid-column: 1 / -1;">
+   155	                            <label for="descricao-despesa">Descrição</label>
+   156	                            <input type="text" id="descricao-despesa" required />
+   157	                        </div>
+   158	                        <div class="form-group">
+   159	                            <label for="valor-despesa">Valor (R$)</label>
+   160	                            <input type="number" id="valor-despesa" step="0.01" required />
+   161	                        </div>
+   162	                        <div class="form-actions">
+   163	                            <button type="submit" class="btn btn-principal">Adicionar Despesa</button>
+   164	                        </div>
+   165	                    </div>
+   166	                </form>
+   167	            </div>
+   168	        </div>
+   169	    </div>
+   170	
+   171	    <div class="card">
+   172	        <h2>Histórico de Lançamentos</h2>
+   173	        <table>
+   174	            <thead>
+   175	            <tr>
+   176	                <th>Data</th>
+   177	                <th>Descrição / Aluno</th>
+   178	                <th>Plano / Dias</th>
+   179	                <th class="valor">Valor</th>
+   180	                <th>Status</th>
+   181	                <th>Ações</th>
+   182	            </tr>
+   183	            </thead>
+   184	            <tbody id="tabela-lancamentos"></tbody>
+   185	        </table>
+   186	    </div>
+   187	</div>
+   188	
+   189	<script>
+   190	    document.addEventListener('DOMContentLoaded', () => {
+   191	        const STORAGE_FIN = 'kokoro_financeiro_v2';
+   192	        const STORAGE_ALUNOS_KEYS = ['kokoro_alunos', 'alunos', 'kokoro_cadastro_alunos']; // tentativas
+   193	
+   194	        const formReceita = document.getElementById('form-receita');
+   195	        const formDespesa = document.getElementById('form-despesa');
+   196	        const tabelaLancamentos = document.getElementById('tabela-lancamentos');
+   197	
+   198	        const totalReceitasEl = document.getElementById('total-receitas');
+   199	        const totalDespesasEl = document.getElementById('total-despesas');
+   200	        const saldoFinalEl = document.getElementById('saldo-final');
+   201	
+   202	        const alunoSelect = document.getElementById('aluno-select');
+   203	        const alunoInput = document.getElementById('aluno');
+   204	        const cpfInput = document.getElementById('cpf');
+   205	        const planoSelect = document.getElementById('plano-2025');
+   206	        const valorReceitaInput = document.getElementById('valor-receita');
+   207	        const diasWrapper = document.getElementById('dias-wrapper');
+   208	        const itemReceita = document.getElementById('item-receita');
+   209	        const btnAtualizarAlunos = document.getElementById('btn-atualizar-alunos');
+   210	        const statusIntegracao = document.getElementById('status-integracao');
+   211	
+   212	        let lancamentos = loadLancamentos();
+   213	        let nextId = lancamentos.reduce((max, l) => Math.max(max, l.id), 0) + 1;
+   214	
+   215	        // ————— Integração básica com a página de cadastro (via localStorage) —————
+   216	        function loadAlunos() {
+   217	            for (const key of STORAGE_ALUNOS_KEYS) {
+   218	                try {
+   219	                    const raw = localStorage.getItem(key);
+   220	                    if (!raw) continue;
+   221	                    const data = JSON.parse(raw);
+   222	                    if (Array.isArray(data) && data.length) {
+   223	                        return { key, alunos: normalizeAlunos(data) };
+   224	                    }
+   225	                } catch (e) { /* ignore */ }
+   226	            }
+   227	            return { key: null, alunos: [] };
+   228	        }
+   229	        function normalizeAlunos(arr) {
+   230	            return arr.map(a => ({
+   231	                nome: a.nome || a.name || a.aluno || '',
+   232	                cpf: a.cpf || a.CPF || a.documento || '',
+   233	                id: a.id || a.matricula || a.registro || null,
+   234	            })).filter(a => a.nome);
+   235	        }
+   236	        function populateAlunoSelect() {
+   237	            const { key, alunos } = loadAlunos();
+   238	            alunoSelect.innerHTML = '<option value="">— selecionar —</option>';
+   239	            if (alunos.length) {
+   240	                statusIntegracao.textContent = `🔗 Conectado ao cadastro via localStorage (chave: ${key})`;
+
+----- ./audit_kokoro.sh -----
+     1	#!/usr/bin/env bash
+     2	set -euo pipefail
+     3	
+     4	# ============ Config ============
+     5	ROOT="${1:-.}"
+     6	OUTDIR="$ROOT/_audit_kokoro"
+     7	mkdir -p "$OUTDIR"
+     8	
+     9	green(){ printf "\033[32m%s\033[0m\n" "$*"; }
+    10	yellow(){ printf "\033[33m%s\033[0m\n" "$*"; }
+    11	section(){ echo -e "\n=== $1 ===" | tee -a "$OUTDIR/summary.md"; }
+    12	
+    13	# ============ 0) Ambiente / dependências ============
+    14	section "Ambiente (package.json)"
+    15	PKG="$ROOT/package.json"
+    16	if [ -f "$PKG" ]; then
+    17	  node -e '
+    18	    try {
+    19	      const p = require(process.argv[1]);
+    20	      const deps = {...(p.dependencies||{}), ...(p.devDependencies||{})};
+    21	      const pick = k=>deps[k]||"—";
+    22	      const info = {
+    23	        name: p.name||"—", version: p.version||"—",
+    24	        next: pick("next"), react: pick("react"), "react-dom": pick("react-dom"),
+    25	        typescript: pick("typescript"), tailwind: pick("tailwindcss")
+    26	      };
+    27	      console.log(JSON.stringify(info,null,2));
+    28	    } catch(e){ console.log("! erro lendo package.json:", String(e)); }
+    29	  ' "$PKG" | tee "$OUTDIR/package_info.json" >/dev/null
+    30	else
+    31	  echo "! package.json NÃO encontrado" | tee -a "$OUTDIR/summary.md"
+    32	fi
+    33	
+    34	# ============ 1) Mapa de rotas (páginas + app) ============
+    35	section "Rotas (páginas e app router)"
+    36	{
+    37	  echo "# Páginas (/pages) -> rotas"
+    38	  if [ -d "$ROOT/pages" ]; then
+    39	    find "$ROOT/pages" -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" \) \
+    40	    | sed "s|$ROOT||" \
+    41	    | sed -E 's|/index\.(t|j)sx?$|/|; s|\.(t|j)sx?$||' \
+    42	    | sed 's|^/pages||' | sort
+    43	  else
+    44	    echo "(sem pasta /pages)"
+    45	  fi
+    46	  echo
+    47	  echo "# App Router (/app) -> rotas e handlers"
+    48	  if [ -d "$ROOT/app" ]; then
+    49	    find "$ROOT/app" -type f \( -name "page.*" -o -name "route.*" -o -name "layout.*" \) \
+    50	    | sed "s|$ROOT||" | sort
+    51	  else
+    52	    echo "(sem pasta /app)"
+    53	  fi
+    54	} | tee "$OUTDIR/routes.txt" >/dev/null
+    55	
+    56	# ============ 2) Endpoints de API ============
+    57	section "Endpoints de API"
+    58	{
+    59	  echo "# Todos"
+    60	  find "$ROOT/api" -type f \( -name "*.js" -o -name "*.ts" \) 2>/dev/null | sed "s|$ROOT||" | sort || true
+    61	  echo
+    62	  echo "# Foco em /api/financeiro"
+    63	  if [ -d "$ROOT/api/financeiro" ]; then
+    64	    nl -ba "$ROOT/api/financeiro"/*.js 2>/dev/null | sed -n '1,200p' >/dev/null
+    65	    find "$ROOT/api/financeiro" -maxdepth 1 -type f -name "*.js" | while read -r f; do
+    66	      rel="${f#$ROOT/}"
+    67	      echo "— $rel"
+    68	      # extrai métodos suportados e palavras-chave importantes
+    69	      grep -nE "export default|function handler|method|req\.method|recibo|payout|email|whatsapp|sms" "$f" || true
+    70	      echo
+    71	    done
+    72	  else
+    73	    echo "(sem pasta /api/financeiro)"
+    74	  fi
+    75	} | tee "$OUTDIR/api_endpoints.txt" >/dev/null
+    76	
+    77	# ============ 3) Botões e links (UI) ============
+    78	section "Botões e Ações na UI"
+    79	{
+    80	  echo "# <button>, role='button', e Links com aparência de botão"
+    81	  find "$ROOT" -type f \( -name "*.jsx" -o -name "*.tsx" -o -name "*.js" -o -name "*.ts" -o -name "*.html" \) \
+    82	    | grep -Ev "/node_modules/|/_audit_kokoro/" \
+    83	    | xargs -I {} sh -c "grep -HnE \"<button|role=['\\\"]button['\\\"]|class(Name)?=['\\\"][^'\\\"]*(btn|button|primary|action)[^'\\\"]*['\\\"]|onClick=|aria-label=\" {} || true" \
+    84	    | sed "s|$ROOT||" \
+    85	    > "$OUTDIR/buttons_raw.txt"
+    86	  # tenta extrair textos visíveis simples de botões
+    87	  awk -F: '
+    88	    {
+    89	      file=$1; line=$2; rest=$0;
+    90	      txt=rest;
+    91	      gsub(/.*<button[^>]*>/,"",txt); gsub(/<.button>.*/,"",txt);
+    92	      gsub(/^[ \t\r\n]+|[ \t\r\n]+$/,"",txt);
+    93	      if(length(txt)>0 && length(txt)<80){ print file ":" line " :: " txt; }
+    94	    }
+    95	  ' "$OUTDIR/buttons_raw.txt" > "$OUTDIR/buttons_clean.txt" 2>/dev/null || true
+    96	  echo "Arquivos inspecionados e possíveis rótulos em: _audit_kokoro/buttons_clean.txt"
+    97	} | tee "$OUTDIR/buttons_summary.txt" >/dev/null
+    98	
+    99	# ============ 4) Financeiro (Dashboard atual) ============
+   100	section "Dashboard Financeiro (snippets)"
+   101	{
+   102	  # pega arquivos que mencionam títulos usuais
+   103	  CANDS=$(grep -RIl --line-number -E "Sistema de Controle Financeiro|Adicionar Receita|Adicionar Despesa|Histórico de Lançamentos" "$ROOT" 2>/dev/null | grep -v "_audit_kokoro" || true)
+   104	  if [ -n "$CANDS" ]; then
+   105	    for f in $CANDS; do
+   106	      echo "----- $f -----"
+   107	      nl -ba "$f" | sed -n '1,240p'
+   108	      echo
+   109	    done
+   110	  else
+   111	    echo "(nenhum arquivo menciona esses títulos padrão — talvez o dashboard esteja renderizado a partir de componentes internos)"
+   112	  fi
+   113	} | tee "$OUTDIR/finance_dashboard.txt" >/dev/null
+   114	
+   115	# ============ 5) Recibos (snippets atuais) ============
+   116	section "Recibos (snippets)"
+   117	{
+   118	  for f in $(find "$ROOT/api/financeiro" -maxdepth 1 -type f -name "recibo*.js" 2>/dev/null); do
+   119	    echo "----- $f -----"
+   120	    nl -ba "$f" | sed -n '1,220p'
+   121	    echo
+   122	  done
+   123	} | tee "$OUTDIR/receipts_snippets.txt" >/dev/null
+   124	
+   125	# ============ 6) Relatório final ============
+   126	section "Relatório final"
+   127	{
+   128	  echo "# Kokoro – Auditoria de Rotas, APIs e UI"
+   129	  echo
+   130	  echo "Gerado em: $(date)"
+   131	  echo
+   132	  echo "## 1. Framework e libs"
+   133	  if [ -f "$OUTDIR/package_info.json" ]; then
+   134	    jq -r 'to_entries|map("* \(.key): \(.value)")|.[]' "$OUTDIR/package_info.json" 2>/dev/null || cat "$OUTDIR/package_info.json"
+   135	  else
+   136	    echo "* (sem package_info.json)"
+   137	  fi
+   138	  echo
+   139	  echo "## 2. Rotas"
+   140	  echo "\`\`\`"
+   141	  cat "$OUTDIR/routes.txt"
+   142	  echo "\`\`\`"
+   143	  echo
+   144	  echo "## 3. Endpoints de API (com foco em financeiro)"
+   145	  echo "\`\`\`"
+   146	  cat "$OUTDIR/api_endpoints.txt"
+   147	  echo "\`\`\`"
+   148	  echo
+   149	  echo "## 4. Botões e ações detectados"
+   150	  echo "\`\`\`"
+   151	  sed -n '1,200p' "$OUTDIR/buttons_clean.txt" 2>/dev/null || echo "(sem captação de botões)"
+   152	  echo "\`\`\`"
+   153	  echo
+   154	  echo "## 5. Dashboard Financeiro – trechos"
+   155	  echo "\`\`\`"
+   156	  sed -n '1,240p' "$OUTDIR/finance_dashboard.txt"
+   157	  echo "\`\`\`"
+   158	  echo
+   159	  echo "## 6. Recibos – trechos"
+   160	  echo "\`\`\`"
+   161	  sed -n '1,240p' "$OUTDIR/receipts_snippets.txt"
+   162	  echo "\`\`\`"
+   163	} > "$OUTDIR/REPORT_FINANCE.md"
+   164	
+   165	green "✔ Relatório pronto em: $OUTDIR/REPORT_FINANCE.md"
+   166	yellow "Abra no navegador/VSCode para visualizar com formatação."
+
