@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres';
-import { ensureSchema } from '../_lib/db.js';
+import { ensureSchema } from '../../_lib/db.js';
 
 export default async function handler(req, res) {
   await ensureSchema();
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     const { rows } = await sql`
       insert into alunos (nome, email, cpf, data_nasc)
-      values (${nome}, ${email}, ${cpf}, ${data_nasc})
+      values (${nome}, ${email || null}, ${cpf || null}, ${data_nasc || null})
       returning *`;
     return res.status(201).json(rows[0]);
   }

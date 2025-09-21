@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres';
-import { ensureSchema } from '../_lib/db.js';
+import { ensureSchema } from '../../_lib/db.js';
 
 export default async function handler(req, res) {
   await ensureSchema();

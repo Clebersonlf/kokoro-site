@@ -1,11 +1,13 @@
 import { sql } from '@vercel/postgres';
-import { ensureSchema } from '../_lib/db.js';
+import { ensureSchema } from '../../_lib/db.js';
 
 export default async function handler(req, res) {
   await ensureSchema();
 
   if (req.method === 'GET') {
-    const { rows } = await sql`select * from financeiro_lancamentos order by data desc, created_at desc`;
+    const { rows } = await sql`
+      select * from financeiro_lancamentos
+      order by coalesce(data, created_at) desc, created_at desc`;
     return res.status(200).json(rows);
   }
 
@@ -15,7 +17,7 @@ export default async function handler(req, res) {
 
     const { rows } = await sql`
       insert into financeiro_lancamentos (aluno_id, tipo, valor, descricao, data)
-      values (${aluno_id || null}, ${tipo}, ${valor}, ${descricao}, ${data || null})
+      values (${aluno_id || null}, ${tipo}, ${valor}, ${descricao || null}, ${data || null})
       returning *`;
     return res.status(201).json(rows[0]);
   }
