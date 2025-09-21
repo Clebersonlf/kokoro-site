@@ -1,0 +1,30 @@
+// ====================== Kokoro Session Timer (após login) ======================
+(() => {
+  // REGRA 1: só em /admin (evita rodar na home pública)
+  const isAdminPath = location.pathname.startsWith('/admin');
+
+  // REGRA 2: opcional p/ usuários logados fora de /admin (se quiser no futuro)
+  // Use <body data-auth="true"> nas páginas protegidas de usuário.
+  const isAuthenticatedPage =
+    document.documentElement.hasAttribute?.('data-auth') ||
+    document.body?.hasAttribute?.('data-auth');
+
+  if (!isAdminPath && !isAuthenticatedPage) return;
+
+  const LIMIT_MS = 25 * 60 * 1000;            // 25 minutos
+  const STORAGE_DEADLINE = "kokoro_session_deadline";
+  const POSITION = "tl";                       // top-left
+  const BADGE_BG = "#f77f00";                  // laranja
+  const BADGE_FG = "#0d0c0f";                  // texto escuro
+
+  function createTimerEl() {
+    const el = document.createElement("div");
+    el.id = "kokoro-session-timer";
+    const posMap = {
+      br: { bottom: "16px", right: "16px" },
+      bl: { bottom: "16px", left: "16px" },
+      tr: { top: "16px", right: "16px" },
+      tl: { top: "16px", left: "16px" },
+    };
+    const pos = posMap[POSITION] || posMap.br;
+

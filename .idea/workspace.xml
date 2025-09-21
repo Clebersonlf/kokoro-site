@@ -5,64 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="928845f5-b4f2-4ff5-a158-eb5b7b2b4641" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env.local" beforeDir="false" afterPath="$PROJECT_DIR$/.env.local" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/cadastro/editar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/cadastro/lista.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/cadastro/registro.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/financeiro/financeiro.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/financeiro/script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/index.html.save" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-28-141303/index.html.save.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/cadastro/editar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/cadastro/lista.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/cadastro/registro.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/financeiro/financeiro.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/financeiro/script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/graduacao/editar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/graduacao/lista.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/graduacao/nova.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/index.html.save" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-152441/index.html.save.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/cadastro/editar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/cadastro/lista.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/cadastro/registro.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/financeiro/financeiro.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/financeiro/script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/graduacao/editar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/graduacao/lista.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/graduacao/nova.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/index.html.save" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-29-153024/index.html.save.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/cadastro/editar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/cadastro/lista.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/cadastro/registro.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/css/btns.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/css/linkbtn.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/financeiro/financeiro.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/financeiro/script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/graduacao/editar.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/graduacao/lista.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/graduacao/nova.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/index.html.save" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/index.html.save.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.bak.2025-08-30-012025/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/cadastro/editar.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/cadastro/editar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/cadastro/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/cadastro/lista.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/financeiro/financeiro.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/financeiro/financeiro.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/graduacao/editar.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/graduacao/editar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/graduacao/lista.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/graduacao/lista.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/graduacao/nova.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/graduacao/nova.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/invite.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/invite.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hot de segurança antes da recuperação&quot;" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/cadastro/cadastro.html" beforeDir="false" afterPath="$PROJECT_DIR$/user/cadastro/cadastro.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +143,7 @@
       <workItem from="1757974859447" duration="705000" />
       <workItem from="1757993149625" duration="15984000" />
       <workItem from="1758307510702" duration="345000" />
-      <workItem from="1758416700133" duration="4741000" />
+      <workItem from="1758416700133" duration="5491000" />
     </task>
     <servers />
   </component>

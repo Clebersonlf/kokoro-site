@@ -1,63 +1,168 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GREEN="\033[1;32m"; RED="\033[1;31m"; YELLOW="\033[1;33m"; CYAN="\033[1;36m"; NC="\033[0m"
-pass(){ printf "${GREEN}✔ %s${NC}\n" "$*"; }
-fail(){ printf "${RED}✘ %s${NC}\n" "$*"; }
-warn(){ printf "${YELLOW}⚠ %s${NC}\n" "$*"; }
-info(){ printf "${CYAN}— %s${NC}\n" "$*"; }
+# ============================
+# Kokoro - Diagnóstico rápido
+# ============================
 
-command -v jq >/dev/null || { echo "Instale jq: sudo apt-get install -y jq"; exit 1; }
-command -v psql >/dev/null || { echo "Instale psql: sudo apt-get update && sudo apt-get install -y postgresql-client"; exit 1; }
-command -v vercel >/dev/null || { echo "Instale Vercel CLI: npm i -g vercel"; exit 1; }
-command -v curl >/dev/null || { echo "cURL não encontrado"; exit 1; }
+PROJECT_ROOT="$(pwd)"
+STAMP="$(date +%Y%m%d_%H%M%S)"
+OUTDIR="_audit_kokoro/scan_${STAMP}"
+mkdir -p "${OUTDIR}"
 
-info "Carregando variáveis (.env.local via Vercel)..."
-vercel env pull .env.local >/dev/null 2>&1 || true
-set -a; source ./.env.local || true; set +a
+_summary () { printf "%s\n" "$*" >> "${OUTDIR}/SUMMARY.md"; }
 
-ADMIN_SECRET="${ADMIN_SECRET:-}"
-BASE_URL="${BASE_URL:-https://www.planckkokoro.com}"
+# 0) Cabeçalho
+echo "# Kokoro — Diagnóstico do Projeto (${STAMP})" > "${OUTDIR}/SUMMARY.md"
+echo "_Raio-X automático do repositório (infra, forms, APIs, financeiro, graduação, timer)_" >> "${OUTDIR}/SUMMARY.md"
+echo >> "${OUTDIR}/SUMMARY.md"
 
-CONN="${POSTGRES_URL_NON_POOLING:-}"
-[ -z "$CONN" ] && CONN="${DATABASE_URL:-}"
-[ -z "$CONN" ] && CONN="${POSTGRES_URL:-}"
+# 1) Ambiente
+_summary "## Ambiente"
+_summary "- PWD: ${PROJECT_ROOT}"
+_summary "- OS: $(uname -a)"
+_summary "- Node: $(command -v node >/dev/null 2>&1 && node -v || echo 'node NÃO encontrado')"
+_summary "- NPM:  $(command -v npm  >/dev/null 2>&1 && npm -v  || echo 'npm NÃO encontrado')"
+_summary "- Vercel CLI: $(command -v vercel >/dev/null 2>&1 && vercel --version || echo 'vercel NÃO encontrado')"
+_summary ""
+# 2) Git & remoto
+_summary "## Git"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  _summary "- Branch atual: $(git branch --show-current)"
+  _summary "- Remotos:"
+  git remote -v >> "${OUTDIR}/SUMMARY.md" || true
+else
+  _summary "- (Repositório Git não detectado nesta pasta)"
+fi
+_summary ""
 
-info "Checando ENV critical (Admin/DB/Mensageria)..."
-[ -n "$ADMIN_SECRET" ] && pass "ADMIN_SECRET presente" || fail "ADMIN_SECRET ausente"
-[ -n "$CONN" ] && pass "URL do Postgres presente" || fail "URL do Postgres ausente"
+# 3) Timer (deve existir e só rodar no /admin)
+_summary "## Timer de sessão"
+if [ -f "admin/_session_timer.js" ]; then
+  _summary "- Arquivo encontrado: admin/_session_timer.js"
+  head -n 30 admin/_session_timer.js > "${OUTDIR}/timer_head.txt" || true
+  _summary "- Primeiras linhas salvas em: ${OUTDIR}/timer_head.txt"
+else
+  _summary "- ❌ NÃO encontrado: admin/_session_timer.js"
+fi
 
-[ -n "${RESEND_API_KEY:-}" ] || warn "RESEND_API_KEY ausente"
-[ -n "${TWILIO_ACCOUNT_SID:-}" ] || warn "TWILIO_* ausente"
-[ -n "${TWILIO_FROM_WA:-}" ] || warn "TWILIO_FROM_WA ausente"
-[ -n "${TWILIO_FROM_SMS:-}" ] || warn "TWILIO_FROM_SMS ausente"
-[ -n "${WHATSAPP_API_TOKEN:-}" ] || warn "WHATSAPP_API_TOKEN ausente (se usar Meta WABA)"
+# onde o script está incluído
+grep -R --line-number "_session_timer.js" admin 2>/dev/null | tee "${OUTDIR}/timer_includes.txt" >/dev/null || true
+_summary "- Inclusões do timer em /admin salvas em: ${OUTDIR}/timer_includes.txt"
+# 2) Git & remoto
+_summary "## Git"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  _summary "- Branch atual: $(git branch --show-current)"
+  _summary "- Remotos:"
+  git remote -v >> "${OUTDIR}/SUMMARY.md" || true
+else
+  _summary "- (Repositório Git não detectado nesta pasta)"
+fi
+_summary ""
 
-info "Testando conexão com o banco..."
-psql "$CONN" -c "SELECT now();" >/dev/null && pass "Conectou no Postgres"
+# 3) Timer (deve existir e só rodar no /admin)
+_summary "## Timer de sessão"
+if [ -f "admin/_session_timer.js" ]; then
+  _summary "- Arquivo encontrado: admin/_session_timer.js"
+  head -n 30 admin/_session_timer.js > "${OUTDIR}/timer_head.txt" || true
+  _summary "- Primeiras linhas salvas em: ${OUTDIR}/timer_head.txt"
+else
+  _summary "- ❌ NÃO encontrado: admin/_session_timer.js"
+fi
 
-info "Checando tabelas/chaves do domínio..."
-for t in professores alunos matriculas pagamentos pagamentos_professor settings; do
-  psql "$CONN" -c "SELECT 1 FROM $t LIMIT 1;" >/dev/null && pass "Tabela $t existe" || fail "Tabela $t faltando"
+# onde o script está incluído
+grep -R --line-number "_session_timer.js" admin 2>/dev/null | tee "${OUTDIR}/timer_includes.txt" >/dev/null || true
+_summary "- Inclusões do timer em /admin salvas em: ${OUTDIR}/timer_includes.txt"
+# confirmar que não aparece fora do /admin
+grep -R --line-number "_session_timer.js" . 2>/dev/null | grep -v '^./admin/' | tee "${OUTDIR}/timer_outside_admin.txt" >/dev/null || true
+if [ -s "${OUTDIR}/timer_outside_admin.txt" ]; then
+  _summary "- ⚠️ Encontrado timer fora de /admin (veja ${OUTDIR}/timer_outside_admin.txt)"
+else
+  _summary "- OK: não há inclusões do timer fora de /admin"
+fi
+_summary ""
+
+# 4) Autenticação básica (botão Sair / _auth.js)
+_summary "## Autenticação"
+if [ -f "admin/_auth.js" ]; then
+  _summary "- admin/_auth.js existe."
+else
+  _summary "- ❌ admin/_auth.js NÃO encontrado."
+fi
+# confere se páginas internas têm o botão Sair
+grep -R --line-number 'id="btn-logout"' admin 2>/dev/null | tee "${OUTDIR}/logout_buttons.txt" >/dev/null || true
+_summary "- Páginas com btn-logout listadas em: ${OUTDIR}/logout_buttons.txt"
+_summary ""
+# 5) Cadastro (formulário público)
+_summary "## Cadastro (formulário público)"
+if [ -f "user/cadastro/cadastro.html" ]; then
+  _summary "- user/cadastro/cadastro.html existe."
+  grep -nE "<form|fetch|axios|localStorage|sessionStorage" user/cadastro/cadastro.html 2>/dev/null | tee "${OUTDIR}/cadastro_signals.txt" >/dev/null || true
+  _summary "- Sinais de envio/armazenamento listados em: ${OUTDIR}/cadastro_signals.txt"
+else
+  _summary "- ❌ user/cadastro/cadastro.html NÃO encontrado."
+fi
+_summary ""
+
+# 6) Alunos • Lista (onde você quer consultar)
+_summary "## Alunos • Lista"
+if [ -f "admin/cadastro/lista.html" ]; then
+  _summary "- admin/cadastro/lista.html existe."
+  grep -nE "fetch|axios|localStorage|sessionStorage|table|tbody" admin/cadastro/lista.html 2>/dev/null | tee "${OUTDIR}/alunos_lista_signals.txt" >/dev/null || true
+  _summary "- Sinais de leitura/listagem em: ${OUTDIR}/alunos_lista_signals.txt"
+else
+  _summary "- ❌ admin/cadastro/lista.html NÃO encontrado."
+fi
+_summary ""
+# 7) Financeiro
+_summary "## Financeiro"
+for f in admin/financeiro/financeiro.html admin/financeiro/repasses.html admin/financeiro/relatorios.html; do
+  if [ -f "$f" ]; then
+    _summary "- Existe: $f"
+    grep -nE "Salvar|fetch|axios|localStorage|sessionStorage|table|tbody|CSV|PDF" "$f" 2>/dev/null | head -n 100 > "${OUTDIR}/$(basename "$f").signals.txt" || true
+    _summary "  • Sinais: ${OUTDIR}/$(basename "$f").signals.txt"
+  fi
 done
+_summary ""
 
-for c in pix_chave banco_nome agencia conta favorecido_nome doc_favorecido; do
-  psql "$CONN" -c "SELECT 1 FROM information_schema.columns WHERE table_name='professores' AND column_name='$c';" | grep -q 1 && pass "professores.$c OK" || warn "professores.$c AUSENTE"
+# 8) Graduação (numeração)
+_summary "## Graduação (numeração)"
+for f in admin/graduacao/lista.html admin/graduacao/nova.html admin/graduacao/editar.html; do
+  if [ -f "$f" ]; then
+    _summary "- Existe: $f"
+    grep -nE "Salvar|fetch|axios|localStorage|sessionStorage|numero|gradua" "$f" 2>/dev/null | head -n 80 > "${OUTDIR}/$(basename "$f").signals.txt" || true
+    _summary "  • Sinais: ${OUTDIR}/$(basename "$f").signals.txt"
+  fi
 done
+_summary ""
 
-psql "$CONN" -c "SELECT value FROM settings WHERE key='org_pix_chave';" >/dev/null && pass "settings.org_pix_chave ok"
+# 9) APIs (se existirem pastas /api)
+_summary "## APIs no projeto"
+if [ -d "api" ]; then
+  (command -v tree >/dev/null 2>&1 && tree -a -I "node_modules" api || find api -maxdepth 3 -type f) > "${OUTDIR}/api_tree.txt" 2>/dev/null
+  _summary "- Árvore de arquivos em: ${OUTDIR}/api_tree.txt"
+  grep -R --line-number -E "export default|module\.exports|req|res|fetch" api 2>/dev/null | head -n 300 > "${OUTDIR}/api_signals.txt" || true
+  _summary "- Sinais de handlers em: ${OUTDIR}/api_signals.txt"
+else
+  _summary "- (Sem pasta /api detectada)"
+fi
+_summary ""
 
-info "Checando views..."
-for v in vw_saldo_professor vw_extrato_professor; do
-  psql "$CONN" -c "SELECT 1 FROM pg_views WHERE viewname='$v';" | grep -q 1 && pass "$v existe" || warn "$v ausente"
-done
+# 10) Resumo final curto na tela e tarball
+echo "========================================="
+echo "Diagnóstico gerado em: ${OUTDIR}/SUMMARY.md"
+echo "Arquivos auxiliares dentro de: ${OUTDIR}"
+echo "Gerando pacote .tar.gz do relatório…"
 
-info "Pingando APIs (GET/sem efeito colateral)..."
-curl -s "$BASE_URL/api/admin/check" -H "x-admin-secret: $ADMIN_SECRET" | jq . >/dev/null && pass "GET /api/admin/check (ok/match=true)"
-curl -s "$BASE_URL/api/financeiro/preview" | jq . >/dev/null && pass "GET /api/financeiro/preview"
-curl -s "$BASE_URL/api/financeiro/saldo-professor" -H "x-admin-secret: $ADMIN_SECRET" | jq . >/dev/null && pass "GET /api/financeiro/saldo-professor"
+TARBALL="_audit_kokoro/scan_${STAMP}.tar.gz"
+tar -czf "${TARBALL}" -C "_audit_kokoro" "scan_${STAMP}"
+ln -sf "scan_${STAMP}.tar.gz" "_audit_kokoro/last_scan.tar.gz"
 
-info "Sumário:"
-echo " - Ambiente:    BASE_URL=${BASE_URL}"
-echo " - Admin:       ${ADMIN_SECRET:+OK}"
-echo " - Banco:       ${CONN:+OK}"
+echo "OK: ${TARBALL}"
+echo "Atalho: _audit_kokoro/last_scan.tar.gz"
+
+# Dica de criptografia opcional (não executa nada sozinho)
+echo
+echo "Se quiser criptografar o relatório agora:"
+echo "  gpg --symmetric --cipher-algo AES256 \"${TARBALL}\""
+echo "(vai pedir uma senha sua para abrir depois)"

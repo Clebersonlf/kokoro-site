@@ -1,0 +1,8 @@
+54:    <input id="numero" placeholder="deixe em branco para auto (>= 0074)">
+92:    <button onclick="salvar()">Salvar</button>
+101:      const r = await fetch('/api/alunos');
+113:    const numero   = (document.getElementById('numero').value || '').trim();
+119:    const r = await fetch('/api/graduacoes', {
+124:        grad_numero: numero || undefined,
+126:        data_graduacao: data || undefined
+131:    window.location.href = '/admin/graduacao/lista.html';

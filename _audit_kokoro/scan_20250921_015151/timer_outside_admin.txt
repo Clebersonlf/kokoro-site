@@ -1,0 +1,26 @@
+./diagnose_kokoro.sh:41:if [ -f "admin/_session_timer.js" ]; then
+./diagnose_kokoro.sh:42:  _summary "- Arquivo encontrado: admin/_session_timer.js"
+./diagnose_kokoro.sh:43:  head -n 30 admin/_session_timer.js > "${OUTDIR}/timer_head.txt" || true
+./diagnose_kokoro.sh:46:  _summary "- ❌ NÃO encontrado: admin/_session_timer.js"
+./diagnose_kokoro.sh:50:grep -R --line-number "_session_timer.js" admin 2>/dev/null | tee "${OUTDIR}/timer_includes.txt" >/dev/null || true
+./diagnose_kokoro.sh:65:if [ -f "admin/_session_timer.js" ]; then
+./diagnose_kokoro.sh:66:  _summary "- Arquivo encontrado: admin/_session_timer.js"
+./diagnose_kokoro.sh:67:  head -n 30 admin/_session_timer.js > "${OUTDIR}/timer_head.txt" || true
+./diagnose_kokoro.sh:70:  _summary "- ❌ NÃO encontrado: admin/_session_timer.js"
+./diagnose_kokoro.sh:74:grep -R --line-number "_session_timer.js" admin 2>/dev/null | tee "${OUTDIR}/timer_includes.txt" >/dev/null || true
+./diagnose_kokoro.sh:77:grep -R --line-number "_session_timer.js" . 2>/dev/null | grep -v '^./admin/' | tee "${OUTDIR}/timer_outside_admin.txt" >/dev/null || true
+./_audit_kokoro/scan_20250921_013409/inventory/files_all.txt:5924:admin/_session_timer.js
+./_audit_kokoro/scan_20250921_014350/inventory/files_all.txt:5927:admin/_session_timer.js
+./_audit_kokoro/scan_20250921_015151/SUMMARY.md:18:- Arquivo encontrado: admin/_session_timer.js
+./_audit_kokoro/scan_20250921_015151/SUMMARY.md:28:- Arquivo encontrado: admin/_session_timer.js
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:1:admin/cadastro/editar.html:149:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:2:admin/cadastro/lista.html:313:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:3:admin/financeiro/financeiro.html:426:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:4:admin/financeiro/repasses.html:699:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:5:admin/financeiro/repasses_demo.html:211:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:6:admin/graduacao/editar.html:73:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:7:admin/graduacao/lista.html:111:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:8:admin/graduacao/nova.html:140:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:9:admin/index.html:245:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:10:admin/invite.html:92:  <script src="/admin/_session_timer.js" defer></script>
+./_audit_kokoro/scan_20250921_015151/timer_includes.txt:11:admin/login.html:38:  <script src="/admin/_session_timer.js" defer></script>

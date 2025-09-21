@@ -1,0 +1,7 @@
+50:      <button id="btn-pdf">Gerar PDF</button>
+75:  // v1: dados de amostra locais (substituiremos por fetch às APIs)
+135:    window.print(); // v1 simples; depois trocamos por jsPDF com imagens dos gráficos
+160:    const res = await fetch(dataUrl);
+387:    <button type="button" class="kkr-btn" id="kkr-save">Salvar</button>
+417:      const raw = localStorage.getItem(STORAGE_KEY);
+424:    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));

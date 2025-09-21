@@ -1,0 +1,5 @@
+45:    <a class="btn-primary" href="/admin/graduacao/nova.html">+ Adicionar graduação</a>
+74:      const r  = await fetch('/api/graduacoes');
+91:        const dataFmt = g.data_graduacao ? new Date(g.data_graduacao).toLocaleDateString('pt-BR') : '';
+96:              <td>${g.grad_numero || ''}</td>
+100:                <a href="/admin/graduacao/editar.html?id=${encodeURIComponent(g.id)}">Editar</a>

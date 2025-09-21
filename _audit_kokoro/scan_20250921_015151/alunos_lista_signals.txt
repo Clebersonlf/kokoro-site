@@ -1,0 +1,9 @@
+18:    table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+92:  <table aria-describedby="tableHint">
+103:    <tbody id="tb">
+105:    </tbody>
+106:  </table>
+107:  <p id="tableHint" class="muted" style="margin:.6rem 0 0">Use “Editar” para alterar um cadastro.</p>
+152:      const r = await fetch('/api/alunos/list', {cache:'no-store'});
+224:      const r = await fetch('/api/convites/criar', {
+291:      const r = await fetch('/api/convites/cancelar', {

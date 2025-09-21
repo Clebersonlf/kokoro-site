@@ -1,0 +1,300 @@
+api/admin/auth.js:1:export default async function handler(req, res) {
+api/admin/auth.js:5:    if (req.method !== 'POST') {
+api/admin/auth.js:6:      res.setHeader('Allow', 'POST');
+api/admin/auth.js:7:      return res.status(405).json({ ok:false, step:'method', message:'Use POST' });
+api/admin/auth.js:11:    const body = await new Promise((resolve, reject) => {
+api/admin/auth.js:13:      req.on('data', (c) => (data += c));
+api/admin/auth.js:14:      req.on('end', () => {
+api/admin/auth.js:15:        try { resolve(JSON.parse(data || '{}')); }
+api/admin/auth.js:18:      req.on('error', reject);
+api/admin/auth.js:25:      return res.status(400).json({ ok:false, step:'input', message:'Informe email e senha' });
+api/admin/auth.js:37:      return res.status(500).json({ ok:false, step:'env', message:'DATABASE_URL ausente' });
+api/admin/auth.js:40:    // Neon + fetch com timeout p/ evitar travas
+api/admin/auth.js:44:    const fetchWithTimeout = async (u, opts = {}) => {
+api/admin/auth.js:47:      try { return await fetch(u, { ...opts, signal: ac.signal }); }
+api/admin/auth.js:51:      neonConfig.fetchFunction = fetchWithTimeout;
+api/admin/auth.js:69:      return res.status(401).json({ ok:false, step:'auth', message:'Credenciais inválidas' });
+api/admin/auth.js:77:      return res.status(500).json({ ok:false, step:'hash', message:'Usuário sem hash de senha configurado' });
+api/admin/auth.js:84:      return res.status(401).json({ ok:false, step:'auth', message:'Credenciais inválidas' });
+api/admin/auth.js:88:    res.setHeader('Cache-Control','no-store');
+api/admin/auth.js:89:    return res.status(200).json({
+api/admin/auth.js:102:    return res.status(500).json({
+api/admin/auth.js:109:export default async function handler(req, res) {
+api/admin/auth.js:111:    if (req.method !== 'POST') {
+api/admin/auth.js:112:      res.setHeader('Allow', 'POST');
+api/admin/auth.js:113:      return res.status(405).json({ ok:false, message:'Use POST' });
+api/admin/auth.js:117:    const body = await new Promise((resolve, reject) => {
+api/admin/auth.js:119:      req.on('data', (c) => (data += c));
+api/admin/auth.js:120:      req.on('end', () => {
+api/admin/auth.js:121:        try { resolve(JSON.parse(data || '{}')); }
+api/admin/auth.js:124:      req.on('error', reject);
+api/admin/auth.js:131:      return res.status(400).json({ ok:false, message:'Informe email e senha' });
+api/admin/auth.js:136:      return res.status(200).json({
+api/admin/auth.js:142:    return res.status(401).json({ ok:false, message:'Credenciais inválidas' });
+api/admin/auth.js:144:    return res.status(500).json({ ok:false, message:'Erro interno', detail: String(e?.message || e) });
+api/admin/check.js:1:export default function handler(req, res) {
+api/admin/check.js:2:  const hdr = req.headers['x-admin-secret'];
+api/admin/check.js:6:  return res.json({ ok:true, hasEnv, hasHdr, match });
+api/admin/env.js:3:export default function handler(req, res) {
+api/admin/env.js:5:  const present = Boolean(val);
+api/admin/env.js:9:    present,
+api/admin/env.js:10:    length: present ? String(val).length : 0,
+api/admin/env.js:14:  res.json(info);
+api/admin/login.js:1:export default async function handler(req, res) {
+api/admin/login.js:3:  if (req.method === 'OPTIONS') {
+api/admin/login.js:4:    res.setHeader('Access-Control-Allow-Origin', '*');
+api/admin/login.js:5:    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+api/admin/login.js:6:    res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+api/admin/login.js:7:    return res.status(204).end();
+api/admin/login.js:11:    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+api/admin/login.js:21:        host: req.headers.host,
+api/admin/login.js:22:        ua: req.headers['user-agent'],
+api/admin/login.js:27:    res.setHeader('Access-Control-Allow-Origin', '*');
+api/admin/login.js:30:      return res.status(200).json({ ok:true, token:'admin-token', user:{ role:'admin', email } });
+api/admin/login.js:32:    return res.status(401).json({
+api/admin/login.js:38:    res.setHeader('Access-Control-Allow-Origin', '*');
+api/admin/login.js:39:    return res.status(500).json({ ok:false, message:'Erro no login', error:String(e) });
+api/admin/ping.js:1:export default function handler(req, res) {
+api/admin/ping.js:2:  return res.status(200).json({
+api/admin/summary.js:1:﻿export default function handler(req, res) {
+api/admin/summary.js:2:  return res.status(200).json({
+api/admin/users.js:1:export default async function handler(req, res) {
+api/admin/users.js:12:      return res.status(500).json({ ok:false, step:"env", message:"DATABASE_URL ausente" });
+api/admin/users.js:18:    const fetchWithTimeout = async (u, opts={})=>{
+api/admin/users.js:21:      try { return await fetch(u, { ...opts, signal: ac.signal }); }
+api/admin/users.js:25:      neonConfig.fetchFunction = fetchWithTimeout;
+api/admin/users.js:34:      return res.status(404).json({ ok:false, step:"table", message:"Tabela public.usuarios não existe" });
+api/admin/users.js:46:      return res.status(500).json({ ok:false, step:"columns", message:"Sem colunas na tabela usuarios" });
+api/admin/users.js:58:    res.setHeader("Cache-Control","no-store");
+api/admin/users.js:59:    return res.status(200).json({
+api/admin/users.js:67:    return res.status(500).json({
+api/alunos/complete.js:3:function cors(res) {
+api/alunos/complete.js:4:  res.setHeader('Access-Control-Allow-Origin', '*');
+api/alunos/complete.js:5:  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+api/alunos/complete.js:6:  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+api/alunos/complete.js:18:export default async function handler(req, res) {
+api/alunos/complete.js:19:  cors(res);
+api/alunos/complete.js:20:  if (req.method === 'OPTIONS') return res.status(204).end();
+api/alunos/complete.js:23:  if (!url) return res.status(500).json({ ok:false, message:'POSTGRES_URL não configurado' });
+api/alunos/complete.js:29:    if (req.method === 'GET') {
+api/alunos/complete.js:30:      const token = String((req.query?.token || '')).trim();
+api/alunos/complete.js:31:      if (!token) { await client.end(); return res.status(400).json({ ok:false, message:'token ausente' }); }
+api/alunos/complete.js:45:      if (!r.rows.length) return res.status(404).json({ ok:false, message:'Token inválido' });
+api/alunos/complete.js:46:      return res.status(200).json({ ok:true, aluno: r.rows[0] });
+api/alunos/complete.js:49:    if (req.method === 'POST') {
+api/alunos/complete.js:50:      const body = typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{});
+api/alunos/complete.js:52:      if (!token) { await client.end(); return res.status(400).json({ ok:false, message:'token ausente' }); }
+api/alunos/complete.js:63:      if (!updates.length) { await client.end(); return res.status(400).json({ ok:false, message:'nada para atualizar' }); }
+api/alunos/complete.js:74:      if (!r.rowCount) return res.status(404).json({ ok:false, message:'Token inválido' });
+api/alunos/complete.js:75:      return res.status(200).json({ ok:true, aluno: r.rows[0] });
+api/alunos/complete.js:79:    return res.status(405).json({ ok:false, message:'Method not allowed' });
+api/alunos/complete.js:82:    return res.status(500).json({ ok:false, message:'Erro no complete', error:String(e) });
+api/alunos/delete.js:8:export default async function handler(req, res) {
+api/alunos/delete.js:10:    if (req.method !== 'POST') {
+api/alunos/delete.js:11:      return res.status(405).json({ ok:false, message:'Method not allowed' });
+api/alunos/delete.js:13:    const b = normBody(req.body);
+api/alunos/delete.js:15:    if (!id) return res.status(400).json({ ok:false, message:'id é obrigatório' });
+api/alunos/delete.js:19:    if (!rowCount) return res.status(404).json({ ok:false, message:'Aluno não encontrado para excluir' });
+api/alunos/delete.js:20:    return res.status(200).json({ ok:true, deleted: id });
+api/alunos/delete.js:22:    return res.status(500).json({ ok:false, message:'Erro ao excluir aluno', error: String(e) });
+api/alunos/finalizar.js:1:import { createClient } from '@vercel/postgres';
+api/alunos/finalizar.js:4:export default async function handler(req, res) {
+api/alunos/finalizar.js:5:  if (req.method !== 'POST') {
+api/alunos/finalizar.js:6:    res.setHeader('Allow', 'POST');
+api/alunos/finalizar.js:7:    return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/alunos/finalizar.js:14:      return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido no ambiente' });
+api/alunos/finalizar.js:22:    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+api/alunos/finalizar.js:35:    if (!token)  return res.status(400).json({ ok:false, error:'Falta token' });
+api/alunos/finalizar.js:36:    if (!nome)   return res.status(400).json({ ok:false, error:'Falta nome' });
+api/alunos/finalizar.js:37:    if (!email)  return res.status(400).json({ ok:false, error:'Falta email' });
+api/alunos/finalizar.js:67:    return res.status(200).json({ ok:true, aluno: rows[0] || null, used:'POSTGRES_URL' });
+api/alunos/finalizar.js:71:    return res.status(500).json({ ok:false, error: String(e) });
+api/alunos/get.js:3:export default async function handler(req, res) {
+api/alunos/get.js:5:    if (req.method !== 'GET') {
+api/alunos/get.js:6:      return res.status(405).json({ ok:false, message:'Method not allowed' });
+api/alunos/get.js:8:    const id = (req.query?.id || req.query?.ID || '').toString().trim();
+api/alunos/get.js:9:    if (!id) return res.status(400).json({ ok:false, message:'id é obrigatório' });
+api/alunos/get.js:12:    if (!rows.length) return res.status(404).json({ ok:false, message:'Aluno não encontrado' });
+api/alunos/get.js:13:    return res.status(200).json({ ok:true, data: rows[0] });
+api/alunos/get.js:15:    return res.status(500).json({ ok:false, message:'Erro ao buscar aluno', error: String(e) });
+api/alunos/index.js:3:export default async function handler(req, res) {
+api/alunos/index.js:5:    if (req.method !== 'GET') {
+api/alunos/index.js:6:      return res.status(405).json({ ok:false, message:'Method not allowed' });
+api/alunos/index.js:9:    return res.status(200).json({ ok:true, data: rows });
+api/alunos/index.js:11:    return res.status(500).json({ ok:false, message:'Erro ao listar alunos', error: String(e) });
+api/alunos/list.js:1:import { createClient } from '@vercel/postgres';
+api/alunos/list.js:3:export default async function handler(req, res) {
+api/alunos/list.js:6:    if (!url) return res.status(500).json({ ok:false, error:'NO_DB_URL' });
+api/alunos/list.js:25:    return res.status(200).json({ ok:true, rows });
+api/alunos/list.js:27:    return res.status(500).json({ ok:false, error: String(e) });
+api/alunos/update.js:8:export default async function handler(req, res) {
+api/alunos/update.js:10:    if (req.method !== 'POST') {
+api/alunos/update.js:11:      return res.status(405).json({ ok:false, message:'Method not allowed' });
+api/alunos/update.js:13:    const b = normBody(req.body);
+api/alunos/update.js:19:    if (!nome) return res.status(400).json({ ok:false, message:'nome é obrigatório' });
+api/alunos/update.js:28:      if (!rows.length) return res.status(404).json({ ok:false, message:'Aluno não encontrado para atualizar' });
+api/alunos/update.js:29:      return res.status(200).json({ ok:true, data: rows[0], action:'updated' });
+api/alunos/update.js:36:      return res.status(200).json({ ok:true, data: rows[0], action:'created' });
+api/alunos/update.js:41:    return res.status(500).json({ ok:false, message: msg, error: String(e) });
+api/alunos.js:15:async function readBody(req) {
+api/alunos.js:16:    if (req.body) return req.body; // em alguns ambientes já vem pronto
+api/alunos.js:18:    for await (const c of req) chunks.push(c);
+api/alunos.js:23:export default async function handler(req, res) {
+api/alunos.js:25:    res.setHeader('Access-Control-Allow-Origin', '*');
+api/alunos.js:26:    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+api/alunos.js:27:    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+api/alunos.js:28:    if (req.method === 'OPTIONS') return res.status(204).end();
+api/alunos.js:32:        return res.status(500).json({
+api/alunos.js:41:        if (req.method === 'GET') {
+api/alunos.js:48:            return res.status(200).json({ ok: true, alunos });
+api/alunos.js:51:        if (req.method === 'POST') {
+api/alunos.js:52:            const body = await readBody(req);
+api/alunos.js:56:                return res.status(400).json({ ok: false, error: 'Campo "nome" é obrigatório.' });
+api/alunos.js:64:            return res.status(201).json({ ok: true, aluno: inserted[0] });
+api/alunos.js:67:        res.setHeader('Allow', 'GET, POST, OPTIONS');
+api/alunos.js:68:        return res.status(405).json({ ok: false, error: 'Method not allowed' });
+api/alunos.js:71:        return res.status(500).json({ ok: false, error: String(err) });
+api/auth/login.js:9:export default async function handler(req, res) {
+api/auth/login.js:11:        if (req.method !== "POST") {
+api/auth/login.js:12:            return res.status(405).json({ ok: false, error: "Method not allowed" });
+api/auth/login.js:16:            return res.status(500).json({ ok: false, error: "DATABASE_URL/POSTGRES_URL ausente" });
+api/auth/login.js:24:        const { email, senha } = req.body || {};
+api/auth/login.js:26:            return res.status(400).json({ ok: false, error: "Email e senha são obrigatórios" });
+api/auth/login.js:36:            return res.status(401).json({ ok: false, error: "Credenciais inválidas" });
+api/auth/login.js:44:            return res.status(401).json({ ok: false, error: "Credenciais inválidas" });
+api/auth/login.js:48:        return res.status(200).json({
+api/auth/login.js:54:        return res.status(500).json({ ok: false, error: "Erro interno no login" });
+api/convites/buscar.js:1:import { createClient } from '@vercel/postgres';
+api/convites/buscar.js:5: * Busca por e-mail (contém, case-insensitive). Máx 50 resultados.
+api/convites/buscar.js:7:export default async function handler(req, res) {
+api/convites/buscar.js:10:    if (req.method !== 'GET') {
+api/convites/buscar.js:11:      res.setHeader('Allow', 'GET');
+api/convites/buscar.js:12:      return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/buscar.js:15:    const url = new URL(req.url, `https://${req.headers.host}`);
+api/convites/buscar.js:18:      return res.status(400).json({ ok:false, error:'Parâmetro "email" é obrigatório' });
+api/convites/buscar.js:32:      return res.status(500).json({
+api/convites/buscar.js:50:    return res.status(200).json({ ok:true, count: rows.length, data: rows });
+api/convites/buscar.js:53:    return res.status(500).json({ ok:false, error: String(e) });
+api/convites/cancelar.js:1:import { createClient } from '@vercel/postgres';
+api/convites/cancelar.js:4:function withCors(req, res){
+api/convites/cancelar.js:5:  res.setHeader('Access-Control-Allow-Origin','*');
+api/convites/cancelar.js:6:  res.setHeader('Access-Control-Allow-Methods','POST, OPTIONS');
+api/convites/cancelar.js:7:  res.setHeader('Access-Control-Allow-Headers','Content-Type, Authorization');
+api/convites/cancelar.js:8:  if(req.method === 'OPTIONS'){ res.status(200).end(); return true; }
+api/convites/cancelar.js:12:export default async function handler(req, res){
+api/convites/cancelar.js:13:  if (withCors(req,res)) return;
+api/convites/cancelar.js:15:  if (req.method !== 'POST'){
+api/convites/cancelar.js:16:    res.setHeader('Allow', 'POST, OPTIONS');
+api/convites/cancelar.js:17:    return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/cancelar.js:21:    const body = typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{});
+api/convites/cancelar.js:23:    if(!token) return res.status(400).json({ ok:false, error:'Informe o token' });
+api/convites/cancelar.js:26:    if(!POOL) return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
+api/convites/cancelar.js:53:      return res.status(404).json({ ok:false, error:'Convite não encontrado' });
+api/convites/cancelar.js:55:    return res.status(200).json({ ok:true, token, status:'cancelado' });
+api/convites/cancelar.js:57:    return res.status(500).json({ ok:false, error:String(e) });
+api/convites/criar.js:1:import { createClient } from '@vercel/postgres';
+api/convites/criar.js:4:function withCors(req, res) {
+api/convites/criar.js:5:  res.setHeader('Access-Control-Allow-Origin', '*');
+api/convites/criar.js:6:  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+api/convites/criar.js:7:  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+api/convites/criar.js:8:  if (req.method === 'OPTIONS') { res.status(200).end(); return true; }
+api/convites/criar.js:27:    const r = await fetch('https://www.planckkokoro.com/api/notify/send-template', {
+api/convites/criar.js:38:    return { ok: !!(r.ok && j.ok), response: j };
+api/convites/criar.js:44:export default async function handler(req, res) {
+api/convites/criar.js:45:  if (withCors(req, res)) return;
+api/convites/criar.js:47:  if (req.method !== 'POST') {
+api/convites/criar.js:48:    res.setHeader('Allow', 'POST, OPTIONS');
+api/convites/criar.js:49:    return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/criar.js:53:    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+api/convites/criar.js:56:    if (!email) return res.status(400).json({ ok:false, error:'Informe o e-mail' });
+api/convites/criar.js:58:    if (!POOL)  return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
+api/convites/criar.js:92:    return res.status(200).json({ ok:true, token, url, notify });
+api/convites/criar.js:94:    return res.status(500).json({ ok:false, error:String(e) });
+api/convites/criar.js.bak:1:import { createClient } from '@vercel/postgres';
+api/convites/criar.js.bak:4:function withCors(req, res) {
+api/convites/criar.js.bak:5:  res.setHeader('Access-Control-Allow-Origin', '*');
+api/convites/criar.js.bak:6:  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+api/convites/criar.js.bak:7:  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+api/convites/criar.js.bak:8:  if (req.method === 'OPTIONS') {
+api/convites/criar.js.bak:9:    res.status(200).end();
+api/convites/criar.js.bak:15:export default async function handler(req, res) {
+api/convites/criar.js.bak:16:  if (withCors(req, res)) return;
+api/convites/criar.js.bak:18:  if (req.method !== 'POST') {
+api/convites/criar.js.bak:19:    res.setHeader('Allow', 'POST, OPTIONS');
+api/convites/criar.js.bak:20:    return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/criar.js.bak:24:    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+api/convites/criar.js.bak:27:    if (!email) return res.status(400).json({ ok:false, error:'Informe o e-mail' });
+api/convites/criar.js.bak:29:    if (!POOL)  return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
+api/convites/criar.js.bak:62:    return res.status(200).json({ ok:true, token, url });
+api/convites/criar.js.bak:64:    return res.status(500).json({ ok:false, error:String(e) });
+api/convites/enviar-email.js:1:import { createClient } from '@vercel/postgres';
+api/convites/enviar-email.js:2:import { Resend } from 'resend';
+api/convites/enviar-email.js:4:function ok(res, data){ return res.status(200).json({ ok:true, ...data }); }
+api/convites/enviar-email.js:5:function bad(res, code, msg){ return res.status(code).json({ ok:false, error:msg }); }
+api/convites/enviar-email.js:7:export default async function handler(req, res){
+api/convites/enviar-email.js:8:  if (req.method !== 'POST') {
+api/convites/enviar-email.js:9:    res.setHeader('Allow', 'POST');
+api/convites/enviar-email.js:10:    return bad(res, 405, 'Method not allowed');
+api/convites/enviar-email.js:13:  const { token, email: emailIn, nome: nomeIn } = (typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{}));
+api/convites/enviar-email.js:17:  if (!RESEND_API_KEY) return bad(res, 500, 'RESEND_API_KEY não definido (configure em Vercel)');
+api/convites/enviar-email.js:18:  const resend = new Resend(RESEND_API_KEY);
+api/convites/enviar-email.js:26:    if (!POOL) return bad(res, 500, 'POSTGRES_URL não definido');
+api/convites/enviar-email.js:31:      if (!rows?.length) return bad(res, 404, 'Convite não encontrado ou cancelado');
+api/convites/enviar-email.js:39:    if (!email) return bad(res, 400, 'Informe token OU email');
+api/convites/enviar-email.js:57:    const sendResult = await resend.emails.send({
+api/convites/enviar-email.js:64:    return ok(res, { provider: 'resend', id: sendResult?.id || null, to: email, link });
+api/convites/enviar-email.js:66:    return bad(res, 500, String(e));
+api/convites/ping.js:1:export default function handler(req, res) {
+api/convites/ping.js:2:  return res.status(200).json({
+api/convites/status.js:1:import { createClient } from '@vercel/postgres';
+api/convites/status.js:3:function withCors(req, res) {
+api/convites/status.js:4:  res.setHeader('Access-Control-Allow-Origin', '*');
+api/convites/status.js:5:  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+api/convites/status.js:6:  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+api/convites/status.js:7:  if (req.method === 'OPTIONS') { res.status(200).end(); return true; }
+api/convites/status.js:11:export default async function handler(req, res) {
+api/convites/status.js:12:  if (withCors(req, res)) return;
+api/convites/status.js:13:  if (req.method !== 'GET') {
+api/convites/status.js:14:    res.setHeader('Allow', 'GET, OPTIONS');
+api/convites/status.js:15:    return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/status.js:19:    const url = new URL(req.url, 'http://localhost');
+api/convites/status.js:21:    if (!token) return res.status(400).json({ ok:false, error:'Informe token' });
+api/convites/status.js:24:    if (!POOL) return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
+api/convites/status.js:50:    if (!rows.length) return res.status(404).json({ ok:false, error:'TOKEN_NAO_ENCONTRADO' });
+api/convites/status.js:51:    return res.status(200).json({ ok:true, convite: rows[0] });
+api/convites/status.js:53:    return res.status(500).json({ ok:false, error:String(e) });
+api/convites/ultimos.js:1:import { createClient } from '@vercel/postgres';
+api/convites/ultimos.js:7:export default async function handler(req, res) {
+api/convites/ultimos.js:10:    if (req.method !== 'GET') {
+api/convites/ultimos.js:11:      res.setHeader('Allow', 'GET');
+api/convites/ultimos.js:12:      return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/ultimos.js:16:    const url = new URL(req.url, `https://${req.headers.host}`);
+api/convites/ultimos.js:29:      return res.status(500).json({
+api/convites/ultimos.js:45:    return res.status(200).json({ ok:true, count: rows.length, data: rows });
+api/convites/ultimos.js:48:    return res.status(500).json({ ok:false, error: String(e) });
+api/convites/usar.js:1:import { createClient } from '@vercel/postgres';
+api/convites/usar.js:3:function withCors(req, res) {
+api/convites/usar.js:4:  res.setHeader('Access-Control-Allow-Origin', '*');
+api/convites/usar.js:5:  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+api/convites/usar.js:6:  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+api/convites/usar.js:7:  if (req.method === 'OPTIONS') { res.status(200).end(); return true; }
+api/convites/usar.js:11:export default async function handler(req, res) {
+api/convites/usar.js:12:  if (withCors(req, res)) return;
+api/convites/usar.js:13:  if (req.method !== 'POST') {
+api/convites/usar.js:14:    res.setHeader('Allow', 'POST, OPTIONS');
+api/convites/usar.js:15:    return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/usar.js:19:    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+api/convites/usar.js:21:    if (!token) return res.status(400).json({ ok:false, error:'Informe token' });
+api/convites/usar.js:24:    if (!POOL) return res.status(500).json({ ok:false, error:'POSTGRES_URL não definido' });
+api/convites/usar.js:38:      return res.status(404).json({ ok:false, error:'TOKEN_NAO_ENCONTRADO_OU_CANCELADO' });
+api/convites/usar.js:40:    return res.status(200).json({ ok:true, convite: upd.rows[0] });
+api/convites/usar.js:42:    return res.status(500).json({ ok:false, error:String(e) });
+api/convites/validar.js:2:import { createClient } from '@vercel/postgres';
+api/convites/validar.js:15:export default async function handler(req, res) {
+api/convites/validar.js:16:  if (req.method !== 'GET') {
+api/convites/validar.js:17:    res.setHeader('Allow', 'GET');
+api/convites/validar.js:18:    return res.status(405).json({ ok:false, error:'Method not allowed' });
+api/convites/validar.js:23:    return res.status(500).json({
+api/convites/validar.js:29:  const token = (req.query.token || '').trim();
+api/convites/validar.js:31:    return res.status(400).json({ ok:false, error:'Informe ?token=' });
+api/convites/validar.js:45:      return res.status(404).json({ ok:false, valid:false, reason:'nao_encontrado' });

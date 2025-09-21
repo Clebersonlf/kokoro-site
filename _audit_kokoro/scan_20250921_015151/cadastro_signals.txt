@@ -1,0 +1,2 @@
+529:    <form id="registerForm" action="/cadastro" method="post" novalidate>
+1721:        function getSess(){ try{return JSON.parse(localStorage.getItem("kokoro_session")||"null");}catch(e){return null;} }

@@ -1,0 +1,10 @@
+38:        table{width:100%; border-collapse:collapse; margin-top:10px}
+41:        tbody tr:hover{background-color:#232a34}
+192:        <table>
+203:            <tbody id="tabela-lancamentos"></tbody>
+204:        </table>
+234:        // ---- Integração com cadastro via localStorage ----
+238:                    const raw = localStorage.getItem(key);
+259:                statusIntegracao.textContent = `🔗 Conectado ao cadastro via localStorage (chave: ${key})`;
+311:                const raw = localStorage.getItem(STORAGE_FIN);
+318:            localStorage.setItem(STORAGE_FIN, JSON.stringify(lancamentos));

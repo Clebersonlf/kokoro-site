@@ -1,0 +1,13 @@
+243:      Exportar CSV da Tabela
+386:  function saveSecret(){ const v=byId('admin-secret').value.trim(); if(v) localStorage.setItem('kokoro_admin_secret', v); }
+402:    const resp = await fetch(path, {
+510:    const getSecret = ()=> localStorage.getItem(SECRET_KEY)||'';
+511:    const setSecret = ()=>{ const v=prompt('Cole seu ADMIN_SECRET'); if(v){ localStorage.setItem(SECRET_KEY,v); alert('OK: secret salvo no navegador.'); } };
+555:        const resp = await fetch('/api/financeiro/repasses_record', {
+582:    <table style="width:100%; border-collapse:collapse; min-width: 800px;" id="tbl-repasses">
+595:      <tbody id="rows-repasses"></tbody>
+596:    </table>
+603:    const getSecret = ()=>localStorage.getItem(SECRET_KEY)||'';
+619:      const resp = await fetch(url, { headers: { 'x-admin-secret': sec } });
+671:        const trs = document.querySelectorAll("#tbl-repasses tbody tr");
+687:        alert("Erro ao gerar CSV: " + e.message);

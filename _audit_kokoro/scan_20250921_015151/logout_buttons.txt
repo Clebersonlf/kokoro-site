@@ -1,0 +1,8 @@
+admin/index.html:87:            <button class="btn-nav" id="btn-logout" type="button">Sair</button>
+admin/index.html:177:    // Botão Sair — garante que só existe UM id="btn-logout"
+admin/index.html.bak.20250918_025541:86:            <button class="btn-nav" id="btn-logout">Sair</button>
+admin/index.html.bak.20250918_025541:88:    <nav style="display:flex;gap:10px"><button class="btn-nav" id="btn-logout">Sair</button><a class="btn-nav" href="/" target="_blank" rel="noopener">Ver site ↗</a></nav>
+admin/index.html.bak_pre_harden:85:            <button class="btn-nav" id="btn-logout">Sair</button>
+admin/index.html.bak_timer:87:            <button class="btn-nav" id="btn-logout" type="button">Sair</button>
+admin/index.html.bak_timer:177:    // Botão Sair — garante que só existe UM id="btn-logout"
+admin/index.html.tmp1:85:    <button class="btn-nav" id="btn-logout">Sair</button>

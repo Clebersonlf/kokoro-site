@@ -1,0 +1,9 @@
+26:    <input id="numero">
+34:    <button onclick="salvar()">Salvar alterações</button>
+44:  const r = await fetch('/api/graduacoes/'+id);
+49:  document.getElementById('numero').value = g.grad_numero || '';
+51:  document.getElementById('data').value   = g.data_graduacao ? new Date(g.data_graduacao).toISOString().slice(0,10) : '';
+57:    grad_numero: (document.getElementById('numero').value || '').trim(),
+59:    data_graduacao: document.getElementById('data').value || null,
+61:  const r = await fetch('/api/graduacoes/'+id, {
+68:  window.location.href = '/admin/graduacao/lista.html';
