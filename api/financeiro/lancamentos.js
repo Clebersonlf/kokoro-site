@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { rows } = await sql`
       select * from financeiro_lancamentos
-      order by coalesce(data, created_at) desc, created_at desc`;
+      order by data desc nulls last, created_at desc`;
     return res.status(200).json(rows);
   }
 
