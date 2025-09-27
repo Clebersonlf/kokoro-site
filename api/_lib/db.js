@@ -1,14 +1,36 @@
-import { sql } from '@vercel/postgres';
+import { createClient } from '@vercel/postgres';
+
+let _client;
 
 /**
- * Cria/garante as tabelas necessárias.
- * Usa gen_random_uuid(); tenta habilitar pgcrypto (ignora erro se não puder).
+ * Devolve um client conectado usando POSTGRES_URL ou DATABASE_URL
+ * (funciona tanto para URL direta quanto para pool).
  */
-export async function ensureSchema() {
-  try { await sql`CREATE EXTENSION IF NOT EXISTS pgcrypto;`; } catch (_) {}
+export async function getClient() {
+  if (_client) return _client;
+  const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error('Faltam as variáveis POSTGRES_URL ou DATABASE_URL.');
+  }
+  _client = createClient({ connectionString });
+  await _client.connect();
+  return _client;
+}
 
-  // Alunos
-  await sql`
+/** atalho: usa tagged template `sql` igual à lib original */
+export async function sql(strings, ...values) {
+  const c = await getClient();
+  return c.sql(strings, ...values);
+}
+
+/** cria o schema se não existir */
+export async function ensureSchema() {
+  const c = await getClient();
+
+  // Extensão (ignora erro se não puder criar em ambiente gerenciado)
+  try { await c.sql`CREATE EXTENSION IF NOT EXISTS pgcrypto;`; } catch {}
+
+  await c.sql`
     CREATE TABLE IF NOT EXISTS alunos (
       id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
       nome        text NOT NULL,
@@ -19,34 +41,27 @@ export async function ensureSchema() {
     );
   `;
 
-  // Graduações (controle de numeração incluído: "numero")
-  await sql`
+  await c.sql`
     CREATE TABLE IF NOT EXISTS graduacoes (
       id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
       aluno_id    uuid REFERENCES alunos(id) ON DELETE CASCADE,
-      modalidade  text NOT NULL,    -- ex: jiu-jitsu
-      nivel       text NOT NULL,    -- ex: faixa/nível
-      numero      integer,          -- seu controle de numeração
+      modalidade  text NOT NULL,
+      nivel       text NOT NULL,
+      numero      integer,
       data        date,
       created_at  timestamptz DEFAULT now()
     );
   `;
 
-  // Financeiro
-  await sql`
+  await c.sql`
     CREATE TABLE IF NOT EXISTS financeiro_lancamentos (
       id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
       aluno_id    uuid REFERENCES alunos(id) ON DELETE SET NULL,
-      tipo        text NOT NULL,    -- "receita" | "despesa"
+      tipo        text NOT NULL,            -- 'receita' | 'despesa'
       valor       numeric(12,2) NOT NULL,
       descricao   text,
       data        date,
       created_at  timestamptz DEFAULT now()
     );
   `;
-
-  // Índices úteis
-  try { await sql`CREATE INDEX IF NOT EXISTS idx_alunos_created ON alunos(created_at DESC);`; } catch (_){}
-  try { await sql`CREATE INDEX IF NOT EXISTS idx_grad_created ON graduacoes(created_at DESC);`; } catch (_){}
-  try { await sql`CREATE INDEX IF NOT EXISTS idx_fin_data_created ON financeiro_lancamentos(data DESC, created_at DESC);`; } catch (_){}
 }

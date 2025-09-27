@@ -1,5 +1,4 @@
-import { sql } from '@vercel/postgres';
-import { ensureSchema } from '../../_lib/db.js';
+import { sql, ensureSchema } from '../../_lib/db.js';
 
 export default async function handler(req, res) {
   await ensureSchema();
@@ -20,7 +19,12 @@ export default async function handler(req, res) {
         returning *`;
       return res.status(201).json(rows[0]);
     } catch (e) {
-      return res.status(400).json({ error: String(e) });
+      // melhora a mensagem quando UNIQUE(email) bater
+      const msg = String(e);
+      if (msg.includes('unique') || msg.toLowerCase().includes('duplicate key')) {
+        return res.status(409).json({ error: 'email já cadastrado' });
+      }
+      return res.status(500).json({ error: msg });
     }
   }
 
