@@ -1,8 +1,8 @@
 import { createClient } from '@vercel/postgres';
 
+/** Retorna um client do Postgres (usa var de ambiente da Vercel). */
 export function getClient() {
-  const client = createClient();
-  return client;
+  return createClient(); // autodetecta DATABASE_URL/POSTGRES_URL
 }
 
 /** Garante extensões e tabelas necessárias. Aceita client injetado. */
@@ -12,9 +12,10 @@ export async function ensureSchema(clientExt) {
   if (!clientExt) { await client.connect(); mustClose = true; }
 
   try {
-    // extensão para gen_random_uuid(); se não puder, ignora erro
+    // Tenta habilitar extensão p/ gen_random_uuid(); se falhar, ignora
     try { await client.sql`CREATE EXTENSION IF NOT EXISTS pgcrypto;`; } catch {}
 
+    // ---- Alunos
     await client.sql`
       CREATE TABLE IF NOT EXISTS alunos (
         id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -26,6 +27,7 @@ export async function ensureSchema(clientExt) {
       );
     `;
 
+    // ---- Lançamentos financeiros
     await client.sql`
       CREATE TABLE IF NOT EXISTS financeiro_lancamentos (
         id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -33,7 +35,7 @@ export async function ensureSchema(clientExt) {
         tipo        text NOT NULL,          -- 'receita' | 'despesa'
         valor       numeric(12,2) NOT NULL,
         descricao   text,
-        data        date,
+      data        date,
         created_at  timestamptz DEFAULT now()
       );
     `;
