@@ -1,16 +1,12 @@
-import { getClient, ensureSchema } from '../_lib/db.js';
+import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
-  res.setHeader('content-type', 'application/json; charset=utf-8');
-  const client = getClient();
-  await client.connect();
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
   try {
-    await ensureSchema(client);
-    const { rows } = await client.sql`SELECT now() AS agora;`;
-    return res.status(200).send(JSON.stringify({ ok: true, agora: rows[0].agora }));
+    const r = await sql`select now() as now`;
+    return res.status(200).json({ ok: true, now: r.rows?.[0]?.now ?? null });
   } catch (e) {
-    return res.status(500).send(JSON.stringify({ ok:false, error: String(e) }));
-  } finally {
-    await client.end();
+    // SEM 500: sempre 200 com erro detalhado
+    return res.status(200).json({ ok: false, error: String(e) });
   }
 }
