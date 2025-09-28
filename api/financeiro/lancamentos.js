@@ -4,10 +4,12 @@ export default async function handler(req, res) {
   const client = getClient();
   await client.connect();
   try {
-    // Garante a tabela (id, tipo, valor etc.)
-    await client.sql`
-      CREATE EXTENSION IF NOT EXISTS pgcrypto;
-    `;
+    // Tenta habilitar pgcrypto; se não puder, ignora o erro.
+    try {
+      await client.sql`CREATE EXTENSION IF NOT EXISTS pgcrypto;`;
+    } catch (_) {}
+
+    // Garante a tabela de lançamentos (id, tipo, valor etc.)
     await client.sql`
       CREATE TABLE IF NOT EXISTS financeiro_lancamentos (
         id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -31,10 +33,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const body = typeof req.body === 'object' && req.body
-        ? req.body
-        : {};
-
+      const body = (typeof req.body === 'object' && req.body) ? req.body : {};
       const aluno_id = body.aluno_id ?? null;
       const tipo     = body.tipo;
       const valor    = body.valor;
@@ -42,6 +41,7 @@ export default async function handler(req, res) {
       const data     = body.data ?? null;
 
       if (!tipo || (valor === undefined || valor === null || isNaN(Number(valor)))) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
         return res.status(400).json({ error: 'Campos obrigatórios: tipo ("receita"|"despesa") e valor numérico.' });
       }
 
@@ -55,6 +55,7 @@ export default async function handler(req, res) {
     }
 
     res.setHeader('Allow', 'GET, POST');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
     return res.status(405).json({ error: 'Method Not Allowed' });
   } catch (e) {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
