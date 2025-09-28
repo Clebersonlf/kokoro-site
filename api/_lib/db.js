@@ -1,20 +1,33 @@
 import { createClient } from '@vercel/postgres';
 
 /**
- * Retorna um client de Postgres que funciona em dois cenários:
- * - Se houver POSTGRES_URL (pool) -> usa pooled (recomendado pela Vercel)
- * - Caso contrário, se houver apenas DATABASE_URL (direto) -> usa conexão direta
+ * Regras:
+ * - Se existir POSTGRES_URL (pooler) -> usa pooled (createClient() sem options)
+ * - Senão, usa conexão direta com DATABASE_URL OU POSTGRES_URL_NON_POOLING (direct: true)
  */
-export function getClientAuto() {
-  const pooled = process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL;
+export function getClient() {
+  const pooled = process.env.POSTGRES_URL;
   if (pooled) {
-    // pooled padrão da Vercel (@vercel/postgres detecta sozinho)
-    return createClient();
+    return createClient(); // a lib pega POSTGRES_URL (pooled)
   }
-  const direct = process.env.DATABASE_URL;
+
+  const direct = process.env.DATABASE_URL || process.env.POSTGRES_URL_NON_POOLING;
   if (direct) {
-    // força modo direto quando só existe DATABASE_URL (neon direto)
     return createClient({ connectionString: direct, direct: true });
   }
-  throw new Error('Nenhuma variável de conexão encontrada (POSTGRES_URL ou DATABASE_URL).');
+
+  throw new Error('Sem variáveis de conexão: defina POSTGRES_URL (pooled) ou DATABASE_URL/POSTGRES_URL_NON_POOLING (direta).');
+}
+
+/** Teste simples de conectividade */
+export async function ping(clientExt) {
+  const client = clientExt ?? getClient();
+  let mustClose = false;
+  if (!clientExt) { await client.connect(); mustClose = true; }
+  try {
+    await client.sql`select 1 as ok`;
+    return true;
+  } finally {
+    if (mustClose) await client.end();
+  }
 }
