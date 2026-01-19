@@ -1,5 +1,5 @@
-const { sql } = require('../_lib/db.js');
-const { randomUUID } = require('node:crypto');
+import { sql } from '../_lib/db.js';
+import { randomUUID } from 'node:crypto';
 
 /* ========= helpers ========= */
 function send(res, code, obj){
@@ -74,7 +74,7 @@ async function ensureSchema() {
 }
 
 /* ========= handler ========= */
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     await withTimeout(ensureSchema(), 15000);
 
