@@ -100,7 +100,12 @@ export default async function handler(req, res) {
       const tipo      = (body.tipo || '').toString().trim();
       const valorNum  = Number(body.valor);
       const descricao = body.descricao ?? null;
-      const data      = body.data ?? null;
+      const dataStr   = body.data ?? null;
+      const dataISO   = dataStr ? fmtDateISO(dataStr) : null;
+
+      if (dataStr && !dataISO) {
+        return send(res, 400, { error: 'data inválida: use YYYY-MM-DD' });
+      }
 
       const tiposValidos = new Set(['receita','despesa']);
       if (!tiposValidos.has(tipo)) {
@@ -116,7 +121,7 @@ export default async function handler(req, res) {
       const id = randomUUID();
       const { rows } = await withTimeout(sql`
         INSERT INTO financeiro_lancamentos (id, aluno_id, tipo, valor, descricao, data)
-        VALUES (${id}, ${aluno_id}, ${tipo}, ${valorNum}, ${descricao}, ${data})
+        VALUES (${id}, ${aluno_id}, ${tipo}, ${valorNum}, ${descricao}, ${dataISO})
         RETURNING id, aluno_id, tipo, valor, descricao, data, created_at
       `, 8000);
 
