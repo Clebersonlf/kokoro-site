@@ -1,11 +1,11 @@
-const { sql } = require('../_lib/db.js');
+import { sql } from '../_lib/db.js';
 
 function send(res, code, obj) {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   return res.status(code).json(obj);
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     const { rows } = await sql`
       SELECT
@@ -23,4 +23,4 @@ module.exports = async function handler(req, res) {
   } catch (e) {
     return send(res, 500, { ok: false, error: String(e) });
   }
-};
+}
