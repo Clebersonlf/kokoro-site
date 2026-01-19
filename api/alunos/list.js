@@ -1,14 +1,13 @@
-import { createClient } from '@vercel/postgres';
+const { sql } = require('../_lib/db.js');
 
-export default async function handler(req, res) {
+function send(res, code, obj) {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  return res.status(code).json(obj);
+}
+
+module.exports = async function handler(req, res) {
   try {
-    const url = process.env.POSTGRES_URL || process.env.DATABASE_URL;
-    if (!url) return res.status(500).json({ ok:false, error:'NO_DB_URL' });
-
-    const client = createClient({ connectionString: url });
-    await client.connect();
-
-    const { rows } = await client.sql`
+    const { rows } = await sql`
       SELECT
         id,
         nome,
@@ -20,10 +19,8 @@ export default async function handler(req, res) {
       ORDER BY criado_em DESC
       LIMIT 200;
     `;
-
-    await client.end();
-    return res.status(200).json({ ok:true, rows });
+    return send(res, 200, rows);
   } catch (e) {
-    return res.status(500).json({ ok:false, error: String(e) });
+    return send(res, 500, { ok: false, error: String(e) });
   }
-}
+};
