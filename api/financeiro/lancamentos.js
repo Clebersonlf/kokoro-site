@@ -76,7 +76,8 @@ async function ensureSchema() {
 /* ========= handler ========= */
 export default async function handler(req, res) {
   try {
-    await withTimeout(ensureSchema(), 15000);
+    // HOTFIX: disabled ensureSchema in serverless (run migrations separately)
+    // await withTimeout(ensureSchema(), 15000);
 
     if (req.method === 'GET') {
       const { rows } = await withTimeout(sql`
