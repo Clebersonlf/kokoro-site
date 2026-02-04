@@ -1,43 +1,32 @@
-# Dependencies
+# Dependências
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Build output
 .next/
 out/
-dist/
+build/
 
-# OS
-.DS_Store
-Thumbs.db
+# Variáveis de Ambiente (SEGURANÇA)
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+.env.prod
+.env.__prod__
+.env.__tmp__
 
-# Logs
-logs/
-*.log
-
-# Temporary files
-*.tmp
-*.temp
-
-# Backup files
+# Backups e Temporários
+backups/
+*.tar.gz
 *.bak
-*.backup
-
-# Custom (seus arquivos temporários)
 _backup_*/
-last_*.json
+_resgate_*/
+
+# IDE e Sistema
+.idea/
+.vscode/
+.vercel/
+*.swp
+.DS_Store
+
+# Scripts de sistema
+backup_kokoro.sh
