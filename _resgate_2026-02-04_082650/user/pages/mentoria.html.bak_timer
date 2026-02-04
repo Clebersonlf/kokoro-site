@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentoria | Kokoro</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+<div class="container">
+    <h1>Mentoria Personalizada</h1>
+    <p>Oferecemos sessões individuais via Google Meet. Após o pagamento, o mentor entrará em contato por e-mail, WhatsApp ou Telegram para agendar sua aula.</p>
+
+    <h2>Áreas Disponíveis:</h2>
+    <ul>
+        <li>Lutas</li>
+        <li>Atividade Física</li>
+        <li>Defesa Pessoal (DEGAS)</li>
+        <li>Jiu-Jitsu</li>
+        <li>Judô</li>
+        <li>Karatê</li>
+    </ul>
+
+    <button onclick="alert('Sistema de pagamento será integrado futuramente.')">Solicitar Mentoria</button>
+</div>
+</body>
+</html>

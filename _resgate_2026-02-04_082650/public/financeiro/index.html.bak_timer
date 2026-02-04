@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Financeiro • Kokoro</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root { --brand:#6c5ce7; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto; margin: 24px; color:#222;}
+    header { display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+    .badge { background:var(--brand); color:#fff; padding:6px 10px; border-radius:999px; font-weight:600; }
+    .card { border:1px solid #ddd; border-radius:14px; padding:16px; margin-bottom:16px; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    label { font-weight:600; display:block; margin-bottom:6px; }
+    input,select { width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; }
+    .muted { color:#666; font-size:12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">Financeiro</span>
+    <h1>Resumo e Evolução</h1>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label>De</label>
+        <input id="from" type="date" />
+      </div>
+      <div>
+        <label>Até</label>
+        <input id="to" type="date" />
+      </div>
+    </div>
+    <div class="muted" style="margin-top:8px">Dica: escolha um intervalo de meses</div>
+  </div>
+
+  <div class="card">
+    <canvas id="chart" height="120"></canvas>
+  </div>
+
+  <script>
+    const from = document.getElementById('from');
+    const to   = document.getElementById('to');
+    const ctx  = document.getElementById('chart').getContext('2d');
+    let chart;
+
+    function monthStart(d){ const x = new Date(d); x.setDate(1); return x.toISOString().slice(0,10); }
+
+    async function load() {
+      if (!from.value || !to.value) return;
+      const url = `/api/financeiro/resumo?from=${from.value}&to=${to.value}`;
+      const r = await fetch(url); const j = await r.json();
+      if (!j.ok) { alert(j.error || 'erro'); return; }
+
+      // monta séries por professor
+      const byProf = {};
+      const labelsSet = new Set();
+      for (const row of j.data) {
+        const k = row.professor_nome || 'TITULAR';
+        const mes = row.mes.slice(0,7);
+        labelsSet.add(mes);
+        if (!byProf[k]) byProf[k] = {};
+        byProf[k][mes] = Number(row.total_prof || 0);
+      }
+      const labels = Array.from(labelsSet).sort();
+
+      const datasets = Object.keys(byProf).sort().map((nome,i) => ({
+        label: nome,
+        data: labels.map(m => byProf[nome][m] ?? 0),
+        borderWidth: 2
+      }));
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets },
+        options: { responsive:true, scales: { y: { beginAtZero:true } } }
+      });
+    }
+
+    // default: últimos 6 meses
+    const now = new Date(); const start = new Date(now); start.setMonth(now.getMonth()-5,1);
+    from.value = monthStart(start); to.value = monthStart(now);
+    [from,to].forEach(el => el.addEventListener('change', load));
+    load();
+  </script>
+</body>
+</html>

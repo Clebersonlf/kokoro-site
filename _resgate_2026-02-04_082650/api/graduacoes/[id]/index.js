@@ -1,0 +1,50 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const { query } = require('../../_db');
+
+function pad4(s){ return String(s).padStart(4,'0'); }
+function isValidNum4(s){ return /^[0-9]{1,4}$/.test(String(s)); }
+
+export default async (req, res) => {
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  try{
+    const id = (req.query.id || '').trim();
+    if (!id) return res.status(400).end(JSON.stringify({ ok:false, message:'id é obrigatório' }));
+
+    if (req.method === 'GET') {
+      const { rows } = await query(`
+        select g.id, g.grad_numero, g.faixa, g.data_graduacao,
+               a.id as aluno_id, a.nome as aluno_nome, a.email as aluno_email
+          from graduacoes g
+          join alunos a on a.id = g.aluno_id
+         where g.id = $1
+      `,[id]);
+      if (!rows.length) return res.status(404).end(JSON.stringify({ ok:false, message:'Não encontrado' }));
+      return res.status(200).end(JSON.stringify({ ok:true, data: rows[0] }));
+    }
+
+    if (req.method === 'PUT') {
+      const { grad_numero, faixa, data_graduacao } = req.body || {};
+      let num = grad_numero;
+      if (num != null && num !== '') {
+        if (!isValidNum4(num)) return res.status(400).end(JSON.stringify({ ok:false, message:'grad_numero inválido' }));
+        num = pad4(num);
+      }
+      const { rowCount } = await query(`
+        update graduacoes
+           set grad_numero   = coalesce($2, grad_numero),
+               faixa         = coalesce($3, faixa),
+               data_graduacao= coalesce($4, data_graduacao)
+         where id = $1
+      `,[id, num ?? null, faixa ?? null, data_graduacao ?? null]);
+      if (!rowCount) return res.status(404).end(JSON.stringify({ ok:false, message:'Não encontrado' }));
+      const { rows } = await query(`select id, grad_numero from graduacoes where id=$1`, [id]);
+      return res.status(200).end(JSON.stringify({ ok:true, data: rows[0] }));
+    }
+
+    return res.status(405).end(JSON.stringify({ ok:false, message:'Method not allowed'}));
+  }catch(e){
+    console.error(e);
+    return res.status(500).end(JSON.stringify({ ok:false, message:'Erro na API graduacoes/[id]'}));
+  }
+};

@@ -1,0 +1,656 @@
+cd /mnt/d/kokoro-site && python3 - <<'PY'
+import re
+
+# Código limpo baseado no seu VSCode
+novo_html = '''<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin • Kokoro</title>
+  <link rel="stylesheet" href="/admin/css/admin-layout.css">
+<style>#mensagens-compose{display:none}</style>
+
+
+<style id="mensagens-modern-css">
+/* Mensagens (UI moderna) — PADRÃO DARK */
+.mmsg{max-width:1100px;margin:0 auto}
+.mmsg-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:6px 0 16px}
+.mmsg-title{margin:0;color:var(--text)}
+.mmsg-sub{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.3}
+.mmsg-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.mmsg-btn{
+  appearance:none;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:800;
+  transition:.15s ease;
+}
+.mmsg-btn:hover{background:rgba(255,255,255,.10);border-color:rgba(52,152,219,.7)}
+.mmsg-btn.primary{background:var(--blue);color:#fff;border-color:transparent}
+.mmsg-btn.primary:hover{filter:brightness(1.06)}
+
+.mmsg-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
+.mmsg-tab{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  padding:10px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:900;
+  color:var(--text);
+  transition:.15s ease;
+}
+.mmsg-tab:hover{background:rgba(255,255,255,.08);border-color:rgba(52,152,219,.6)}
+.mmsg-tab[aria-selected="true"]{background:rgba(52,152,219,.18);border-color:rgba(52,152,219,.55)}
+
+.mmsg-grid{display:grid;grid-template-columns:360px 1fr;gap:14px}
+@media (max-width: 980px){.mmsg-grid{grid-template-columns:1fr}}
+
+.mmsg-panel{
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 10px 28px rgba(0,0,0,.35);
+}
+.mmsg-panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  background:#101827;
+}
+.mmsg-panel-head h3{margin:0;font-size:14px;color:#cfe4ff}
+
+.mmsg-search{
+  width:100%;
+  max-width:220px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:9px 10px;
+  outline:none;
+  background:#0f1320;
+  color:var(--text);
+}
+.mmsg-search:focus{border-color:rgba(52,152,219,.8);box-shadow:0 0 0 3px rgba(52,152,219,.15)}
+
+.mmsg-list{max-height:520px;overflow:auto}
+.mmsg-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.mmsg-item:hover{background:rgba(255,255,255,.04)}
+.mmsg-item.active{background:rgba(52,152,219,.12)}
+
+.mmsg-badge{width:10px;height:10px;border-radius:999px;background:rgba(169,178,195,.55);margin-top:6px;flex:0 0 auto}
+.mmsg-badge.unread{background:var(--blue)}
+
+.mmsg-meta{min-width:0;flex:1}
+.mmsg-line1{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.mmsg-from{font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mmsg-date{font-size:12px;color:var(--muted);white-space:nowrap}
+.mmsg-subject{margin:2px 0 0;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mmsg-snippet{margin:4px 0 0;font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.mmsg-detail{padding:14px;color:var(--text)}
+.mmsg-detail-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.mmsg-detail h3{margin:0;color:var(--text)}
+
+.mmsg-kv{margin:10px 0 0;display:grid;grid-template-columns:90px 1fr;gap:8px 10px;font-size:13px}
+.mmsg-kv div:nth-child(odd){color:var(--muted);font-weight:900}
+
+.mmsg-body{margin:14px 0 0;padding-top:14px;border-top:1px dashed rgba(169,178,195,.28);white-space:pre-wrap;line-height:1.45}
+.mmsg-empty{padding:20px;color:var(--muted)}
+
+.mmsg-compose{display:none}
+.mmsg-compose.active{display:block}
+
+.mmsg-form{display:grid;gap:10px;margin-top:10px}
+.mmsg-field label{display:block;font-size:13px;color:var(--muted);font-weight:900;margin-bottom:6px}
+.mmsg-field input,.mmsg-field select,.mmsg-field textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 12px;
+  outline:none;
+  background:#0f1320;
+  color:var(--text);
+}
+.mmsg-field input:focus,.mmsg-field select:focus,.mmsg-field textarea:focus{
+  border-color:rgba(52,152,219,.8);
+  box-shadow:0 0 0 3px rgba(52,152,219,.15);
+}
+.mmsg-field textarea{min-height:160px;resize:vertical}
+.mmsg-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.mmsg-note{font-size:12px;color:var(--muted);margin-top:8px}
+</style>
+
+
+
+<style id="mensagens-dark-override">
+/* Override DARK para a seção #mensagens (não depende de remover o CSS antigo) */
+#mensagens .mmsg-title{color:#e7e9ee !important}
+#mensagens .mmsg-sub{color:#a9b2c3 !important}
+
+#mensagens .mmsg-btn{
+  border:1px solid #2a3140 !important;
+  background:rgba(255,255,255,.05) !important;
+  color:#e7e9ee !important;
+  font-weight:800 !important;
+}
+#mensagens .mmsg-btn:hover{background:rgba(255,255,255,.10) !important;border-color:rgba(52,152,219,.7) !important}
+#mensagens .mmsg-btn.primary{background:#3498db !important;color:#fff !important;border-color:transparent !important}
+
+#mensagens .mmsg-tab{
+  border:1px solid #2a3140 !important;
+  background:rgba(255,255,255,.04) !important;
+  color:#e7e9ee !important;
+  font-weight:900 !important;
+}
+#mensagens .mmsg-tab:hover{background:rgba(255,255,255,.08) !important;border-color:rgba(52,152,219,.6) !important}
+#mensagens .mmsg-tab[aria-selected="true"]{background:rgba(52,152,219,.18) !important;border-color:rgba(52,152,219,.55) !important}
+
+#mensagens .mmsg-panel{
+  background:linear-gradient(180deg,#161a22,#131722) !important;
+  border:1px solid #2a3140 !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.35) !important;
+}
+#mensagens .mmsg-panel-head{
+  background:#101827 !important;
+  border-bottom:1px solid #2a3140 !important;
+}
+#mensagens .mmsg-panel-head h3{color:#cfe4ff !important}
+
+#mensagens .mmsg-search{
+  background:#0f1320 !important;
+  color:#e7e9ee !important;
+  border:1px solid #2a3140 !important;
+}
+#mensagens .mmsg-search:focus{border-color:rgba(52,152,219,.8) !important;box-shadow:0 0 0 3px rgba(52,152,219,.15) !important}
+
+#mensagens .mmsg-item{border-bottom:1px solid #2a3140 !important}
+#mensagens .mmsg-item:hover{background:rgba(255,255,255,.04) !important}
+#mensagens .mmsg-item.active{background:rgba(52,152,219,.12) !important}
+
+#mensagens .mmsg-from,
+#mensagens .mmsg-subject{color:#e7e9ee !important}
+#mensagens .mmsg-date,
+#mensagens .mmsg-snippet,
+#mensagens .mmsg-empty,
+#mensagens .mmsg-note{color:#a9b2c3 !important}
+
+#mensagens .mmsg-badge{background:rgba(169,178,195,.55) !important}
+#mensagens .mmsg-badge.unread{background:#3498db !important}
+
+#mensagens .mmsg-field label{color:#a9b2c3 !important;font-weight:900 !important}
+#mensagens .mmsg-field input,
+#mensagens .mmsg-field select,
+#mensagens .mmsg-field textarea{
+  background:#0f1320 !important;
+  color:#e7e9ee !important;
+  border:1px solid #2a3140 !important;
+}
+</style>
+
+
+
+
+
+
+<style id="sections-cards-dark-override">
+/* Cards centrais (dark + BORDA) APENAS: Dashboard, Alunos, Convites, Financeiro, Relatórios */
+#dashboard, #alunos, #convites, #financeiro, #relatorios { color: var(--text); }
+
+/* seletor MAIS específico: section -> .grid -> a.card */
+#dashboard .grid a.card,
+#alunos .grid a.card,
+#convites .grid a.card,
+#financeiro .grid a.card,
+#relatorios .grid a.card{
+  background: linear-gradient(180deg, var(--card), var(--card2)) !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: rgba(42,49,64,.45) !important;     /* CINZA */
+  outline: none !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.35) !important;
+  color: var(--text) !important;
+}
+
+/* Hover: borda mais visível */
+#dashboard .grid a.card:hover,
+#alunos .grid a.card:hover,
+#convites .grid a.card:hover,
+#financeiro .grid a.card:hover,
+#relatorios .grid a.card:hover{
+  border-color: rgba(169,178,195,.35) !important;
+}
+
+/* Retângulo branco grande em Convites (container) */
+#convites > div, #convites section, #convites article{
+  background: transparent !important;
+}
+
+/* Textos dentro dos cards */
+#dashboard .grid a.card h3, #alunos .grid a.card h3, #convites .grid a.card h3, #financeiro .grid a.card h3, #relatorios .grid a.card h3{
+  color: var(--text) !important;
+}
+#dashboard .grid a.card p,  #alunos .grid a.card p,  #convites .grid a.card p,  #financeiro .grid a.card p,  #relatorios .grid a.card p{
+  color: var(--muted) !important;
+}
+</style>
+
+
+
+
+
+</head>
+<body>
+
+  <aside class="sidebar">
+    <h2>Painel administrativo</h2>
+      <a href="#" class="menu-item active" data-section="dashboard">🏠 Dashboard</a>
+
+    <button class="cta" type="button" id="btn-mensagens" data-goto="mensagens">
+      <span class="icon">✎</span>
+      <span>Mensagens</span>
+    </button>
+<a href="#" class="menu-item" data-section="alunos">
+      <span class="left"><span class="label">Alunos</span></span>
+    </a>
+
+    <a href="#" class="menu-item" data-section="convites">
+      <span class="left"><span class="label">Convites</span></span>
+    </a>
+
+    <a href="#" class="menu-item" data-section="financeiro">
+      <span class="left"><span class="label">Financeiro</span></span>
+    </a>
+
+    <a href="#" class="menu-item" data-section="relatorios">
+      <span class="left"><span class="label">Relatórios</span></span>
+    </a>
+  </aside>
+
+  <header class="topbar">
+    <h1>Admin • Kokoro</h1>
+    <div class="actions">
+      <a class="btn" href="/" id="btn-logout-link">Sair</a>
+</div>
+  </header>
+
+  <main class="main">
+
+    
+    <section id="dashboard" class="section active">
+      <h2>Dashboard</h2>
+      <p>Escolha uma ação para começar:</p>
+      <div class="grid">
+        <a class="card" href="#" data-goto="mensagens"><h3>Mensagens</h3><p>Escrever e ver Entrada</p></a>
+        <a class="card" href="/admin/cadastro/lista-v2.html"><h3>Alunos</h3><p>Lista e cadastro</p></a>
+        <a class="card" href="/admin/invite.html"><h3>Convites</h3><p>Gerenciar convites</p></a>
+        <a class="card" href="/admin/financeiro/financeiro.html"><h3>Financeiro</h3><p>Controle financeiro</p></a>
+        <a class="card" href="/admin/financeiro/relatorios.html"><h3>Relatórios Financeiros</h3><p>Abrir relatórios</p></a>
+      </div>
+    </section>
+
+    <!-- MENSAGENS MODERNAS -->
+    <section id="mensagens" class="section">
+      <div class="mmsg">
+        <div class="mmsg-header">
+          <div>
+            <h2 class="mmsg-title">Mensagens</h2>
+            <p class="mmsg-sub">Caixas: <strong>Entrada</strong>, <strong>Saída</strong> e <strong>Lixeira</strong> (retenção sugerida: <strong>30 dias</strong>).</p>
+          </div>
+          <div class="mmsg-actions">
+            <button class="mmsg-btn primary" id="mmsg-btn-compose">Escrever</button>
+            <button class="mmsg-btn" id="mmsg-btn-back">Voltar</button>
+          </div>
+        </div>
+
+        <div id="mmsg-compose" class="mmsg-panel mmsg-compose">
+          <div class="mmsg-panel-head">
+            <h3>Nova mensagem</h3>
+          </div>
+          <div class="mmsg-detail">
+            <div class="mmsg-form">
+              <div class="mmsg-field">
+                <label for="mmsg-para">Para</label>
+                <select id="mmsg-para">
+                  <option value="">Selecione um destinatário</option>
+                  <option>Administração</option>
+                  <option>Equipe</option>
+                  <option>Todos</option>
+                </select>
+              </div>
+              <div class="mmsg-field">
+                <label for="mmsg-assunto">Assunto</label>
+                <input id="mmsg-assunto" type="text" placeholder="Ex.: Atualização de escala" />
+              </div>
+              <div class="mmsg-field">
+                <label for="mmsg-corpo">Mensagem</label>
+                <textarea id="mmsg-corpo" placeholder="Digite sua mensagem..."></textarea>
+              </div>
+              <div class="mmsg-form-actions">
+                <button class="mmsg-btn primary" id="mmsg-btn-send" type="button">Enviar</button>
+                <button class="mmsg-btn" id="mmsg-btn-cancel" type="button">Cancelar</button>
+              </div>
+              <div class="mmsg-note">Observação: o envio real pode ser integrado depois (API/intranet). Aqui é a interface.</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="mmsg-main">
+          <div class="mmsg-tabs" role="tablist" aria-label="Caixas de mensagens">
+            <button class="mmsg-tab" role="tab" aria-selected="true" data-box="entrada">Entrada</button>
+            <button class="mmsg-tab" role="tab" aria-selected="false" data-box="saida">Saída</button>
+            <button class="mmsg-tab" role="tab" aria-selected="false" data-box="lixeira">Lixeira</button>
+          </div>
+
+          <div class="mmsg-grid">
+            <div class="mmsg-panel">
+              <div class="mmsg-panel-head">
+                <h3 id="mmsg-list-title">Entrada</h3>
+                <input class="mmsg-search" id="mmsg-search" placeholder="Buscar..." />
+              </div>
+              <div class="mmsg-list" id="mmsg-list"></div>
+              <div class="mmsg-empty" id="mmsg-empty" style="display:none;">Nenhuma mensagem nesta caixa.</div>
+            </div>
+
+            <div class="mmsg-panel">
+              <div class="mmsg-panel-head">
+                <h3>Detalhes</h3>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <button class="mmsg-btn" id="mmsg-btn-trash" type="button">Lixeira</button>
+                  <button class="mmsg-btn" id="mmsg-btn-restore" type="button" style="display:none;">Restaurar</button>
+                </div>
+              </div>
+              <div class="mmsg-detail" id="mmsg-detail">
+                <div class="mmsg-empty">Selecione uma mensagem para ver os detalhes.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mmsg-note" style="margin-top:10px;">
+            Lixeira: recomenda-se exclusão automática após <strong>30 dias</strong> (configurável).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALUNOS -->
+    <section id="alunos" class="section">
+      <h2>Alunos</h2>
+      <div class="grid">
+        <a class="card" href="/admin/cadastro/lista-v2.html"><h3>Lista de Alunos</h3><p>Abrir listagem</p></a>
+        <a class="card" href="/user/cadastro/cadastro.html?from=admin"><h3>Cadastrar Aluno</h3><p>Novo cadastro</p></a>
+      </div>
+    </section>
+
+    <!-- CONVITES -->
+    <section id="convites" class="section">
+      <h2>Convites</h2>
+      <div class="grid">
+        <a class="card" href="/admin/invite.html"><h3>Gerenciar convites</h3><p>Criar e usar convites</p></a>
+      </div>
+    </section>
+
+    <!-- FINANCEIRO -->
+    <section id="financeiro" class="section">
+      <h2>Financeiro</h2>
+      <div class="grid">
+        <a class="card" href="/admin/financeiro/financeiro.html"><h3>Controle Financeiro</h3><p>Abrir financeiro</p></a>
+        <a class="card" href="/admin/financeiro/repasses.html"><h3>Repasses</h3><p>Abrir repasses</p></a>
+      </div>
+    </section>
+
+    <!-- RELATÓRIOS -->
+    <section id="relatorios" class="section">
+      <h2>Relatórios</h2>
+      <div class="grid">
+        <a class="card" href="/admin/financeiro/relatorios.html"><h3>Relatórios Financeiros</h3><p>Abrir relatórios</p></a>
+      </div>
+    </section>
+
+  <script>
+    // --- 1. NAVEGAÇÃO PRINCIPAL ---
+    function activateSection(id) {
+      console.log("Navegando para:", id);
+      
+      // Esconde todas as seções
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      
+      // Mostra a seção alvo
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('active');
+        window.location.hash = id;
+      }
+
+      // Atualiza visual do Sidebar
+      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+      const nav = document.querySelector(`.sidebar a[data-section="${id}"]`);
+      if (nav) nav.classList.add('active');
+    }
+
+    // --- 3. OUVINTE DE CLIQUES GLOBAL ---
+    document.addEventListener("click", (e) => {
+      // Procura se o clique foi em algo que deve navegar
+      const el = e.target.closest("[data-section], [data-goto]");
+      if (!el) return;
+
+      e.preventDefault();
+
+      // Navegação geral (Sidebar ou Dashboard)
+      const sectionId = el.getAttribute("data-section") || el.getAttribute("data-goto");
+      if (sectionId) activateSection(sectionId);
+    });
+
+    // --- 4. INICIALIZAÇÃO ---
+    window.addEventListener("DOMContentLoaded", () => {
+      const hash = window.location.hash.replace('#', '') || 'dashboard';
+      activateSection(hash);
+    });
+
+    // Placeholder para não quebrar se for chamado
+    function atualizarUIPara() { console.log("UI Para atualizada"); }
+  </script>
+
+<script id="mensagens-modern-js">
+(function(){
+  // Dados demo (UI). Depois trocamos por API.
+  const demo = {
+    entrada: [
+      {id:"e1", unread:true, from:"Administração", to:"Você", subject:"Bem-vindo à intranet", date:"Hoje 09:12", body:"Mensagem de boas-vindas.\\n\\nAqui você verá comunicados internos e mensagens diretas."},
+      {id:"e2", unread:false, from:"Equipe", to:"Você", subject:"Reunião de alinhamento", date:"Ontem 18:40", body:"Pauta:\\n- Escala\\n- Procedimentos\\n- Pendências\\n\\nConfirme presença."}
+    ],
+    saida: [
+      {id:"s1", unread:false, from:"Você", to:"Equipe", subject:"Relatório diário", date:"Hoje 08:20", body:"Segue relatório diário.\\n\\nOcorrências: ...\\nObservações: ..."}
+    ],
+    lixeira: [
+      {id:"l1", unread:false, from:"Sistema", to:"Você", subject:"Mensagem removida", date:"12/01", body:"Esta mensagem está na lixeira.\\n\\nRetenção padrão sugerida: 30 dias."}
+    ]
+  };
+
+  const sec = document.getElementById("mensagens");
+  if (!sec) return;
+
+  const tabs = sec.querySelectorAll(".mmsg-tab");
+  const listTitle = document.getElementById("mmsg-list-title");
+  const listEl = document.getElementById("mmsg-list");
+  const emptyEl = document.getElementById("mmsg-empty");
+  const detailEl = document.getElementById("mmsg-detail");
+  const searchEl = document.getElementById("mmsg-search");
+
+  const composePanel = document.getElementById("mmsg-compose");
+  const mainPanel = document.getElementById("mmsg-main");
+
+  const btnCompose = document.getElementById("mmsg-btn-compose");
+  const btnCancel = document.getElementById("mmsg-btn-cancel");
+  const btnSend = document.getElementById("mmsg-btn-send");
+  const btnBack = document.getElementById("mmsg-btn-back");
+  const btnTrash = document.getElementById("mmsg-btn-trash");
+  const btnRestore = document.getElementById("mmsg-btn-restore");
+
+  let currentBox = "entrada";
+  let currentId = null;
+
+  function boxLabel(b){
+    return b === "entrada" ? "Entrada" : (b === "saida" ? "Saída" : "Lixeira");
+  }
+
+  function renderList(){
+    const q = (searchEl?.value || "").toLowerCase().trim();
+    const items = (demo[currentBox] || []).filter(m => {
+      if (!q) return true;
+      return (m.from+m.to+m.subject+m.body+m.date).toLowerCase().includes(q);
+    });
+
+    listTitle.textContent = boxLabel(currentBox);
+    listEl.innerHTML = "";
+    currentId = null;
+    detailEl.innerHTML = '<div class="mmsg-empty">Selecione uma mensagem para ver os detalhes.</div>';
+    btnRestore.style.display = (currentBox === "lixeira") ? "" : "none";
+
+    if (!items.length){
+      emptyEl.style.display = "";
+      return;
+    }
+    emptyEl.style.display = "none";
+
+    for (const m of items){
+      const div = document.createElement("div");
+      div.className = "mmsg-item";
+      div.dataset.id = m.id;
+      div.innerHTML = `
+        <div class="mmsg-badge ${m.unread ? "unread" : ""}"></div>
+        <div class="mmsg-meta">
+          <div class="mmsg-line1">
+            <div class="mmsg-from">${currentBox === "saida" ? "Para: "+m.to : m.from}</div>
+            <div class="mmsg-date">${m.date}</div>
+          </div>
+          <div class="mmsg-subject">${m.subject}</div>
+          <div class="mmsg-snippet">${m.body}</div>
+        </div>
+      `;
+      div.addEventListener("click", () => openMessage(m.id));
+      listEl.appendChild(div);
+    }
+  }
+
+  function openMessage(id){
+    currentId = id;
+    sec.querySelectorAll(".mmsg-item").forEach(x => x.classList.toggle("active", x.dataset.id === id));
+    const m = (demo[currentBox] || []).find(x => x.id === id);
+    if (!m) return;
+
+    m.unread = false;
+
+    detailEl.innerHTML = `
+      <div class="mmsg-detail-top">
+        <h3>${m.subject}</h3>
+        <div class="mmsg-date">${m.date}</div>
+      </div>
+      <div class="mmsg-kv">
+        <div>De</div><div>${m.from}</div>
+        <div>Para</div><div>${m.to}</div>
+        <div>Caixa</div><div>${boxLabel(currentBox)}</div>
+      </div>
+      <div class="mmsg-body">${escapeHtml(m.body)}</div>
+    `;
+
+    // remove badge unread visual
+    const row = sec.querySelector(`.mmsg-item[data-id="${id}"] .mmsg-badge`);
+    if (row) row.classList.remove("unread");
+  }
+
+  function escapeHtml(str){
+    return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function setBox(box){
+    currentBox = box;
+    tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.box === box)));
+    renderList();
+  }
+
+  function showCompose(){
+    composePanel.classList.add("active");
+    mainPanel.style.display = "none";
+  }
+
+  function hideCompose(){
+    composePanel.classList.remove("active");
+    mainPanel.style.display = "";
+  }
+
+  tabs.forEach(t => t.addEventListener("click", () => setBox(t.dataset.box)));
+
+  searchEl?.addEventListener("input", () => renderList());
+
+  btnCompose?.addEventListener("click", () => showCompose());
+  btnCancel?.addEventListener("click", () => hideCompose());
+  btnBack?.addEventListener("click", () => {
+    // volta para o dashboard se existir activateSection, senão só esconde
+    try { if (typeof activateSection === "function") activateSection("dashboard"); } catch(e) {}
+  });
+
+  btnSend?.addEventListener("click", () => {
+    const para = (document.getElementById("mmsg-para")||{}).value || "";
+    const assunto = (document.getElementById("mmsg-assunto")||{}).value || "";
+    const corpo = (document.getElementById("mmsg-corpo")||{}).value || "";
+    if (!para || !assunto.trim() || !corpo.trim()){
+      alert("Preencha Para, Assunto e Mensagem.");
+      return;
+    }
+    demo.saida.unshift({
+      id: "s"+Math.random().toString(16).slice(2),
+      unread:false,
+      from:"Você",
+      to: para,
+      subject: assunto.trim(),
+      date: "Agora",
+      body: corpo.trim()
+    });
+    alert("Mensagem enviada (modo demo).");
+    hideCompose();
+    setBox("saida");
+    // limpar
+    document.getElementById("mmsg-assunto").value = "";
+    document.getElementById("mmsg-corpo").value = "";
+    document.getElementById("mmsg-para").value = "";
+  });
+
+  btnTrash?.addEventListener("click", () => {
+    if (!currentId) return;
+    const idx = (demo[currentBox]||[]).findIndex(x => x.id === currentId);
+    if (idx < 0) return;
+    const [m] = demo[currentBox].splice(idx, 1);
+    demo.lixeira.unshift(m);
+    setBox("lixeira");
+  });
+
+  btnRestore?.addEventListener("click", () => {
+    if (currentBox !== "lixeira" || !currentId) return;
+    const idx = (demo.lixeira||[]).findIndex(x => x.id === currentId);
+    if (idx < 0) return;
+    const [m] = demo.lixeira.splice(idx, 1);
+    demo.entrada.unshift(m);
+    setBox("entrada");
+  });
+
+  // init
+  setBox("entrada");
+})();
+</script>
+
+</body>
+</html>'''
+

@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8">
+<title>Limpar cache do site</title>
+<pre id="out">Limpando cache/localStorage/sessionStorage...</pre>
+<script>
+(async () => {
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
+    if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
+    document.getElementById('out').textContent = 'OK! Limpo. Agora recarregue o Financeiro.';
+  } catch (e) {
+    document.getElementById('out').textContent = 'Erro ao limpar: ' + String(e);
+  }
+})();
+</script>

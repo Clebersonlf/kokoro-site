@@ -1,0 +1,64 @@
+import { getClient } from '../../lib/db.js';
+import { calcularSplit } from '../../lib/rateio.js';
+
+function isAdmin(req) {
+  const auth = req.headers['x-admin-secret'];
+  return auth && process.env.ADMIN_SECRET && auth === process.env.ADMIN_SECRET;
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ ok:false, error:'Method not allowed' });
+  }
+  if (!isAdmin(req)) return res.status(401).json({ ok:false, error:'unauthorized' });
+
+  const { aluno_id, matricula_id, competencia, valor_pago } = req.body || {};
+  if (!aluno_id || !matricula_id || !competencia || valor_pago == null) {
+    return res.status(400).json({ ok:false, error:'aluno_id, matricula_id, competencia, valor_pago são obrigatórios' });
+  }
+
+  const client = getClient();
+  await client.connect();
+
+  try {
+    const { rows: mRows } = await client.sql`
+      SELECT professor_id FROM matriculas WHERE id=${matricula_id} AND ativo=true LIMIT 1;
+    `;
+    if (!mRows.length) return res.status(400).json({ ok:false, error:'Matrícula inválida/ativa' });
+    const professorId = mRows[0].professor_id;
+
+    const { rows: rRows } = await client.sql`
+      SELECT percentual_professor, percentual_titular
+      FROM rateio_matricula
+      WHERE matricula_id=${matricula_id}
+        AND inicio_vigencia <= ${competencia}::date
+        AND (fim_vigencia IS NULL OR fim_vigencia >= ${competencia}::date)
+      ORDER BY inicio_vigencia DESC
+      LIMIT 1;
+    `;
+    let a = 0, b = 100;
+    if (rRows.length) { a = Number(rRows[0].percentual_professor); b = Number(rRows[0].percentual_titular); }
+
+    const split = calcularSplit(Number(valor_pago), a, b);
+
+    const { rows: pRows } = await client.sql`
+      INSERT INTO pagamentos (aluno_id, matricula_id, professor_id, competencia, valor_pago)
+      VALUES (${aluno_id}, ${matricula_id}, ${professorId}, ${competencia}, ${valor_pago})
+      RETURNING id;
+    `;
+    const pagamentoId = pRows[0].id;
+
+    const regra = \`prof=\${a}% | titular=\${b}%\`;
+    await client.sql`
+      INSERT INTO rateios_pagamento (pagamento_id, percentual_professor, percentual_titular, valor_total, valor_professor, valor_titular, regra_usada)
+      VALUES (${pagamentoId}, ${a}, ${b}, ${valor_pago}, ${split.parte_professor}, ${split.parte_titular}, ${regra});
+    `;
+
+    return res.json({ ok:true, pagamento_id: pagamentoId, split, regra_usada: regra });
+  } catch (e) {
+    return res.status(500).json({ ok:false, error: String(e) });
+  } finally {
+    await client.end();
+  }
+}

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Relatórios Financeiros (Simples)</title>
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="pragma" content="no-cache"/>
+  <meta http-equiv="expires" content="0"/>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:16px;max-width:900px}
+    .cards{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+    .card{flex:1 1 260px;border:1px solid #ddd;border-radius:8px;padding:12px}
+    .big{font-size:22px;font-weight:700}
+    .ok{color:#0a7}.bad{color:#c33}.muted{color:#666}
+    table{border-collapse:collapse;width:100%;margin-top:12px}
+    th,td{border:1px solid #ddd;padding:8px}
+    thead th{background:#f2f2f2}td.valor{text-align:right}
+  </style>
+</head>
+<body>
+  <h1>Relatórios Financeiros (Simples) • REL-SIMPLES</h1>
+  <p class="muted">Fonte: <code>/api/financeiro/lancamentos</code> (sem cache)</p>
+
+  <div class="cards">
+    <div class="card"><div>Receitas</div><div id="total-rec" class="big ok">R$ 0,00</div></div>
+    <div class="card"><div>Despesas + Repasses</div><div id="total-desp" class="big bad">R$ 0,00</div></div>
+    <div class="card"><div>Saldo</div><div id="saldo" class="big">R$ 0,00</div></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th class="valor">Valor</th></tr></thead>
+    <tbody id="tbody"><tr><td class="muted" colspan="4">Carregando…</td></tr></tbody>
+  </table>
+
+  <script>
+    const money=n=>Number(n||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+    const iso=d=>String(d||"").slice(0,10);
+    (async()=>{
+      const r=await fetch("/api/financeiro/lancamentos?t="+Date.now(),{cache:"no-store"});
+      const data=await r.json();
+      let rec=0,desp=0;
+      if(Array.isArray(data)){
+        for(const l of data){const v=Number(l.valor||0); if(l.tipo==="receita")rec+=v; else desp+=v;}
+        document.getElementById("total-rec").textContent=money(rec);
+        document.getElementById("total-desp").textContent=money(desp);
+        document.getElementById("saldo").textContent=money(rec-desp);
+        const tb=document.getElementById("tbody");
+        tb.innerHTML=(data.length?data.map(l=>`
+          <tr><td>${iso(l.data)}</td><td>${l.tipo}</td><td>${l.descricao??"-"}</td><td class="valor">${money(l.valor)}</td></tr>
+        `).join(""):`<tr><td class="muted" colspan="4">Sem lançamentos</td></tr>`);
+      } else {
+        document.getElementById("tbody").innerHTML = `<tr><td class="muted" colspan="4">Resposta inesperada</td></tr>`;
+      }
+    })();
+  </script>
+</body>
+</html>

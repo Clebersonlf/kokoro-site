@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Financeiro • Kokoro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      margin: 20px;
+      color: #222;
+    }
+    h1 { margin-bottom: 10px; }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+    }
+    button {
+      background: #6c5ce7;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:hover { opacity: 0.9; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid #ddd;
+      padding: 6px;
+      text-align: left;
+    }
+    th { background: #fafafa; }
+    .receita { color: green; font-weight: bold; }
+    .despesa { color: red; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+  <h1>Financeiro</h1>
+
+  <div class="card">
+    <h2>Novo lançamento</h2>
+
+    <label>Data</label>
+    <input type="date" id="data">
+
+    <label>Tipo</label>
+    <select id="tipo">
+      <option value="receita">Receita</option>
+      <option value="despesa">Despesa</option>
+    </select>
+
+    <label>Valor (R$)</label>
+    <input type="number" id="valor" step="0.01">
+
+    <label>Aluno ID (opcional)</label>
+    <input type="text" id="aluno_id">
+
+    <label>Descrição</label>
+    <input type="text" id="descricao">
+
+    <button onclick="salvar()">Salvar</button>
+  </div>
+
+  <div class="card">
+    <h2>Lançamentos</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody id="lista"></tbody>
+    </table>
+  </div>
+
+<script>
+async function carregar() {
+  const res = await fetch('/api/financeiro/lancamentos');
+  const dados = await res.json();
+  const tbody = document.getElementById('lista');
+  tbody.innerHTML = '';
+
+  dados.forEach(l => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${l.data}</td>
+      <td class="${l.tipo}">${l.tipo}</td>
+      <td>R$ ${Number(l.valor).toFixed(2)}</td>
+      <td>${l.descricao || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function salvar() {
+  const payload = {
+    data: document.getElementById('data').value,
+    tipo: document.getElementById('tipo').value,
+    valor: document.getElementById('valor').value,
+    aluno_id: document.getElementById('aluno_id').value || null,
+    descricao: document.getElementById('descricao').value
+  };
+
+  const res = await fetch('/api/financeiro/lancamentos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) {
+    alert('Erro ao salvar');
+    return;
+  }
+
+  document.getElementById('valor').value = '';
+  document.getElementById('descricao').value = '';
+  carregar();
+}
+
+carregar();
+</script>
+</body>
+</html>

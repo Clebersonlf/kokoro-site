@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastrar • Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin-layout.css">
+</head>
+<body>
+
+  <header class="topbar" style="left:0;">
+    <h1>Cadastrar pessoa</h1>
+    <div class="actions">
+      <a class="btn" href="/admin/">Voltar</a>
+      <a class="btn" href="/admin/cadastro/lista.html">Lista</a>
+    </div>
+  </header>
+
+  <main class="main" style="margin-left:0;">
+    <div class="compose" style="max-width:760px;">
+      <h2 style="margin:0 0 12px 0;">Novo cadastro</h2>
+
+      <div class="compose-row">
+        <label>Nome completo</label>
+        <input id="nome" type="text" placeholder="Ex.: João da Silva">
+      </div>
+
+      <div class="compose-row">
+        <label>E-mail</label>
+        <input id="email" type="email" placeholder="Ex.: joao@email.com">
+      </div>
+
+      <div class="compose-row">
+        <label>Telefone</label>
+        <input id="telefone" type="tel" placeholder="Ex.: (31) 99999-9999">
+      </div>
+
+      <div class="compose-row">
+        <label>Perfil</label>
+        <select id="perfil">
+          <option value="aluno" selected>Aluno</option>
+          <option value="professor">Professor</option>
+          <option value="instrutor">Instrutor</option>
+        </select>
+      </div>
+
+      <div class="compose-actions">
+        <button class="btn" id="btn-salvar" type="button">Salvar</button>
+        <button class="btn" id="btn-limpar" type="button">Limpar</button>
+      </div>
+
+      <p style="margin-top:12px;color:#334155;font-weight:700;">
+        Por enquanto é apenas interface. Depois integramos com banco para salvar e classificar por perfil (aluno/professor/instrutor).
+      </p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("btn-salvar").addEventListener("click", () => {
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+      const perfil = document.getElementById("perfil").value;
+
+      if (!nome || !email) return alert("Preencha Nome e E-mail.");
+
+      alert("Cadastro salvo (simulado): " + nome + " • " + email + " • " + perfil);
+
+      // Aqui depois entra a integração (Firebase/Supabase/etc.)
+      // Ex.: salvar {nome,email,telefone,perfil} no banco
+    });
+
+    document.getElementById("btn-limpar").addEventListener("click", () => {
+      document.getElementById("nome").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("telefone").value = "";
+      document.getElementById("perfil").value = "aluno";
+    });
+  </script>
+
+</body>
+</html>
