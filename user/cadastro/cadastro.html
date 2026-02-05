@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kokoro - Cadastro de Atleta (Versão Aurora)</title><link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -969,6 +969,7 @@
                 <input type="checkbox" id="aceitoTermos" name="aceitoTermos" required>
                 <label for="aceitoTermos">Li e aceito os termos e condições.</label>
             </div>
+<div class="h-captcha" data-sitekey="6ff05470-b628-411e-8282-c09a1140054c"></div>
             <button type="submit" class="submit-button">Cadastrar</button>
         </div>
     </form>
@@ -1732,5 +1733,34 @@
     })();
 </script>
 </body>
+<script>
+(function () {
+  const form = document.getElementById('registerForm');
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Captcha ainda está carregando. Aguarde alguns segundos e tente novamente.');
+      return;
+    }
+
+    if (!token) {
+      e.preventDefault();
+      alert('Por favor, complete o captcha para continuar.');
+      return;
+    }
+
+    // Adiciona o token como campo oculto
+    let input = form.querySelector('input[name="h-captcha-response"]');
+    if (!input) {
+      input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'h-captcha-response';
+      form.appendChild(input);
+    }
+    input.value = token;
+  }, true); // true = capture (roda antes dos outros listeners)
+})();
+</script>
 </html>
 

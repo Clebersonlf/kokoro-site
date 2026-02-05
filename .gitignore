@@ -30,3 +30,5 @@ _resgate_*/
 
 # Scripts de sistema
 backup_kokoro.sh
+.vercel
+.env*.local

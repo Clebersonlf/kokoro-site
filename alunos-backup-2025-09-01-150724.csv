@@ -1,5 +1,0 @@
-id,nome,email,telefone,cad_numero,created_at,numero_vitalicio,status,criado_em,selfie_url
-59fe069c-99bb-45fa-94b9-3e0597a12ed4,Aluno Teste 2,Clebersonlf@yahoo.com.br,31988887777,,2025-09-01 16:27:47.194443+00,T-002,,2025-09-01 16:27:47.194443+00,
-7d1ae0a1-4532-4315-ad1e-559900c22059,Aluno Teste 1,Luizguinderteam@gmail.com,31999998888,,2025-09-01 16:27:21.085063+00,T-001,,2025-09-01 16:27:21.085063+00,
-7d61f736-c02c-480e-9f92-5000340d0b2e,Maria Teste,maria.teste@example.com,11999998888,,2025-09-01 12:51:06.337191+00,A-123,,2025-09-01 12:51:06.337191+00,
-bf9f5145-b263-4f8d-a2e3-7df78e5f6522,Aluno Demo,demo@ex.com,,0010,2025-08-26 17:56:01.651601+00,,,2025-09-01 06:06:35.935485+00,
