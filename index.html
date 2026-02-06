@@ -266,7 +266,7 @@
                 e.preventDefault();
                 if (loginError) loginError.style.display = 'none';
                 const email = (document.getElementById('email')?.value || '').trim().toLowerCase();
-                const senha = document.getElementById('password')?.value || '';
+                const password = document.getElementById('password')?.value || '';
 
                 try {
                     const resp = await fetch('/api/admin/login', {
