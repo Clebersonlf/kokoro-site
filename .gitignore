@@ -41,3 +41,5 @@ logs/
 # Custom (seus arquivos temporários)
 _backup_*/
 last_*.json
+.vercel
+.env*.local
