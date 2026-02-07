@@ -17,7 +17,7 @@
     th,td{border:1px solid #ddd;padding:8px}
     thead th{background:#f2f2f2}td.valor{text-align:right}
   </style>
-</head>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/admin/admin.css"></head>
 <body>
   <h1>Relatórios Financeiros (Simples) • REL-SIMPLES</h1>
   <p class="muted">Fonte: <code>/api/financeiro/lancamentos</code> (sem cache)</p>
@@ -28,7 +28,7 @@
     <div class="card"><div>Saldo</div><div id="saldo" class="big">R$ 0,00</div></div>
   </div>
 
-  <table>
+  <table class="table">
     <thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th class="valor">Valor</th></tr></thead>
     <tbody id="tbody"><tr><td class="muted" colspan="4">Carregando…</td></tr></tbody>
   </table>
