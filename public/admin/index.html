@@ -1,22 +1,86 @@
-<!-- MARCA-ADMIN-DEPLOY 1770269673 -->
 <!doctype html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin • Kokoro</title>
-  <style>
-    body{font-family:system-ui,Arial;margin:24px;background:#0b1020;color:#e7e9ee}
-    a{color:#7dd3fc}
-    .card{border:1px solid #2a3140;border-radius:12px;padding:16px;margin:12px 0;background:#101827}
-  </style>
+  <link rel="stylesheet" href="/admin/css/admin-layout.css">
 </head>
 <body>
-  <h1>Admin • Kokoro</h1>
-  <div class="card"><a href="/admin/cadastro/lista-v2.html">Alunos</a></div>
-  <div class="card"><a href="/admin/invite.html">Convites</a></div>
-  <div class="card"><a href="/admin/financeiro/financeiro.html">Financeiro</a></div>
-  <div class="card"><a href="/admin/financeiro/relatorios.html">Relatórios</a></div>
-  <div class="card"><a href="/">Voltar ao site</a></div>
+
+  <aside class="sidebar">
+    <h2>Painel Admin</h2>
+    <a href="#" class="menu-item active" data-section="home">Home</a>
+    <a href="#" class="menu-item" data-section="alunos">Alunos</a>
+    <a href="#" class="menu-item" data-section="convites">Convites</a>
+    <a href="#" class="menu-item" data-section="financeiro">Financeiro</a>
+    <a href="#" class="menu-item" data-section="relatorios">Relatórios</a>
+  </aside>
+
+  <header class="topbar">
+    <h1>Admin • Kokoro</h1>
+    <div class="actions">
+      <a class="btn" href="/" target="_blank" rel="noopener">Ver site</a>
+      <button class="btn" id="btn-logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section id="home" class="section active">
+      <div class="grid">
+        <a class="card" href="/admin/cadastro/lista.html"><h3>Alunos • Lista</h3><p>Gerenciar alunos e cadastros</p></a>
+        <a class="card" href="/admin/graduacao/lista.html"><h3>Graduações</h3><p>Gerenciar graduações</p></a>
+        <a class="card" href="/admin/financeiro/financeiro.html"><h3>Financeiro</h3><p>Pagamentos e controle financeiro</p></a>
+        <a class="card" href="/admin/financeiro/relatorios.html"><h3>Relatórios</h3><p>Relatórios e indicadores</p></a>
+      </div>
+    </section>
+
+    <section id="alunos" class="section">
+      <h2>Alunos</h2>
+      <div class="grid">
+        <a class="card" href="/admin/cadastro/lista.html"><h3>Lista de Alunos</h3><p>Abrir listagem</p></a>
+      </div>
+    </section>
+
+    <section id="convites" class="section">
+      <h2>Convites</h2>
+      <div class="grid">
+        <a class="card" href="/admin/invite.html"><h3>Gerenciar convites</h3><p>Criar e usar convites</p></a>
+      </div>
+    </section>
+
+    <section id="financeiro" class="section">
+      <h2>Financeiro</h2>
+      <div class="grid">
+        <a class="card" href="/admin/financeiro/financeiro.html"><h3>Controle Financeiro</h3><p>Abrir financeiro</p></a>
+        <a class="card" href="/admin/financeiro/repasses.html"><h3>Repasses</h3><p>Abrir repasses</p></a>
+      </div>
+    </section>
+
+    <section id="relatorios" class="section">
+      <h2>Relatórios</h2>
+      <div class="grid">
+        <a class="card" href="/admin/financeiro/relatorios.html"><h3>Relatórios Financeiros</h3><p>Abrir relatórios</p></a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll(".menu-item").forEach(a => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const id = a.getAttribute("data-section");
+        document.querySelectorAll(".menu-item").forEach(x => x.classList.remove("active"));
+        document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+        a.classList.add("active");
+        document.getElementById(id).classList.add("active");
+      });
+    });
+
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      window.location.href = "/admin/login.html";
+    });
+  </script>
+
 </body>
 </html>
