@@ -1,0 +1,23 @@
+ba9387a — 2026-02-05T09:17:16-03:00 — Restore original black dashboard as site home (public/index.html)
+372f60b — 2026-02-05T08:53:51-03:00 — Home redirect to /admin.html (real page)
+b5942dd — 2026-02-05T08:33:34-03:00 — Fix home to redirect to real page
+35c7de3 — 2026-02-05T08:27:20-03:00 — Fix Vercel Next.js output (.next) to restore /
+6a16e04 — 2026-02-05T08:19:04-03:00 — Restaurando arquivos originais
+ffe0946 — 2026-02-05T08:10:51-03:00 — Add cadastro page at /user/cadastro/cadastro.html
+30731ad — 2026-02-05T07:03:57-03:00 — Fix Vercel outputDirectory for Next.js (.next)
+f2724aa — 2026-02-05T07:02:14-03:00 — Force Vercel to treat project as Next.js
+9961370 — 2026-02-05T07:00:22-03:00 — Add public index.html to prevent Vercel root 404
+868eed6 — 2026-02-05T06:58:47-03:00 — Rename root api directory to avoid Vercel/Next conflict
+bdf580d — 2026-02-05T06:44:40-03:00 — Add Next.js app router pages (root layout and routes)
+b5404cd — 2026-02-04T08:34:47-03:00 — Security: strengthen .gitignore to prevent sensitive files
+112a950 — 2026-02-04T08:33:17-03:00 — Daily backup
+8658c12 — 2026-02-04T08:33:05-03:00 — Security: ensure env files are not tracked
+fa7dde1 — 2026-02-04T08:30:37-03:00 — Cleanup: remove old backups and temporary files
+e44c00a — 2026-02-04T08:30:22-03:00 — Cleanup: remove duplicate admin/ folder (now using public/admin/)
+b47908c — 2026-02-04T08:28:19-03:00 — Fix: move admin dark/cards to public/ for Vercel serving
+dd069f1 — 2026-02-04T07:59:53-03:00 — Restore Express api/ temporarily while fixing Next routes
+36a53cf — 2026-02-04T07:58:02-03:00 — Disable old Express api/ folder (use Next pages/api only)
+7b5e295 — 2026-02-04T07:57:06-03:00 — Remove duplicate route /api/financeiro_lancamentos
+349c58f — 2026-02-04T07:54:02-03:00 — Fix import path in financeiro/lancamentos
+d9df571 — 2026-02-04T07:49:54-03:00 — Add Next route /api/financeiro/lancamentos
+9bf499d — 2026-02-04T07:46:28-03:00 — Add Next.js API routes (pages/api)

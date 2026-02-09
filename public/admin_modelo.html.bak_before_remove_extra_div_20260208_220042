@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin • Kokoro (modelo)</title>
+  <style>:root{
+      --bg1:#0b3f47;
+      --bg2:#0b1020;
+      --panel:#f1f3f5;
+      --panel2:#e9ecef;
+      --text:#0f172a;
+      --muted:#475569;
+      --teal:#0d6b73;
+      --teal2:#0b5560;
+      --cta:#28c66f;
+      --border:rgba(15,23,42,.12);
+      --white:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,Arial;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--white);
+      min-height:100vh;
+    }
+    a{color:inherit;text-decoration:none}
+    .app{display:flex;min-height:100vh}
+    .sidebar{
+      width:240px;
+      padding:14px 12px;
+      background:transparent;
+      border-right:0;
+    }
+    .sb-top{display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+        .sb-title{font-weight:900;text-align:center;width:100%;letter-spacing:.2px;font-size:15px}
+    .btn-compose{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      width:100%;
+      background:rgba(255,255,255,.06);
+      color:rgba(255,255,255,.85);
+      font-weight:800;
+      border-radius:12px;
+      padding:12px 12px;
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      margin:10px 0 14px;
+    }
+    .btn-compose:hover{
+      background:rgba(255,255,255,.10);
+    }
+    .nav{display:flex;flex-direction:column;gap:10px}
+    .nav a{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);min-height:40px}
+    .nav a:hover{background:rgba(255,255,255,.10)}
+    .nav a.active{
+      background:rgba(255,255,255,.18);
+      border-color:rgba(255,255,255,.18);
+    }
+    .nav .left{display:flex;align-items:center;gap:10px}
+    .icon{
+      width:26px;height:26px;border-radius:10px;
+      background:rgba(0,0,0,.18);
+      display:grid;place-items:center;
+      font-size:12px;
+    }
+    .badge{
+      min-width:28px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.30);
+      color:#0b1020;
+      font-weight:800;
+      font-size:12px;
+      text-align:center;
+    }
+
+    .main{flex:1;padding:12px 14px 18px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 10px;}
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .tabs{display:flex;gap:12px;flex-wrap:wrap}
+    .tab{padding:8px 3px;font-size:14px;
+      color:rgba(255,255,255,.85);
+      border-bottom:3px solid transparent;
+      font-weight:700;
+    }
+    .tab.active{border-bottom-color:rgba(255,255,255,.85);color:var(--white)}
+    .top-actions{display:flex;align-items:center;gap:10px}
+    .circle{
+      width:34px;height:34px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      display:grid;place-items:center;
+      font-weight:900;
+    }
+
+    .panel{
+      margin-top:10px;
+      background:rgba(255,255,255,.90);
+      border:1px solid rgba(15,23,42,.10);
+      border-radius:16px;
+      color:var(--text);
+      overflow:hidden;
+    }
+    .panel-head{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:8px 10px;}
+      background:rgba(15,23,42,.04);
+      border-bottom:1px solid rgba(15,23,42,.08);
+    }
+    .search{flex:1;
+      display:flex;align-items:center;gap:10px;
+      background:var(--white);
+      border:1px solid rgba(15,23,42,.12);
+      padding:8px 10px;
+      border-radius:999px;
+      max-width:720px;
+    }
+    .search input{
+      width:100%;
+      border:0;
+      outline:none;
+      font-size:14px;
+      background:transparent;
+    }
+    .tools{display:flex;align-items:center;gap:8px}
+    .tool{
+      width:34px;height:34px;border-radius:10px;
+      border:1px solid rgba(15,23,42,.12);
+      background:var(--white);
+      display:grid;place-items:center;
+      color:rgba(15,23,42,.70);
+      font-weight:900;
+    }
+
+    .cards{
+      padding:12px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+    .card{background:var(--white);border:1px solid rgba(15,23,42,.10);border-radius:14px;padding:12px;min-height:104px;}
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .card h3{margin:0;font-size:14px}
+    .card p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.3}
+    .card a{
+      margin-top:auto;
+      font-weight:800;
+      color:var(--teal);
+    }
+
+    @media (max-width: 860px){
+      .sidebar{display:none}
+      .main{padding:12px}
+      .panel-head{flex-direction:column;align-items:stretch}
+      .search{max-width:none}
+    }
+  
+    /* Modo compacto automático (telas de notebook/baixa altura) */
+    @media (max-width: 1366px), (max-height: 820px){
+      .sidebar{width:240px;padding:12px 10px}
+      .main{padding:10px 12px 14px}
+      .topbar{padding:6px 0 10px}
+      .tabs{gap:10px}
+      .tab{padding:7px 3px;font-size:14px}
+      .panel{margin-top:10px}
+      .panel-head{padding:10px 12px}
+      .search{padding:8px 10px}
+      .cards{padding:12px;gap:10px}
+      .card{padding:12px;min-height:96px}
+      .card h3{font-size:14px}
+      .card p{font-size:12.5px;line-height:1.3}
+      .nav{gap:10px}
+      .nav a{padding:10px 12px;min-height:40px}
+      .btn-compose{padding:10px 12px}
+    }
+
+.circle-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  color:rgba(248,250,252,.92);
+}
+.circle-btn:hover{background:rgba(255,255,255,.10)}
+
+:root{
+  /* base */
+  --bg-color:#0F172A;
+  --grid-color:rgba(255,255,255,.04);
+  --grid-size:40px;
+
+  /* glass */
+  --glass-bg:rgba(30,41,59,.70);
+  --glass-border:rgba(255,255,255,.10);
+  --glass-shadow:0 4px 30px rgba(0,0,0,.50);
+
+  /* text */
+  --text-main:#F8FAFC;
+  --text-sec:#94A3B8;
+
+  /* accents */
+  --accent-green:#10B981;
+  --accent-blue:#3B82F6;
+  --accent-red:#EF4444;
+}
+
+/* fundo */
+body{
+  background-color:var(--bg-color) !important;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px) !important;
+  background-size:var(--grid-size) var(--grid-size) !important;
+  color:var(--text-main) !important;
+  transition:background-color .25s ease;
+}
+
+/* vidro */
+.sidebar,
+.panel,
+.card,
+.settings-panel{
+  background:var(--glass-bg) !important;
+  border:1px solid var(--glass-border) !important;
+  box-shadow:var(--glass-shadow) !important;
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+}
+
+/* topbar um pouco mais leve */
+.topbar{
+  background:rgba(15,23,42,.35) !important;
+  border-bottom:1px solid rgba(255,255,255,.06) !important;
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+}
+
+/* textos */
+.card p,
+.settings-title{
+  color:var(--text-sec) !important;
+}
+
+/* acentos */
+.card a{color:var(--accent-blue) !important}
+.border-green{border-left:4px solid var(--accent-green) !important}
+.border-blue{border-left:4px solid var(--accent-blue) !important}
+.border-red{border-left:4px solid var(--accent-red) !important}
+
+/* active no menu (verde) */
+.nav a.active{
+  border-color:rgba(16,185,129,.35) !important;
+  box-shadow:0 0 0 2px rgba(16,185,129,.12) inset !important;
+}
+
+
+/* === THEME ENGINE (único) === */
+:root{
+  --bg-color:#0F172A;
+  --grid-color:rgba(255,255,255,.03);
+  --grid-size:40px;
+
+  --glass-bg:rgba(30,41,59,.70);
+  --glass-border:rgba(255,255,255,.10);
+  --glass-shadow:0 4px 30px rgba(0,0,0,.50);
+
+  --text-main:#F8FAFC;
+  --text-sec:#94A3B8;
+
+  --accent-green:#10B981;
+  --accent-blue:#3B82F6;
+  --accent-red:#EF4444;
+}
+
+/* fundo + grid */
+body{
+  background-color:var(--bg-color) !important;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px) !important;
+  background-size:var(--grid-size) var(--grid-size) !important;
+  color:var(--text-main) !important;
+  transition:background-color .25s ease, background-image .25s ease;
+}
+
+/* vidro (aplica em tudo que importa) */
+.sidebar,.panel,.card,.settings-panel{
+  background:var(--glass-bg) !important;
+  border:1px solid var(--glass-border) !important;
+  box-shadow:var(--glass-shadow) !important;
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+}
+
+/* topbar leve */
+.topbar{
+  background:rgba(15,23,42,.35) !important;
+  border-bottom:1px solid rgba(255,255,255,.06) !important;
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+}
+
+/* textos */
+.card p,.settings-title{color:var(--text-sec) !important}
+
+/* links e acentos */
+.card a{color:var(--accent-blue) !important}
+.border-green{border-left:4px solid var(--accent-green) !important}
+.border-blue{border-left:4px solid var(--accent-blue) !important}
+.border-red{border-left:4px solid var(--accent-red) !important}
+
+/* botão da engrenagem (garante visível) */
+#btnSettings{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sb-top">
+        <div class="sb-title">Dashboard - Admin</div>
+      </div>
+
+      <button class="btn-compose" type="button">✎ Escrever</button>
+
+      <nav class="nav">
+        <a href="#entrada">
+          <div class="left"><div class="icon">📄</div><div>Entrada</div></div>
+          <div class="badge">16</div>
+        </a>
+        <a href="#saida"><div class="left"><div class="icon">✈</div><div>Saída</div></div></a>
+        <a href="#favoritos"><div class="left"><div class="icon">★</div><div>Favoritos</div></div></a>
+        <a href="#arquivo"><div class="left"><div class="icon">🗂</div><div>Arquivo</div></div></a>
+        <a href="#rascunho"><div class="left"><div class="icon">📝</div><div>Rascunho</div></div></a>
+        <a href="#anexos"><div class="left"><div class="icon">📎</div><div>Anexos</div></div></a>
+        <a href="#marcadores"><div class="left"><div class="icon">↗</div><div>Marcadores</div></div></a>
+
+        <a href="/admin.html"><div class="left"><div class="icon">⟵</div><div>Voltar ao Admin atual</div></div></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="tabs">
+          <a class="tab active" href="#mensagens">Mensagens</a>
+          <a class="tab" href="#alferes">Alferes</a>
+          <a class="tab" href="#anotacoes">Anotações</a>
+          <a class="tab" href="#tarefas">Tarefas</a>
+          <a class="tab" href="#reunioes">Reuniões</a>
+          <a class="tab" href="#projetos">Projetos</a>
+        </div>
+        <div class="top-actions">
+          <div class="circle">?</div>
+          <button class="circle circle-btn" id="btnSettings" type="button" aria-label="Configurações">⚙</button>
+          <div class="circle">👤</div>
+        </div>
+      </div>
+<button class="theme-option active" type="button" data-theme="tactical">
+          <span class="color-preview" style="background:#0F172A"></span>
+          <span>Tático (Original)</span>
+        </button>
+
+
+</div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div class="search">
+            <div style="opacity:.6">🔎</div>
+            <input placeholder="Pesquise" />
+          </div>
+          <div class="tools">
+            <div class="tool">≡</div>
+            <div class="tool">⏷</div>
+            <div class="tool">⋮</div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Alunos</h3>
+            <p>Gestão de cadastros, lista e ações rápidas.</p>
+            <a href="/admin/cadastro/lista-v2.html">Acessar →</a>
+          </div>
+          <div class="card">
+            <h3>Convites</h3>
+            <p>Gerar e usar convites para novos cadastros.</p>
+            <a href="/admin/invite.html">Acessar →</a>
+          </div>
+          <div class="card">
+            <h3>Financeiro</h3>
+            <p>Lançamentos e controles do financeiro.</p>
+            <a href="/admin/financeiro/financeiro.html">Acessar →</a>
+          </div>
+          <div class="card">
+            <h3>Relatórios</h3>
+            <p>Consultas e relatórios do módulo financeiro.</p>
+            <a href="/admin/financeiro/relatorios.html">Acessar →</a>
+          </div>
+          <div class="card">
+            <h3>Mensagens</h3>
+            <p>Central de mensagens (placeholder), para evoluir depois.</p>
+            <a href="#mensagens">Abrir →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+
+<script>
+(function(){
+  const btn = document.getElementById('btnSettings');
+  const panel = document.getElementById('settingsPanel');
+  const root = document.documentElement;
+
+  function openClose(){
+    if(!panel) return;
+    panel.classList.toggle('active');
+    panel.setAttribute('aria-hidden', panel.classList.contains('active') ? 'false' : 'true');
+  }
+
+  function applyTheme(name){
+    document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('active'));
+    const selected = document.querySelector('.theme-option[data-theme="'+name+'"]');
+    if(selected) selected.classList.add('active');
+
+    const set = (k,v)=>root.style.setProperty(k,v);
+
+    if(name === 'tactical'){
+      set('--bg-color','#0F172A');
+      set('--grid-color','rgba(255,255,255,.03)');
+      set('--glass-bg','rgba(30,41,59,.70)');
+      set('--glass-border','rgba(255,255,255,.10)');
+      set('--text-main','#F8FAFC');
+      set('--text-sec','#94A3B8');
+      set('--accent-green','#10B981');
+      set('--accent-blue','#3B82F6');
+      set('--accent-red','#EF4444');
+    } else if(name === 'cyberpunk'){
+      set('--bg-color','#000000');
+      set('--grid-color','rgba(255,255,255,.03)');
+      set('--glass-bg','rgba(20,20,20,.80)');
+      set('--glass-border','rgba(255,255,255,.10)');
+      set('--text-main','#F8FAFC');
+      set('--text-sec','#94A3B8');
+      set('--accent-green','#39FF14');
+      set('--accent-blue','#00FFFF');
+      set('--accent-red','#FF00FF');
+    } else if(name === 'ocean'){
+      set('--bg-color','#001220');
+      set('--grid-color','rgba(255,255,255,.04)');
+      set('--glass-bg','rgba(0,50,80,.55)');
+      set('--glass-border','rgba(255,255,255,.10)');
+      set('--text-main','#F8FAFC');
+      set('--text-sec','#94A3B8');
+      set('--accent-green','#4ADE80');
+      set('--accent-blue','#60A5FA');
+      set('--accent-red','#F43F5E');
+    }
+
+    try{ localStorage.setItem('admin_theme', name); }catch(e){}
+  }
+
+  if(btn) btn.addEventListener('click', (e)=>{ e.preventDefault(); openClose(); });
+
+  document.querySelectorAll('.theme-option').forEach(el=>{
+    el.addEventListener('click', ()=>applyTheme(el.getAttribute('data-theme')));
+  });
+
+  document.addEventListener('click', (e)=>{
+    if(!panel || !panel.classList.contains('active')) return;
+    const inside = panel.contains(e.target) || (btn && btn.contains(e.target));
+    if(!inside) panel.classList.remove('active');
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape' && panel){
+      panel.classList.remove('active');
+      panel.setAttribute('aria-hidden','true');
+    }
+  });
+
+  let saved = null;
+  try{ saved = localStorage.getItem('admin_theme'); }catch(e){}
+  applyTheme(saved || 'tactical');
+})();
+</script>
+
+</body>
+</html>

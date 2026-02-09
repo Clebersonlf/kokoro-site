@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Admin — Enviar convite</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+:root{--bg-main:#0d0c0f;--bg-card:rgba(20,18,23,.65);--border-color:rgba(60,50,70,.7);--text-primary:#f0e7ff;--text-muted:#a093b0;--primary-color:#4ade80;--secondary-color:#38bdf8;--accent-glow:rgba(74,222,128,.3);--radius:16px;--shadow:0 8px 32px rgba(0,0,0,.4);} 
+body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg-main);color:var(--text-primary);max-width:720px;margin:20px auto;padding:0 12px;}
+    label{display:block;margin:10px 0 4px}
+    input{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .actions{margin-top:16px;display:flex;gap:12px;align-items:center}
+    .ok{color:#0a0}.err{color:#c00}
+    .links a{display:inline-block;margin:6px 6px 0 0}
+    .card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:14px;margin-top:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+input{background:rgba(255,255,255,.06);border:1px solid var(--border-color);color:var(--text-primary)}
+input::placeholder{color:rgba(160,147,176,.85)}
+button{padding:10px 14px;border-radius:12px;border:1px solid var(--border-color);background:linear-gradient(90deg,var(--secondary-color),var(--primary-color));color:#0d0c0f;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(1.05)}
+a{color:var(--secondary-color)}
+  </style>
+</head>
+<body>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div style="display: flex; gap: 15px;">
+      <a href="/admin.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 5px;">🏠 Dashboard</a>
+      <a href="/user/cadastro/cadastro.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 5px;">📝 Novo Cadastro</a>
+    </div>
+  </div>
+  <h1>Admin — Enviar convite</h1>
+  <p>Preencha no mínimo <b>e-mail</b> (telefone é opcional). O sistema cria/atualiza o aluno como <i>pendente</i> e gera o link de completar cadastro.</p>
+
+  <div id="msg"></div>
+
+  <div class="card">
+    <label>Nome (opcional)
+      <input id="nome" placeholder="Ex.: João Silva">
+    </label>
+    <div class="row">
+      <div>
+        <label>E-mail (recomendado)
+          <input id="email" type="email" placeholder="exemplo@dominio.com">
+        </label>
+      </div>
+      <div>
+        <label>Telefone (só números, com DDI+DDD, opcional)
+          <input id="telefone" placeholder="559999999999">
+        </label>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="btnEnviar">Gerar convite</button>
+      <span id="status"></span>
+    </div>
+  </div>
+
+  <div id="resultado" class="card" style="display:none">
+    <h3>Convite gerado</h3>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+      <b>Link:</b> <a id="lk" href="#" target="_blank" style="flex: 1; word-break: break-all;"></a>
+      <button id="btnCopy" style="padding: 6px 12px; background: var(--secondary-color); border: none; border-radius: 8px; color: #0d0c0f; font-size: 12px; cursor: pointer;">Copiar</button>
+    </div>
+    <div class="links">
+      <a id="lkWa" target="_blank">Abrir WhatsApp</a>
+      <a id="lkTg" target="_blank">Abrir Telegram</a>
+      <a id="lkSms" target="_blank">Abrir SMS</a>
+      <a id="lkMail" target="_blank">Abrir e-mail</a>
+    </div>
+  </div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const msg = $('#msg'); const st = $('#status');
+    function setMsg(t, ok=false){ msg.className = ok?'ok':'err'; msg.textContent = t||''; }
+    function setSt (t, ok=false){ st.className  = ok?'ok':'err'; st.textContent  = t||''; }
+
+    $('#btnEnviar').addEventListener('click', async () => {
+      setSt('Enviando...', true);
+      const nome = $('#nome').value.trim() || null;
+      const email = $('#email').value.trim() || null;
+      const telefone = $('#telefone').value.replace(/\\D/g,'') || null;
+
+      if (!email) { setSt('Informe ao menos o e-mail.', false); return; }
+
+      try {
+        const r = await fetch('/api/send-welcome', {
+          method: 'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ nome, email, telefone, via:'email' })
+        });
+        const data = await r.json().catch(()=>({}));
+        if (!r.ok || !data.ok) { setSt(data.message || 'Falha ao gerar convite.', false); return; }
+
+        setSt('Convite gerado.', true);
+        const rs = $('#resultado'); rs.style.display = '';
+        $('#lk').href = data.link; $('#lk').textContent = data.link;
+
+        const sug = data.delivery?.suggestions || {};
+        $('#lkWa').href  = sug.whatsapp || '#';  $('#lkWa').style.opacity  = sug.whatsapp ? 1 : .5;
+        $('#lkTg').href  = sug.telegram || '#';  $('#lkTg').style.opacity  = sug.telegram ? 1 : .5;
+        $('#lkSms').href = sug.sms || '#';       $('#lkSms').style.opacity = sug.sms ? 1 : .5;
+        $('#lkMail').href= sug.mailto || '#';    $('#lkMail').style.opacity= sug.mailto ? 1 : .5;
+
+      } catch(e){ setSt('Erro de conexão.', false); }
+    });
+  </script>
+  <script src="/admin/_session_timer.js" defer></script>
+</body>
+</html>

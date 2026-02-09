@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Alunos • Kokoro</title>
+  <link rel="stylesheet" href="/admin/css/admin-layout.css">
+  
+  <style>
+    :root{
+      --bg:#0f1115;
+      --card:#161a22;
+      --card2:#131722;
+      --border:#2a3140;
+      --text:#e7e9ee;
+      --muted:#a9b2c3;
+      --blue:#3498db;
+      --green:#2ecc71;
+      --red:#e74c3c;
+      --orange:#f39c12;
+    }
+    
+    body {
+      margin:0; padding:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background: radial-gradient(900px 420px at 50% 0%, rgba(52,152,219,.18), transparent 55%) , var(--bg);
+      color:var(--text);
+      min-height: 100vh;
+    }
+
+    .lista-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .header-lista {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .header-lista h1 {
+      margin: 0;
+      font-size: 24px;
+      color: var(--blue);
+      letter-spacing: .3px;
+    }
+
+    /* Botões estilo Financeiro */
+    .btn-lite {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      transition: .15s ease;
+    }
+    .btn-lite:hover { background: rgba(255,255,255,.1); border-color: var(--blue); }
+
+    .btn-danger {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: var(--red);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .btn-danger:hover { filter: brightness(1.1); }
+
+    /* Inputs estilo Financeiro */
+    .controles { display: flex; gap: 12px; margin-bottom: 20px; }
+    .busca-input, .filtro-select {
+      background: #0f1320;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      outline: none;
+      font-size: 14px;
+    }
+    .busca-input { flex: 1; }
+    .busca-input:focus { border-color: var(--blue); }
+
+    /* Tabela estilo Financeiro */
+    .tabela-wrapper {
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(0,0,0,.35);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 12px;
+      color: #cfe4ff;
+      background: #101827;
+      border-bottom: 1px solid var(--border);
+      padding: 14px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    tbody td {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text);
+    }
+    tbody tr:hover { background: rgba(255,255,255,.03); }
+
+    /* Badges e Status */
+    .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+    .st-ativo { background: rgba(46,204,113,.15); color: var(--green); border: 1px solid rgba(46,204,113,.3); }
+    .st-inativo { background: rgba(169,178,195,.15); color: var(--muted); border: 1px solid var(--border); }
+    .st-suspenso { background: rgba(243,156,18,.15); color: var(--orange); border: 1px solid rgba(243,156,18,.3); }
+    .st-excluido { background: rgba(231,76,60,.15); color: var(--red); border: 1px solid rgba(231,76,60,.3); }
+
+    .fin-ok { color: var(--green); font-weight: 800; }
+    .fin-pendente { color: var(--red); font-weight: 800; }
+
+    /* Modal Dark */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.75);
+      display: none; align-items: center; justify-content: center; z-index: 9999;
+    }
+    .modal {
+      width: min(500px, 95%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.5);
+    }
+  </style>
+
+
+
+<style id="lista-v2-graduacao-numero-fix">
+/* Lista v2: forçar NÚMEROS de graduação em branco (somente a coluna certa) */
+
+/* pega QUALQUER <small> dentro da tabela (mais forte) */
+table td small{
+  color: #ffffff !important;  /* branco direto */
+  font-weight: 900 !important;
+}
+</style>
+
+
+</head>
+<body>
+  <div class="lista-container">
+    <div class="header-lista">
+      <h1>Gestão de Alunos</h1>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="/admin/cadastro/exclusoes.html" class="btn-local" style="text-decoration:none;color:#111827">Memória (Exclusões)</a>
+        <a href="/admin.html#alunos" class="btn-local btn-local-dark" style="text-decoration:none;color:#fff">← Voltar ao Painel</a>
+      </div>
+    </div>
+
+    <div class="controles">
+      <input id="inputBusca" type="text" class="busca-input" placeholder="Buscar por nome ou e-mail...">
+      <select id="filtroStatus" class="filtro-select">
+        <option value="">Situação: Todas</option>
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+        <option value="suspenso">Suspenso</option>
+        <option value="excluido">Excluído</option>
+      </select>
+    </div>
+
+    <div class="tabela-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Graduação</th>
+            <th>Última Graduação</th>
+            <th>Financeiro</th>
+            <th>Situação</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalStatus">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalNomeAluno" style="margin:0;font-size:14px">Situação</h3>
+        <button class="btn-local" type="button" onclick="fecharModal()" style="color:#111827">FECHAR</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="selectNovoStatus">Nova Situação</label>
+          <select id="selectNovoStatus">
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+            <option value="suspenso">Suspenso</option>
+            <option value="excluido">Excluído</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-top:12px"><label for="dataEvento">Data do evento (editável)</label><input id="dataEvento" type="date" style="width:100%;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none" /></div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="textoMotivo">Motivo (Memória)</label>
+          <textarea id="textoMotivo" placeholder="Descreva o motivo (obrigatório para salvar e excluir definitivo)..."></textarea>
+        <div class="field" style="margin-top:12px">
+          <label>Nº do Certificado (vitalício)</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <input id="numeroCertificado" type="text" readonly style="flex:1;min-width:140px;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none;background:var(--row);font-weight:1000" placeholder="(sem número)" />
+            <button id="btnAtribuirNumero" type="button" onclick="atribuirProximoNumero()" style="background:#111827 !important;color:#ffffff !important;border:1px solid #111827 !important;border-radius:8px;padding:8px 12px;font-weight:1000;font-size:12px;opacity:1 !important;cursor:pointer;">ATRIBUIR PRÓXIMO Nº</button>
+          </div>
+          <div class="muted" style="margin-top:6px">Use quando o aluno fizer a primeira graduação com você (ou a próxima, se veio de outra equipe).</div>
+        </div>
+        </div>
+
+        <div class="hist">
+          <div style="font-weight:1000;margin-bottom:8px">Histórico</div>
+          <div id="listaHistorico"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-local" type="button" onclick="fecharModal()" style="color:#111827">CANCELAR</button>
+        <button class="btn-local btn-local-danger" type="button" onclick="excluirDefinitivoModal()">EXCLUIR DEFINITIVO</button>
+        <button class="btn-local btn-local-dark" type="button" onclick="salvarStatus()">SALVAR ALTERAÇÃO</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ===== Persistência local (intranet) =====
+  const LS_ALUNOS = "kokoro_alunos_dados";
+  const LS_CERT_ULTIMO = "kokoro_cert_ultimo_numero";
+  const LS_CERT_DIGITS = "kokoro_cert_digits";
+
+  function getDigits(){
+    const d = parseInt(localStorage.getItem(LS_CERT_DIGITS) || "4", 10);
+    return (isNaN(d) || d<3) ? 4 : d;
+  }
+  function setDigits(d){ localStorage.setItem(LS_CERT_DIGITS, String(d)); }
+
+  function getUltimoNumero(){
+    const v = parseInt(localStorage.getItem(LS_CERT_ULTIMO) || "", 10);
+    if (!isNaN(v)) return v;
+    // inicial padrão: último confirmado por você
+    localStorage.setItem(LS_CERT_ULTIMO, "74");
+    if (!localStorage.getItem(LS_CERT_DIGITS)) localStorage.setItem(LS_CERT_DIGITS, "4");
+    return 74;
+  }
+  function setUltimoNumero(n){ localStorage.setItem(LS_CERT_ULTIMO, String(n)); }
+
+  function padNumero(n){
+    const digits = getDigits();
+    return String(n).padStart(digits, "0");
+  }
+
+  function carregarAlunosLocal(fallback){
+    try{
+      const raw = localStorage.getItem(LS_ALUNOS);
+      if (!raw) return fallback;
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length) return arr;
+      return fallback;
+    }catch(e){
+      return fallback;
+    }
+  }
+  function salvarAlunosLocal(){
+    try{ localStorage.setItem(LS_ALUNOS, JSON.stringify(alunos)); }catch(e){}
+  }
+
+  // ===== Dados de teste FIXOS (não dependem de localStorage) =====
+  let alunosFallback = [
+  {
+    "id": 1,
+    "nome": "RONALDO Rodrigues Pacheco",
+    "email": "",
+    "faixa": "roxa",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0022"
+  },
+  {
+    "id": 2,
+    "nome": "CESAR Ferreira Bellotti Lima",
+    "email": "",
+    "faixa": "azul",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0024"
+  },
+  {
+    "id": 3,
+    "nome": "Robert Acevedo",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0062"
+  },
+  {
+    "id": 4,
+    "nome": "Uriel Pinto Folly",
+    "email": "",
+    "faixa": "azul",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0034"
+  },
+  {
+    "id": 5,
+    "nome": "Rickson dos Anjos Oliveira",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0044"
+  },
+  {
+    "id": 6,
+    "nome": "Wanderson Nogueira de Paula",
+    "email": "",
+    "faixa": "ok",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0051"
+  },
+  {
+    "id": 7,
+    "nome": "Selênio Campos Filho",
+    "email": "",
+    "faixa": "ok",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0052",
+    "observacoes": "03/12/2011"
+  },
+  {
+    "id": 8,
+    "nome": "Vinicius Pereira de Araujo",
+    "email": "",
+    "faixa": "ok",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0050"
+  },
+  {
+    "id": 9,
+    "nome": "Sophia Braga Capristrano",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0059"
+  },
+  {
+    "id": 10,
+    "nome": "LAURA L",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0061"
+  },
+  {
+    "id": 11,
+    "nome": "Juliano Magno Guedes",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0065"
+  },
+  {
+    "id": 12,
+    "nome": "Fernando Castagna Ferreira",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0066"
+  },
+  {
+    "id": 13,
+    "nome": "Evandro Ribeiro da Silva",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0067"
+  },
+  {
+    "id": 14,
+    "nome": "Ruan Felipe de Oliveira Barros",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0068"
+  },
+  {
+    "id": 15,
+    "nome": "CARLOS VICTOR ROMAN. PUJATT",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0069"
+  },
+  {
+    "id": 16,
+    "nome": "CARLOS EDUARDO P. M. ARAUJO",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0070"
+  },
+  {
+    "id": 17,
+    "nome": "RENAN CARLOS SILVA COSTA",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0071"
+  },
+  {
+    "id": 18,
+    "nome": "Bernardo Henrique Amorim Silva",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0072"
+  },
+  {
+    "id": 19,
+    "nome": "Samilly Angel Almeida Silva",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0073"
+  },
+  {
+    "id": 20,
+    "nome": "Daniel Henrique de Araujo",
+    "email": "",
+    "faixa": "branca",
+    "grau": "0º Grau",
+    "ultima": "-",
+    "financeiro": "ok",
+    "status": "ativo",
+    "historico": [],
+    "numeroCertificado": "0074"
+  }
+];
+  let alunos = carregarAlunosLocal(alunosFallback);
+
+  let alunoSelecionado = null;
+  const LS_EXCLUSOES_DEF = "kokoro_exclusoes_definitivas";
+
+  function getCorFaixa(faixa){
+    const cores = {branca:"#fff", azul:"#3b82f6", roxa:"#a855f7", marrom:"#92400e", preta:"#111827"};
+    return cores[faixa] || "#e5e7eb";
+  }
+
+  function badgeStatus(st){
+    return `<span class="badge st-${st}"><span class="dot"></span>${st}</span>`;
+  }
+
+  function badgeFinanceiro(fin){
+    return fin === "ok" ? '<span class="fin-ok">EM DIA</span>' : '<span class="fin-pendente">PENDENTE</span>';
+  }
+
+  function renderHistorico(){
+    const box = document.getElementById("listaHistorico");
+    const hist = (alunoSelecionado && Array.isArray(alunoSelecionado.historico)) ? alunoSelecionado.historico : [];
+    if (!hist.length){
+      box.innerHTML = '<div style="color:#6b7280;font-size:13px">Sem registros.</div>';
+      return;
+    }
+    box.innerHTML = hist.map(h => `
+      <div class="hist-item">
+        <div class="hist-top"><span class="hist-status">${h.status.toUpperCase()}</span><span>${h.data}</span></div>
+        <div class="hist-motivo">${escapeHtml(h.motivo)}</div>
+      </div>
+    `).join("");
+  }
+
+  function escapeHtml(str){
+    return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function abrirModalStatus(id){
+    alunoSelecionado = alunos.find(a => a.id === id);
+    document.getElementById("modalNomeAluno").textContent = `Situação: ${alunoSelecionado.nome}`;
+    document.getElementById("selectNovoStatus").value = alunoSelecionado.status;
+    document.getElementById("textoMotivo").value = "";
+    document.getElementById("numeroCertificado").value = (alunoSelecionado.numeroCertificado || "");
+    // data do evento: hoje (editável)
+    const hoje = new Date();
+    const iso = new Date(hoje.getTime() - hoje.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    document.getElementById("dataEvento").value = iso;
+    renderHistorico();
+    document.getElementById("modalStatus").style.display = "flex";
+  }
+
+  function fecharModal(){
+    document.getElementById("modalStatus").style.display = "none";
+    alunoSelecionado = null;
+  }
+
+  function salvarStatus(){
+    if (!alunoSelecionado) return;
+    const novo = document.getElementById("selectNovoStatus").value;
+    const motivo = (document.getElementById("textoMotivo").value || "").trim();
+    const dataEvento = (document.getElementById("dataEvento").value || "").trim();
+
+    if (!motivo){
+      alert("Informe o motivo para registrar na memória.");
+      return;
+    }
+
+    alunoSelecionado.status = novo;
+    alunoSelecionado.historico = Array.isArray(alunoSelecionado.historico) ? alunoSelecionado.historico : [];
+    alunoSelecionado.historico.unshift({
+      tipo: "status",
+      data: dataEvento || new Date().toLocaleDateString("pt-BR"),
+      dataHora: new Date().toLocaleString("pt-BR"),
+      status: novo,
+      motivo: motivo,
+    });
+
+    salvarAlunosLocal();
+    fecharModal();
+    renderizarTabela();
+  }
+
+  function atribuirProximoNumero(){
+    if (!alunoSelecionado) return;
+
+    if (alunoSelecionado.numeroCertificado){
+      alert("Este aluno já possui número: " + alunoSelecionado.numeroCertificado);
+      return;
+    }
+
+    const motivo = (document.getElementById("textoMotivo").value || "").trim();
+    const dataEvento = (document.getElementById("dataEvento").value || "").trim();
+    if (!motivo){
+      alert("Para atribuir número, informe o motivo (fica no histórico).");
+      return;
+    }
+
+    const ultimo = getUltimoNumero();      // ex.: 74
+    const prox = ultimo + 1;               // ex.: 75
+    const formatado = padNumero(prox);     // ex.: 0075
+
+    alunoSelecionado.numeroCertificado = formatado;
+    setUltimoNumero(prox);
+
+    alunoSelecionado.historico = Array.isArray(alunoSelecionado.historico) ? alunoSelecionado.historico : [];
+    alunoSelecionado.historico.unshift({
+      tipo: "numero",
+      data: dataEvento || new Date().toLocaleDateString("pt-BR"),
+      dataHora: new Date().toLocaleString("pt-BR"),
+      acao: "Número atribuído",
+      numero: formatado,
+      motivo
+    });
+
+    document.getElementById("numeroCertificado").value = formatado;
+
+    salvarAlunosLocal();
+    renderHistorico();
+    renderizarTabela();
+    alert("Número atribuído: " + formatado);
+  }
+
+  function excluirDefinitivoModal(){
+    if (!alunoSelecionado) return;
+    const motivo = (document.getElementById("textoMotivo").value || "").trim();
+    if (!motivo){
+      alert("Para exclusão definitiva, informe o motivo (fica salvo na memória).");
+      return;
+    }
+    const ok = confirm("EXCLUSÃO DEFINITIVA.\n\nIsso remove o aluno da lista (modo intranet).\nDeseja prosseguir?");
+    if (!ok) return;
+
+    // registra memória de exclusões definitivas
+    try{
+      const raw = localStorage.getItem(LS_EXCLUSOES_DEF) || "[]";
+      const arr = JSON.parse(raw);
+      const lista = Array.isArray(arr) ? arr : [];
+      lista.unshift({
+        data: new Date().toLocaleString("pt-BR"),
+        alunoId: alunoSelecionado.id,
+        nome: alunoSelecionado.nome,
+        email: alunoSelecionado.email,
+        motivo
+      });
+      localStorage.setItem(LS_EXCLUSOES_DEF, JSON.stringify(lista));
+    }catch(e){}
+
+    // remove da lista
+    alunos = alunos.filter(a => a.id !== alunoSelecionado.id);
+    fecharModal();
+    renderizarTabela();
+    alert("Exclusão definitiva registrada na memória.");
+  }
+
+  function renderizarTabela(){
+    const body = document.getElementById("tabelaBody");
+    const q = (document.getElementById("inputBusca").value || "").toLowerCase().trim();
+    const st = document.getElementById("filtroStatus").value;
+
+    body.innerHTML = "";
+    alunos
+      .filter(a => (!q || (a.nome+a.email).toLowerCase().includes(q)))
+      .filter(a => (!st || a.status === st))
+      .forEach(aluno => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(aluno.nome)}</strong><br><small style="color:#6b7280">${escapeHtml(aluno.email)}</small><br><small style="color:#111827;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small></td>
+          <td>
+            <span class="faixa-tag">
+              <span class="faixa-cor" style="background:${getCorFaixa(aluno.faixa)}"></span>
+              ${aluno.faixa.toUpperCase()} (${aluno.grau})
+            </span>
+          </td>
+          <td>${escapeHtml(aluno.ultima)}</td>
+          <td>${badgeFinanceiro(aluno.financeiro)}</td>
+          <td>${badgeStatus(aluno.status)}</td>
+          <td>
+            <div class="acoes">
+              <button class="btn-local btn-local-dark" type="button" onclick="editarAluno(${aluno.id})">EDITAR</button>
+              <button type="button" onclick="abrirModalStatus(${aluno.id})" style="background:#111827 !important;color:#ffffff !important;border:1px solid #111827 !important;border-radius:8px;padding:8px 12px;font-weight:1000;font-size:12px;opacity:1 !important;line-height:1;cursor:pointer;">STATUS</button>
+              <button class="btn-local btn-local-danger" type="button" onclick="excluirDaLista(${aluno.id})">EXCLUIR</button>
+            </div>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+  }
+
+  function editarAluno(id){
+    window.location.href = `/user/cadastro/cadastro.html?from=admin&id=${id}`;
+  }
+
+  // "Excluir" (mantém a lógica de existir, mas aqui é remoção simples da lista de teste)
+  // O que você pediu como "Excluir" oficial é pelo SELECT = Excluído + motivo + salvar (histórico).
+  function excluirDaLista(id){
+    const ok = confirm("Remover este aluno da lista de teste?");
+    if (!ok) return;
+    alunos = alunos.filter(a => a.id !== id);
+    renderizarTabela();
+  }
+
+  document.getElementById("inputBusca").addEventListener("input", renderizarTabela);
+  document.getElementById("filtroStatus").addEventListener("change", renderizarTabela);
+
+  renderizarTabela();
+</script>
+</body>
+</html>

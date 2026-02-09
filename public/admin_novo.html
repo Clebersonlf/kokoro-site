@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin • Kokoro (novo)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#101827; --panel2:#0e1628; --border:#2a3140;
+      --text:#e7e9ee; --muted:#aab0bf; --accent:#7dd3fc;
+    }
+    *{box-sizing:border-box}
+    body{font-family:system-ui,Arial;margin:24px;background:var(--bg);color:var(--text)}
+    a{color:var(--accent)}
+    .wrap{max-width:980px;margin:0 auto}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+    .card{border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--panel)}
+    .card a{color:var(--accent);text-decoration:none;font-weight:700}
+    .muted{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.35}
+    .bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .pill{border:1px solid var(--border);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.02);color:var(--muted);text-decoration:none}
+    .pill:hover{border-color:rgba(125,211,252,.22);color:var(--text)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Admin • Kokoro (novo)</h1>
+    <div class="bar">
+      <a class="pill" href="/admin.html">Voltar ao Admin atual</a>
+      <a class="pill" href="/">Voltar ao site</a>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <a href="/admin/cadastro/lista-v2.html">Alunos</a>
+        <div class="muted">Gestão de cadastros e ações.</div>
+      </div>
+      <div class="card">
+        <a href="/admin/invite.html">Convites</a>
+        <div class="muted">Gerar e compartilhar convites.</div>
+      </div>
+      <div class="card">
+        <a href="/admin/financeiro/financeiro.html">Financeiro</a>
+        <div class="muted">Lançamentos e controles.</div>
+      </div>
+      <div class="card">
+        <a href="/admin/financeiro/relatorios.html">Relatórios</a>
+        <div class="muted">Consultas e relatórios.</div>
+      </div>
+      <div class="card">
+        <a href="#mensagens" onclick="document.getElementById('mensagens').style.display='block';location.hash='#mensagens';return false;">Mensagens</a>
+        <div class="muted">Placeholder (não mexe em backend).</div>
+      </div>
+    </div>
+
+    <div id="mensagens" style="display:none;margin-top:18px" class="card">
+      <div style="font-weight:700">Mensagens</div>
+      <div class="muted">Área reservada para sua central de mensagens (WhatsApp/SMS/inbox).</div>
+      <div style="margin-top:10px">
+        <a class="pill" href="#" onclick="document.getElementById('mensagens').style.display='none';location.hash='';return false;">Fechar</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
