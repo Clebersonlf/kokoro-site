@@ -322,6 +322,16 @@ body{
   cursor:pointer;
 }
 
+
+/* === SETTINGS PANEL (THEMES) === */
+.circle-btn{cursor:pointer}
+.settings-panel{position:absolute;top:72px;right:16px;width:260px;display:none;flex-direction:column;gap:10px;padding:12px;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,.35);z-index:999}
+.settings-panel.active{display:flex}
+.settings-title{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-sec);font-weight:800;margin-bottom:2px}
+.theme-option{width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid transparent;color:var(--text-main);cursor:pointer;text-align:left}
+.theme-option:hover{background:rgba(255,255,255,.08)}
+.theme-option.active{border-color:var(--accent-blue);background:rgba(255,255,255,.08)}
+.color-preview{width:18px;height:18px;border-radius:999px;border:2px solid rgba(255,255,255,.85);flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -331,12 +341,11 @@ body{
         <div class="sb-title">Dashboard - Admin</div>
       </div>
 
-      <button class="btn-compose" type="button">✎ Escrever</button>
+      <button class="btn-compose" type="button" onclick="showView('mensagens')">✎ MENSAGENS</button>
 
       <nav class="nav">
-        <a href="#entrada">
-          <div class="left"><div class="icon">📄</div><div>Entrada</div></div>
-          <div class="badge">16</div>
+        <a href="javascript:void(0)" onclick="showView('alunos')">
+          <div class="left"><div class="icon">📄</div><div>Alunos</div></div>
         </a>
         <a href="#saida"><div class="left"><div class="icon">✈</div><div>Saída</div></div></a>
         <a href="#favoritos"><div class="left"><div class="icon">★</div><div>Favoritos</div></div></a>
@@ -386,7 +395,8 @@ body{
           </div>
         </div>
 
-        <div class="cards">
+        <section id="viewDashboard">
+<div class="cards">
           <div class="card">
             <h3>Alunos</h3>
             <p>Gestão de cadastros, lista e ações rápidas.</p>
@@ -414,7 +424,70 @@ body{
           </div>
         </div>
       </section>
-    </main>
+
+<section id="viewMensagens" style="display:none">
+  <div class="panel" style="padding:0;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)">
+      <div style="font-weight:900;font-size:18px">Mensagens</div>
+      <div style="display:flex;gap:10px">
+        <button class="btn" type="button" onclick="openComposer()">Escrever</button>
+        <button class="btn" type="button" onclick="showView('dashboard')">Voltar</button>
+      </div>
+    </div>
+
+    <div style="padding:10px 16px;color:var(--text-sec);font-size:12px">Caixas: Entrada, Saída e Lixeira (retenção sugerida: 30 dias).</div>
+
+    <div style="display:flex;gap:10px;padding:0 16px 12px">
+      <button class="chip chip-active" type="button" onclick="setBox('entrada')">Entrada</button>
+      <button class="chip" type="button" onclick="setBox('saida')">Saída</button>
+      <button class="chip" type="button" onclick="setBox('lixeira')">Lixeira</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns: 360px 1fr;gap:14px;padding:0 16px 16px">
+      <div class="card" style="padding:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-weight:900">Entrada</div>
+        </div>
+        <input id="msgSearch" type="text" placeholder="Buscar..." style="width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:10px;background:rgba(255,255,255,.06);color:var(--text-main);outline:none;box-sizing:border-box;margin-bottom:10px" oninput="renderList()" />
+        <div id="msgList" style="display:grid;gap:10px"></div>
+      </div>
+
+      <div class="card" style="padding:12px;min-height:420px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-weight:900">Detalhes</div>
+          <button class="btn" type="button" onclick="trashSelected()">Lixeira</button>
+        </div>
+        <div id="msgDetails" style="color:var(--text-sec);display:flex;align-items:center;justify-content:center;min-height:360px;text-align:center;padding:18px">
+          Selecione uma mensagem para ver os detalhes.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="viewAlunos" style="display:none">
+  <div class="panel" style="padding:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
+      <div style="font-weight:900;font-size:18px">Alunos</div>
+      <button class="btn" type="button" onclick="showView('dashboard')">Voltar</button>
+    </div>
+
+    <div class="cards" style="margin-top:0">
+      <div class="card">
+        <h3>Lista de Alunos</h3>
+        <p>Gestão de cadastros, lista e ações rápidas.</p>
+        <a href="https://www.planckkokoro.com/admin/cadastro/lista-v2.html">Acessar →</a>
+      </div>
+      <div class="card">
+        <h3>Cadastros</h3>
+        <p>Abrir a tela de cadastro.</p>
+        <a href="/user/cadastro/cadastro.html">Acessar →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
   </div>
 
 
@@ -437,24 +510,72 @@ body{
     panel.setAttribute('aria-hidden', panel.classList.contains('active') ? 'false' : 'true');
   }
 
-  function applyTheme(name){
+  
+const THEMES = {
+  tactical: {
+    '--bg-color': '#0F172A',
+    '--grid-color': 'rgba(255,255,255,.03)',
+    '--glass-bg': 'rgba(30,41,59,.70)',
+    '--glass-border': 'rgba(255,255,255,.10)',
+    '--glass-shadow': '0 4px 30px rgba(0,0,0,.50)',
+    '--text-main': '#F8FAFC',
+    '--text-sec': '#94A3B8',
+    '--accent-green': '#10B981',
+    '--accent-blue': '#3B82F6',
+    '--accent-red': '#EF4444'
+  },
+  azul: {
+    '--bg-color': '#0B1F3A',
+    '--grid-color': 'rgba(255,255,255,.05)',
+    '--glass-bg': 'rgba(15,41,79,.75)',
+    '--glass-border': 'rgba(59,130,246,.25)',
+    '--glass-shadow': '0 4px 30px rgba(11,31,58,.60)',
+    '--text-main': '#EFF6FF',
+    '--text-sec': '#93C5FD',
+    '--accent-green': '#10B981',
+    '--accent-blue': '#3B82F6',
+    '--accent-red': '#EF4444'
+  },
+  verde: {
+    '--bg-color': '#052E16',
+    '--grid-color': 'rgba(255,255,255,.04)',
+    '--glass-bg': 'rgba(20,83,45,.70)',
+    '--glass-border': 'rgba(34,197,94,.25)',
+    '--glass-shadow': '0 4px 30px rgba(5,46,22,.60)',
+    '--text-main': '#F0FDF4',
+    '--text-sec': '#86EFAC',
+    '--accent-green': '#22C55E',
+    '--accent-blue': '#3B82F6',
+    '--accent-red': '#EF4444'
+  },
+  claro: {
+    '--bg-color': '#F8FAFC',
+    '--grid-color': 'rgba(15,23,42,.03)',
+    '--glass-bg': 'rgba(255,255,255,.85)',
+    '--glass-border': 'rgba(15,23,42,.12)',
+    '--glass-shadow': '0 4px 30px rgba(0,0,0,.08)',
+    '--text-main': '#0F172A',
+    '--text-sec': '#475569',
+    '--accent-green': '#10B981',
+    '--accent-blue': '#3B82F6',
+    '--accent-red': '#EF4444'
+  }
+};
+function applyTheme(name){
+    // UI (mantém o comportamento atual)
     document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('active'));
     const selected = document.querySelector('.theme-option[data-theme="'+name+'"]');
     if(selected) selected.classList.add('active');
 
-    const set = (k,v)=>root.style.setProperty(k,v);
+    // Aplica paleta via CSS variables
+    const root = document.documentElement;
+    const pal = (typeof THEMES === 'object' && THEMES[name]) ? THEMES[name] : (THEMES.tactical || {});
+    for(const k in pal){
+      root.style.setProperty(k, pal[k]);
+    }
 
-    if(name === 'tactical'){
-      set('--bg-color','#0F172A');
-      set('--grid-color','rgba(255,255,255,.03)');
-      set('--glass-bg','rgba(30,41,59,.70)');
-      set('--glass-border','rgba(255,255,255,.10)');
-      set('--text-main','#F8FAFC');
-      set('--text-sec','#94A3B8');
-      set('--accent-green','#10B981');
-      set('--accent-blue','#3B82F6');
-      set('--accent-red','#EF4444');
-    } else if(name === 'cyberpunk'){
+    try{ localStorage.setItem('admin_theme', name); }catch(e){}
+  } else if(name === 'cyberpunk'){
       set('--bg-color','#000000');
       set('--grid-color','rgba(255,255,255,.03)');
       set('--glass-bg','rgba(20,20,20,.80)');
@@ -501,7 +622,34 @@ body{
   let saved = null;
   try{ saved = localStorage.getItem('admin_theme'); }catch(e){}
   applyTheme(saved || 'tactical');
+  window.applyTheme = applyTheme;
 })();
+</script>
+
+<script>
+// Views (Dashboard / Mensagens / Alunos)
+function showView(name){
+  const dash = document.getElementById("viewDashboard");
+  const msgs = document.getElementById("viewMensagens");
+  const alunos = document.getElementById("viewAlunos");
+
+  if(dash) dash.style.display = "none";
+  if(msgs) msgs.style.display = "none";
+  if(alunos) alunos.style.display = "none";
+
+  if(name === "mensagens" && msgs){
+    msgs.style.display = "block";
+    if(typeof renderList === "function") renderList();
+    return;
+  }
+
+  if(name === "alunos" && alunos){
+    alunos.style.display = "block";
+    return;
+  }
+
+  if(dash) dash.style.display = "block";
+}
 </script>
 
 </body>
