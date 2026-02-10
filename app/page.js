@@ -4,13 +4,12 @@ import Link from 'next/link';
 
 export default function HomePage() {
   // 🔗 CONFIGURE SEUS LINKS AQUI:
-  const socialLinks = {
-    instagram: "https://instagram.com/suaacademia",
-    facebook: "https://facebook.com/suaacademia",
-    youtube: "https://youtube.com/@suaacademia",
-    whatsapp: "https://wa.me/5531999999999"
-  };
-
+const socialLinks = {
+  instagram: "https://www.instagram.com/luiz_guinder_team/",
+  facebook: "https://www.facebook.com/share/1AdAQsGu6L/?mibextid=wwXIfr",
+  youtube: "https://www.instagram.com/luiz_guinder_team/",
+  whatsapp: "https://wa.me/5532998460174"
+};
   return (
     <div className="container">
       <header className="header">
