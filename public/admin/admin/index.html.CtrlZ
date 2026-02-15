@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta http-equiv="refresh" content="0; url=/admin_modelo.html" />
+  <title>Admin</title>
+  <script>
+    // Redireciona mantendo compatibilidade com navegadores antigos
+    window.location.replace('/admin_modelo.html');
+  </script>
+</head>
+<body>
+  <noscript>
+    <p>Abra: <a href="/admin_modelo.html">/admin_modelo.html</a></p>
+  </noscript>
+</body>
+</html>

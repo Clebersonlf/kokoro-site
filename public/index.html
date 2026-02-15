@@ -1,22 +1,235 @@
-<!-- MARCA-ADMIN-DEPLOY 1770269673 -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin • Kokoro</title>
-  <style>
-    body{font-family:system-ui,Arial;margin:24px;background:#0b1020;color:#e7e9ee}
-    a{color:#7dd3fc}
-    .card{border:1px solid #2a3140;border-radius:12px;padding:16px;margin:12px 0;background:#101827}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOKORO 心</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #000000;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .kokoro-symbol {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: 2px solid #ffffff;
+            background-color: transparent;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .quote-box {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 30px 50px;
+            margin-bottom: 60px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .japanese-text {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .translation {
+            font-size: 18px;
+            font-style: italic;
+            color: #cccccc;
+        }
+
+        /* Cards */
+        .cards-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 40px 30px;
+            flex: 1;
+            min-width: 280px;
+            max-width: 350px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #666;
+        }
+
+        .card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 30px;
+            text-align: center;
+            background-color: #0a0a0a;
+            border-top: 1px solid #333;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .social-icons a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .social-icons a:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .quote-box {
+                padding: 20px 30px;
+            }
+
+            .japanese-text {
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Admin • Kokoro</h1>
-  <div class="card"><a href="/admin/cadastro/lista-v2.html">Alunos</a></div>
-  <div class="card"><a href="/admin/invite.html">Convites</a></div>
-  <div class="card"><a href="/admin/financeiro/financeiro.html">Financeiro</a></div>
-  <div class="card"><a href="/admin/financeiro/relatorios.html">Relatórios</a></div>
-  <div class="card"><a href="/">Voltar ao site</a></div>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo-text">KOKORO</div>
+            <div class="kokoro-symbol">心</div>
+        </div>
+        <div class="auth-buttons">
+            <a href="/login.html" class="btn">Login</a>
+            <a href="/completar-cadastro.html" class="btn">Cadastre-se</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Quote Box -->
+        <div class="quote-box">
+            <div class="japanese-text">七転び八起き</div>
+            <div class="translation">Caia sete vezes, levante-se oito</div>
+        </div>
+
+        <!-- Cards -->
+        <div class="cards-container">
+            <div class="card">
+                <h3>Treine com os Melhores</h3>
+                <p>Instrutores certificados e metodologia exclusiva</p>
+            </div>
+
+            <div class="card">
+                <h3>Conteúdo Exclusivo</h3>
+                <p>Acesso a vídeos, apostilas e material didático</p>
+            </div>
+
+            <div class="card">
+                <h3>Mentoria</h3>
+                <p>Mentorias presenciais ou virtuais com profissionais experientes.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#" title="Instagram">📷</a>
+            <a href="#" title="Facebook">👤</a>
+            <a href="#" title="YouTube">📺</a>
+            <a href="#" title="WhatsApp">💬</a>
+        </div>
+    </footer>
 </body>
 </html>

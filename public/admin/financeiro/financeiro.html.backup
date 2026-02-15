@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KOKORO — Controle Financeiro</title>
+
+  <style>
+    :root{
+      --bg:#0f1115;
+      --card:#161a22;
+      --card2:#131722;
+      --border:#2a3140;
+      --text:#e7e9ee;
+      --muted:#a9b2c3;
+      --blue:#3498db;
+      --green:#2ecc71;
+      --red:#e74c3c;
+      --orange:#f39c12;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; padding:28px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial;
+      background: radial-gradient(900px 420px at 50% 0%, rgba(52,152,219,.18), transparent 55%) , var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1200px;margin:0 auto}
+    h1{margin:0 0 18px;text-align:center;color:var(--blue);letter-spacing:.3px}
+
+    .panel{
+      background:linear-gradient(180deg,var(--card),var(--card2));
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 10px 28px rgba(0,0,0,.35);
+      margin-bottom:18px;
+    }
+
+    .resumo{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:14px;
+    }
+    .box{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      background:rgba(0,0,0,.12);
+      text-align:center;
+    }
+    .box .t{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+    .box .v{margin-top:8px;font-size:20px;font-weight:900}
+    .v.green{color:var(--green)}
+    .v.red{color:var(--red)}
+    .v.blue{color:var(--text)}
+    .v.orange{color:var(--orange)}
+    .hint{margin-top:6px;font-size:11px;color:var(--muted)}
+
+    .form-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 160px 220px 260px 160px;
+      gap:12px;
+      align-items:end;
+    }
+    input,select{
+      width:100%;
+      padding:11px 12px;
+      background:#0f1320;
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:10px;
+      outline:none;
+      font-size:14px;
+    }
+    input:focus, select:focus{border-color:rgba(52,152,219,.8); box-shadow:0 0 0 3px rgba(52,152,219,.15)}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    .btn{
+      padding:11px 14px;
+      border-radius:10px;
+      border:1px solid transparent;
+      cursor:pointer;
+      font-weight:800;
+      transition:.15s ease;
+      width:100%;
+    }
+    .btn:hover{filter:brightness(1.06)}
+    .btn-primary{background:var(--blue); color:#fff}
+    .btn-cancel{background:transparent;border-color:var(--border);color:var(--text);display:none}
+    .btn-cancel.show{display:block}
+
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    thead th{
+      text-align:left;
+      font-size:12px;
+      color:#cfe4ff;
+      background:#101827;
+      border-bottom:1px solid var(--border);
+      padding:12px 12px;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+    }
+    tbody td{
+      padding:12px 12px;
+      border-bottom:1px solid var(--border);
+      color:var(--text);
+      font-size:14px;
+      vertical-align:middle;
+    }
+    tbody tr:hover{background:rgba(255,255,255,.03)}
+    .right{text-align:right;white-space:nowrap}
+
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .a{
+      border:none;border-radius:10px;padding:8px 10px;cursor:pointer;
+      font-weight:800;font-size:12px;color:#fff;
+    }
+    .a.edit{background:var(--orange)}
+    .a.del{background:var(--red)}
+
+    @media (max-width: 980px){
+      .resumo{grid-template-columns: 1fr 1fr}
+      .form-grid{grid-template-columns: 1fr 1fr; }
+    }
+  
+    .btn-back{
+      display:inline-block;
+      background:var(--blue);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:800;
+      border:1px solid transparent;
+      transition:.15s ease;
+    }
+    .btn-back:hover{filter:brightness(1.06)}
+
+  
+
+
+#modal-reserva input[type="text"],
+#modal-reserva input[type="number"],
+
+
+
+
+#modal-reserva button:hover {
+  opacity: 0.9;
+}
+
+
+/* ===== MODAL RESERVA DE CAIXA ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.modal.show {
+  display: flex !important;
+}
+
+.modal-content {
+  background: linear-gradient(180deg, #1a1f2e, #151922);
+  border: 1px solid #2a3140;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+.modal .close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #a9b2c3;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal .close:hover {
+  color: #fff;
+}
+
+.modal h2 {
+  margin: 0 0 20px;
+  color: #9b59b6;
+  font-size: 24px;
+}
+
+.modal h3 {
+  margin: 30px 0 15px;
+  color: #9b59b6;
+  font-size: 18px;
+}
+
+.modal label {
+  display: block;
+  font-size: 13px;
+  color: #a9b2c3;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.modal input[type="text"],
+.modal input[type="number"],
+.modal input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  background: #0f1320;
+  color: #e7e9ee;
+  border: 1px solid #2a3140;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-bottom: 18px;
+}
+
+.modal input:focus {
+  border-color: rgba(155, 89, 182, 0.8);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.15);
+}
+
+.modal button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.modal button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.modal button[type="submit"] {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.modal button[type="button"] {
+  background: #555;
+}
+
+.modal hr {
+  border: none;
+  border-top: 1px solid #2a3140;
+  margin: 30px 0;
+}
+
+#historico-reserva {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 15px;
+}
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+/* ===== TABELA DE HISTÓRICO - CABEÇALHO AZUL ===== */
+#historico-reserva table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+#historico-reserva thead tr {
+  background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+}
+
+#historico-reserva thead th {
+  padding: 12px 10px;
+  border: 1px solid #1a252f;
+  color: #ffffff !important;
+  font-weight: 700;
+  text-align: left;
+  background: linear-gradient(135deg, #2980b9, #3498db) !important;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+#historico-reserva tbody td {
+  padding: 10px;
+  border: 1px solid #2a3140;
+  color: #e7e9ee !important;
+  background: rgba(0,0,0,0.3);
+}
+
+#historico-reserva tbody tr:nth-child(odd) {
+  background: rgba(0,0,0,0.2);
+}
+
+#historico-reserva tbody tr:hover {
+  background: rgba(52, 152, 219, 0.15) !important;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>Controle Financeiro</h1>
+    <div style="margin: 10px 0 18px 0;">
+      <a href="/admin.html" class="btn-back">Voltar ao Dashboard</a>
+    </div>
+
+    <div class="panel">
+      <div class="resumo">
+        <div class="box">
+          <div class="t">Total Receitas</div>
+          <div id="total-receitas" class="v green">R$ 0,00</div>
+        </div>
+        <div class="box">
+          <div class="t">Total Despesas</div>
+          <div id="total-despesas" class="v red">R$ 0,00</div>
+        </div>
+        <div class="box">
+          <div class="t">Saldo Operacional</div>
+          <div id="saldo-final" class="v blue">R$ 0,00</div>
+        </div>
+        <div class="box">
+          <div class="t">Débito Interno</div>
+          <div id="total-debito" class="v orange">R$ 0,00</div>
+          <div class="hint">Parcelamento direto sem juros</div>
+        </div>
+        <div class="box">
+          <div class="t">Reserva de Caixa</div>
+          <div id="reserva-caixa" class="v" style="color:#9b59b6; font-weight:900">R$ 0,00</div>
+          <div class="hint">Dinheiro guardado 🔒</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin:0 0 14px;color:#fff;font-size:18px">Adicionar Receita / Débito / Despesa</h2>
+
+      <form id="form-receita">
+        <div class="form-grid">
+          <div>
+            <label for="aluno">Aluno</label>
+            <input id="aluno" placeholder="Ex.: João Silva" />
+          </div>
+
+          <div>
+            <label for="descricao">Descrição</label>
+            <input id="descricao" placeholder="Ex.: Exame faixa preta / Mensalidade" />
+          </div>
+
+          <div>
+            <label for="valor">Valor (R$)</label>
+            <input id="valor" type="number" step="0.01" placeholder="0,00" />
+          </div>
+
+          <div>
+            <label for="tipo">Tipo</label>
+            <select id="tipo">
+              <option value="receita">Receita</option>
+              <option value="debito">Débito Interno</option>
+              <option value="despesa">Despesa</option>
+            </select>
+          </div>
+
+          <!-- ✅ AGORA EXISTE: seletor para abater em uma dívida -->
+          <div id="wrap-debito-ref" style="display:none">
+            <label for="debito-ref">Abater em qual dívida?</label>
+            <select id="debito-ref">
+              <option value="">Abater em... (selecione a dívida)</option>
+            </select>
+            <div class="hint">Este pagamento será abatido da dívida selecionada.</div>
+          </div>
+
+          <div style="display:grid;gap:10px">
+            <button class="btn btn-primary" type="submit" id="btn-salvar">Adicionar</button>
+            <button class="btn btn-cancel" type="button" id="btn-cancelar">Cancelar edição</button>
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">
+          Dica: “Débito Interno” = aluno está devendo e você vai lançando os pagamentos depois como “Receita”.
+        </div>
+      </form>
+
+      <div style="text-align:center; margin-top:20px">
+        <button class="btn-add" onclick="abrirModalReserva()" style="background:#9b59b6; padding:12px 24px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer; font-size:14px">
+          📊 Gerenciar Reserva de Caixa
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ✅ AGORA EXISTE: painel com blocos por aluno e histórico de abatimentos -->
+    <div class="panel">
+      <h2 style="margin:0 0 10px;color:#fff;font-size:18px">Dívidas por aluno (com abatimentos)</h2>
+      <div id="blocos-debitos"></div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin:0 0 10px;color:#fff;font-size:18px">Histórico</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Aluno</th>
+            <th>Descrição</th>
+            <th class="right">Valor</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabela"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+
+// --- CONEXÃO COM API ---
+const API_URL = "/api/financeiro/lancamentos";
+
+// Elementos DOM (IDs corretos do HTML)
+const form = document.getElementById("form-receita");
+const inpAluno = document.getElementById("aluno");
+const inpDesc = document.getElementById("descricao");
+const inpValor = document.getElementById("valor");
+const selTipo = document.getElementById("tipo");
+const selDebitoRef = document.getElementById("debito-ref");
+const tabela = document.getElementById("tabela");
+const btnCancelar = document.getElementById("btn-cancelar");
+const btnSalvar = document.getElementById("btn-salvar");
+const wrapDebitoRef = document.getElementById("wrap-debito-ref");
+
+// Dados
+let dados = [];
+let reservaCaixa = 0;
+let editId = null;
+const totalReceitas = document.getElementById("total-receitas");
+const totalDespesas = document.getElementById("total-despesas");
+const totalDebito = document.getElementById("total-debito");
+const saldoFinal = document.getElementById("saldo-final");
+const blocosDebitos = document.getElementById("blocos-debitos");
+
+
+
+async function buscarReservaCaixa() {
+  try {
+    const res = await fetch('/api/financeiro/reserva_caixa');
+    const json = await res.json();
+    if (json.ok) {
+      reservaCaixa = json.reservaTotal || 0;
+      const el = document.getElementById('reserva-caixa');
+      if (el) el.textContent = moeda(reservaCaixa);
+    }
+  } catch (err) {
+    console.error('Erro ao buscar reserva:', err);
+  }
+}
+
+async function carregarDados() {
+  await buscarReservaCaixa();
+  try {
+    const r = await fetch(API_URL);
+    const js = await r.json();
+    if (js.ok) {
+      dados = js.data || [];
+      render();
+    }
+  } catch (e) { console.error("Erro ao carregar:", e); }
+}
+
+async function salvarNoServidor(item, method = "POST") {
+  try {
+    const url = method === "PUT" ? `${API_URL}?id=${item.id}` : API_URL;
+    const r = await fetch(url, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(item)
+    });
+    const js = await r.json();
+    if (!js.ok) alert("Erro ao salvar: " + js.message);
+    await carregarDados(); // Recarrega do banco
+  } catch (e) { alert("Erro de conexão com servidor."); }
+}
+
+async function excluirNoServidor(id) {
+  if (!confirm("Excluir permanentemente?")) return;
+  try {
+    const r = await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
+    await carregarDados();
+  } catch (e) { alert("Erro ao excluir."); }
+}
+
+// Substituindo as funções antigas
+function salvar() { /* desativado localStorage */ }
+
+// Inicialização
+document.addEventListener("DOMContentLoaded", carregarDados);
+
+
+function moeda(v) {
+  return (Number(v) || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function hoje() {
+  return new Date().toLocaleDateString("pt-BR"); // DD/MM/YYYY para exibição
+}
+
+function hojoDB() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`; // YYYY-MM-DD para API
+}
+
+function genId() {
+  return Date.now() + "_" + Math.random().toString(16).slice(2);
+}
+
+function normalizarAluno(s) {
+  return (s || "").trim();
+}
+
+function getDebitosPorAluno() {
+  const debitos = dados.filter(x => x.tipo === "debito");
+  const pagamentos = dados.filter(x => x.tipo === "receita" && x.refDebitoId);
+
+  const mapa = new Map();
+  for (const d of debitos) {
+    mapa.set(d.debitoId, {
+      debito: d,
+      pagamentos: [],
+      pagoTotal: 0,
+      saldo: Number(d.valor) || 0,
+    });
+  }
+
+  for (const p of pagamentos) {
+    if (!mapa.has(p.refDebitoId)) continue;
+    const reg = mapa.get(p.refDebitoId);
+    reg.pagamentos.push(p);
+    reg.pagoTotal += Number(p.valor) || 0;
+    reg.saldo = Math.max(0, (Number(reg.debito.valor) || 0) - reg.pagoTotal);
+  }
+
+  const porAluno = new Map();
+  for (const [debtId, reg] of mapa.entries()) {
+    const aluno = normalizarAluno(reg.debito.aluno);
+    if (!porAluno.has(aluno)) porAluno.set(aluno, []);
+    porAluno.get(aluno).push({ debtId, ...reg });
+  }
+
+  for (const [aluno, lista] of porAluno.entries()) {
+    lista.sort((a,b) => (b.debito._ts||0) - (a.debito._ts||0));
+  }
+
+  return porAluno;
+}
+
+function atualizarSelectAbatimento() {
+  const tipo = selTipo.value;
+  const aluno = normalizarAluno(inpAluno.value);
+
+  if (tipo !== "receita") {
+    wrapDebitoRef.style.display = "none";
+    selDebitoRef.innerHTML = `<option value="">Abater em... (selecione a dívida)</option>`;
+    return;
+  }
+
+  const porAluno = getDebitosPorAluno();
+  const lista = porAluno.get(aluno) || [];
+  const abertas = lista.filter(x => x.saldo > 0);
+
+  if (!aluno || abertas.length === 0) {
+    wrapDebitoRef.style.display = "none";
+    selDebitoRef.innerHTML = `<option value="">Abater em... (selecione a dívida)</option>`;
+    return;
+  }
+
+  wrapDebitoRef.style.display = "block";
+  selDebitoRef.innerHTML = `<option value="">Abater em... (selecione a dívida)</option>`;
+
+  abertas.forEach(x => {
+    const opt = document.createElement("option");
+    opt.value = x.debtId;
+    opt.textContent = `${x.debito.descricao} • saldo ${moeda(x.saldo)} (de ${moeda(x.debito.valor)})`;
+    selDebitoRef.appendChild(opt);
+  });
+}
+
+function renderExtratoDebitos(porAluno) {
+  blocosDebitos.innerHTML = "";
+
+  const alunos = [...porAluno.keys()].filter(Boolean).sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  if (alunos.length === 0) {
+    blocosDebitos.innerHTML = `<div class="hint">Nenhum débito interno lançado ainda.</div>`;
+    return;
+  }
+
+  for (const aluno of alunos) {
+    const lista = porAluno.get(aluno) || [];
+    const totalAbertoAluno = lista.reduce((acc,x)=>acc+(Number(x.saldo)||0),0);
+
+    const wrap = document.createElement("div");
+    wrap.style.border = "1px solid #2b2b2b";
+    wrap.style.borderRadius = "12px";
+    wrap.style.padding = "14px";
+    wrap.style.marginBottom = "14px";
+    wrap.style.background = "rgba(255,255,255,0.02)";
+
+    wrap.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="font-weight:800;font-size:16px">${aluno}</div>
+        <div style="font-weight:800;color:#f39c12">Saldo devedor: ${moeda(totalAbertoAluno)}</div>
+      </div>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px" id="debitos-${aluno.replace(/\W+/g,'_')}"></div>
+    `;
+
+    blocosDebitos.appendChild(wrap);
+
+    const box = wrap.querySelector(`#debitos-${aluno.replace(/\W+/g,'_')}`);
+
+    for (const x of lista) {
+      const total = Number(x.debito.valor) || 0;
+      const pago = Number(x.pagoTotal) || 0;
+      const saldo = Number(x.saldo) || 0;
+      const pct = total > 0 ? Math.min(100, Math.round((pago/total)*100)) : 0;
+
+      const div = document.createElement("div");
+      div.style.padding = "12px";
+      div.style.borderRadius = "10px";
+      div.style.border = "1px solid #2b2b2b";
+      div.style.background = "rgba(0,0,0,0.18)";
+
+      const pagamentosOrdenados = [...x.pagamentos].sort((a,b)=>(a._ts||0)-(b._ts||0));
+
+      div.innerHTML = `
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+          <div style="font-weight:700">${x.debito.descricao}</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <div><span class="hint">Total:</span> <b>${moeda(total)}</b></div>
+            <div><span class="hint">Pago:</span> <b style="color:#2ecc71">${moeda(pago)}</b></div>
+            <div><span class="hint">Saldo:</span> <b style="color:#f39c12">${moeda(saldo)}</b></div>
+          </div>
+        </div>
+
+        <div style="margin-top:8px">
+          <div style="height:8px;background:#1f1f1f;border:1px solid #333;border-radius:999px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:#2ecc71"></div>
+          </div>
+          <div class="hint" style="margin-top:6px">Progresso: ${pct}%</div>
+        </div>
+
+        <div style="margin-top:10px">
+          <div class="hint" style="margin-bottom:6px">Abatimentos:</div>
+          ${
+            pagamentosOrdenados.length
+            ? `<div style="display:flex;flex-direction:column;gap:6px">
+                ${pagamentosOrdenados.map(p=>`
+                  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+                    <div class="hint">${p.data} • ${p.descricao || "Pagamento"}</div>
+                    <div style="font-weight:800;color:#2ecc71">${moeda(p.valor)}</div>
+                  </div>
+                `).join("")}
+               </div>`
+            : `<div class="hint">Nenhum pagamento ainda.</div>`
+          }
+        </div>
+      `;
+
+      box.appendChild(div);
+    }
+  }
+}
+
+
+function formatarData(dataISO) {
+  if (!dataISO) return '';
+  const d = new Date(dataISO);
+  const dia = String(d.getDate()).padStart(2, '0');
+  const mes = String(d.getMonth() + 1).padStart(2, '0');
+  const ano = d.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
+
+function render() {
+  tabela.innerHTML = "";
+
+  let r = 0, d = 0;
+
+  const porAluno = getDebitosPorAluno();
+  let debitoAberto = 0;
+  for (const lista of porAluno.values()) {
+    for (const x of lista) debitoAberto += Number(x.saldo) || 0;
+  }
+
+  const ordenado = [...dados].sort((a,b) => (b._ts||0) - (a._ts||0));
+  for (const l of ordenado) {
+    if (l.tipo === "receita") r += Number(l.valor) || 0;
+    if (l.tipo === "despesa") d += Number(l.valor) || 0;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${formatarData(l.data)}</td>
+      <td>${l.aluno || ""}</td>
+      <td>${l.descricao || ""}</td>
+      <td class="right">${moeda(l.valor)}</td>
+      <td>${l.tipo === "debito" ? "Débito Interno" : (l.tipo === "receita" ? "Receita" : "Despesa")}</td>
+      <td>
+        <div class="actions">
+          <button class="a edit" data-id="${l.id}">Editar</button>
+          <button class="a del" data-id="${l.id}">Excluir</button>
+        </div>
+      </td>
+    `;
+    tabela.appendChild(tr);
+  }
+
+  totalReceitas.textContent = moeda(r);
+  totalDespesas.textContent = moeda(d);
+  totalDebito.textContent = moeda(debitoAberto);
+  saldoFinal.textContent = moeda(r - d);
+
+  renderExtratoDebitos(porAluno);
+
+  salvar();
+  atualizarSelectAbatimento();
+}
+
+// eventos
+selTipo.addEventListener("change", atualizarSelectAbatimento);
+inpAluno.addEventListener("input", atualizarSelectAbatimento);
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const aluno = normalizarAluno(inpAluno.value);
+  const descricao = (inpDesc.value || "").trim();
+  const valor = Number(inpValor.value || 0);
+  const tipo = selTipo.value;
+
+  if (!aluno || !descricao || !valor || valor <= 0) return;
+
+  // edição simples
+  if (editId) {
+    const idx = dados.findIndex(x => x.id === editId);
+    if (idx >= 0) {
+      dados[idx].aluno = aluno;
+      dados[idx].descricao = descricao;
+      dados[idx].valor = valor;
+      dados[idx].tipo = tipo;
+    }
+    editId = null;
+    btnCancelar.style.display = "none";
+    form.reset();
+    render();
+    return;
+  }
+
+  const novo = {
+    aluno_id: aluno,
+    tipo: tipo === 'debito' ? 'despesa' : tipo,
+    valor: Number(valor),
+    data: hojoDB()
+  };
+
+  if (tipo === "debito") {
+    novo.debitoId = genId();
+  }
+
+  if (tipo === "receita") {
+    const ref = wrapDebitoRef.style.display !== "none" ? (selDebitoRef.value || "") : "";
+    if (ref) novo.refDebitoId = ref;
+  }
+
+  // Salvar no servidor via API
+  await salvarNoServidor(novo, 'POST');
+    form.reset();
+  wrapDebitoRef.style.display = "none";
+  selDebitoRef.value = "";
+  render();
+});
+
+tabela.addEventListener("click", async (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const id = btn.dataset.id;
+  if (!id) return;
+
+  if (btn.classList.contains("del")) {
+    if (confirm("Tem certeza que deseja excluir este lançamento?")) {
+      // Excluir via API
+      await excluirNoServidor(id);
+      // render() será chamado automaticamente por carregarDados()
+    }
+    return;
+  }
+
+  if (btn.classList.contains("edit")) {
+    const l = dados.find(x => x.id === id);
+    if (!l) return;
+    inpAluno.value = l.aluno || "";
+    inpDesc.value = l.descricao || "";
+    inpValor.value = l.valor || "";
+    selTipo.value = l.tipo || "receita";
+    editId = id;
+    btnCancelar.style.display = "inline-block";
+    atualizarSelectAbatimento();
+  }
+});
+
+btnCancelar.addEventListener("click", () => {
+  editId = null;
+  form.reset();
+  btnCancelar.style.display = "none";
+  atualizarSelectAbatimento();
+});
+
+render();
+  
+// ===== GERENCIAMENTO DE RESERVA DE CAIXA =====
+
+async function abrirModalReserva() {
+  document.getElementById('modal-reserva').classList.add('show');
+  document.getElementById('data-reserva').valueAsDate = new Date();
+  document.getElementById('saldo-reserva-modal').textContent = moeda(reservaCaixa);
+  await carregarHistoricoReserva();
+}
+
+function fecharModalReserva() {
+  document.getElementById('modal-reserva').classList.remove('show');
+  document.getElementById('form-reserva').reset();
+}
+
+async function salvarReserva(e) {
+  e.preventDefault();
+  
+  const tipo = document.querySelector('input[name="tipo-reserva"]:checked').value;
+  const descricao = document.getElementById('desc-reserva').value;
+  const valor = parseFloat(document.getElementById('valor-reserva').value);
+  const data = document.getElementById('data-reserva').value;
+
+  try {
+    const res = await fetch('/api/financeiro/reserva_caixa_add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ descricao, valor, tipo, data })
+    });
+
+    const json = await res.json();
+    
+    if (json.ok) {
+      alert('✅ Movimentação registrada com sucesso!');
+      await buscarReservaCaixa();
+      await carregarHistoricoReserva();
+      document.getElementById('form-reserva').reset();
+      document.getElementById('data-reserva').valueAsDate = new Date();
+      document.getElementById('saldo-reserva-modal').textContent = moeda(reservaCaixa);
+    } else {
+      alert('❌ Erro: ' + json.error);
+    }
+  } catch (err) {
+    console.error('Erro ao salvar:', err);
+    alert('❌ Erro ao registrar movimentação');
+  }
+}
+
+async function carregarHistoricoReserva() {
+  try {
+    const res = await fetch('/api/financeiro/reserva_caixa_historico');
+    const json = await res.json();
+    
+    if (json.ok && json.movimentacoes) {
+      const div = document.getElementById('historico-reserva');
+      
+      if (json.movimentacoes.length === 0) {
+        div.innerHTML = '<p style="color:#999">Nenhuma movimentação registrada.</p>';
+        return;
+      }
+
+      let html = '<table>';
+      html += '<thead><tr>';
+      html += '<th>Data</th>';
+      html += '<th>Descrição</th>';
+      html += '<th>Valor</th>';
+      html += '<th>Tipo</th>';
+      html += '</tr></thead><tbody>';
+
+      for (const mov of json.movimentacoes) {
+        const dataFormatada = (() => {
+          try {
+            const [ano, mes, dia] = mov.data.split('-');
+            return `${dia}/${mes}/${ano}`;
+          } catch (err) {
+            console.error('Erro ao formatar data:', err, mov.data);
+            return mov.data;
+          }
+        })();
+        
+        const icone = mov.tipo === 'entrada' ? '💰' : '💸';
+        const cor = mov.tipo === 'entrada' ? '#27ae60' : '#e74c3c';
+        const sinal = mov.tipo === 'entrada' ? '+' : '-';
+
+        html += '<tr>';
+        html += `<td>${dataFormatada}</td>`;
+        html += `<td>${mov.descricao}</td>`;
+        html += `<td style="text-align:right; color:${cor}; font-weight:bold">${sinal}${moeda(mov.valor)}</td>`;
+        html += `<td style="text-align:center">${icone}</td>`;
+        html += '</tr>';
+      }
+
+      html += '</tbody></table>';
+      div.innerHTML = html;
+    }
+  } catch (err) {
+    console.error('Erro ao carregar histórico:', err);
+    document.getElementById('historico-reserva').innerHTML = '<p style="color:#e74c3c">Erro ao carregar histórico.</p>';
+  }
+}
+
+</script>
+
+  <!-- MODAL GERENCIAR RESERVA -->
+  <div id="modal-reserva" class="modal">
+    <div class="modal-content" style="max-width:700px">
+      <span class="close" onclick="fecharModalReserva()">&times;</span>
+      <h2 style="color:#9b59b6; margin-bottom:20px">📊 Gerenciar Reserva de Caixa</h2>
+      
+      <div style="background:#2a3140; padding:15px; border-radius:8px; margin-bottom:20px">
+        <strong style="color:#a9b2c3">Saldo Atual:</strong> <span id="saldo-reserva-modal" style="color:#9b59b6; font-size:24px; font-weight:900">R$ 0,00</span>
+      </div>
+
+      <form id="form-reserva" onsubmit="salvarReserva(event)">
+        <label>Tipo de Movimentação:</label>
+        <div style="margin-bottom:15px">
+          <label style="margin-right:20px; color:#e7e9ee">
+            <input type="radio" name="tipo-reserva" value="entrada" checked> 💰 Entrada (guardar dinheiro)
+          </label>
+          <label style="color:#e7e9ee">
+            <input type="radio" name="tipo-reserva" value="saida"> 💸 Saída (tirar dinheiro)
+          </label>
+        </div>
+
+        <label>Descrição:</label>
+        <input type="text" id="desc-reserva" placeholder="Ex: Pagamento obra da academia" required>
+
+        <label>Valor (R$):</label>
+        <input type="number" id="valor-reserva" step="0.01" min="0.01" placeholder="0.00" required>
+
+        <label>Data:</label>
+        <input type="date" id="data-reserva" required>
+
+        <div style="text-align:right; margin-top:20px">
+          <button type="button" onclick="fecharModalReserva()" style="background:#555; padding:12px 24px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer; margin-right:10px">Cancelar</button>
+          <button type="submit" style="background:#9b59b6; padding:12px 24px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer">Registrar</button>
+        </div>
+      </form>
+
+      <hr style="margin:30px 0; border:none; border-top:1px solid #2a3140">
+
+      <h3 style="color:#9b59b6; margin-bottom:15px">📋 Histórico de Movimentações</h3>
+      <div id="historico-reserva" style="max-height:300px; overflow-y:auto; margin-top:15px; background:#0f1320; padding:10px; border-radius:8px">
+        <p style="color:#999">Carregando...</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

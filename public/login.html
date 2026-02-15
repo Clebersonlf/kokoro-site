@@ -1,27 +1,54 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login ? Kokoro</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login • Kokoro</title>
   <style>
     body{font-family:system-ui,Inter,Segoe UI,Roboto,Arial,sans-serif;background:#0f1115;color:#eaeaea;display:grid;place-items:center;min-height:100vh;margin:0}
     .card{width:100%;max-width:380px;background:#131721;border:1px solid #2a2f3a;border-radius:16px;padding:24px}
     input,button{width:100%;padding:12px;border-radius:10px;border:1px solid #2a2f3a;background:#0f1115;color:#eaeaea;margin-top:10px}
-    button{cursor:pointer}
-    .err{color:#ff7b7b;min-height:20px;margin-top:8px}
+    button{cursor:pointer;font-weight:600}
+    button:hover{background:#1a1f2e}
+    .err{color:#ff7b7b;min-height:20px;margin-top:8px;font-size:14px}
+    .logo{text-align:center;margin-bottom:20px;font-size:28px;font-weight:900;letter-spacing:2px}
+    .back{text-align:center;margin-top:16px}
+    .back a{color:#94a3b8;text-decoration:none;font-size:13px}
+    .back a:hover{color:#eaeaea}
   </style>
 </head>
 <body>
 <div class="card">
-  <h2>Entrar</h2>
+  <div class="logo">KOKORO</div>
+  <h2 style="text-align:center;margin:0 0 20px">Entrar</h2>
   <form id="f">
     <input type="email" id="email" placeholder="E-mail" required>
     <input type="password" id="senha" placeholder="Senha" required>
-    <div class="h-captcha" data-sitekey="5778ba48-a18a-478a-930e-2fd64ff2bb06"></div>
     <button type="submit">Login</button>
     <div class="err" id="err"></div>
   </form>
+  <div class="back">
+    <a href="/">← Voltar ao site</a>
+  </div>
 </div>
-<script src="/login.client.js" defer></script>
+
+<script src="/auth.js"></script>
+<script>
+document.getElementById('f').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('email').value;
+  const senha = document.getElementById('senha').value;
+  const errDiv = document.getElementById('err');
+  
+  errDiv.textContent = '';
+  
+  const resultado = fazerLogin(email, senha);
+  
+  if (!resultado.sucesso) {
+    errDiv.textContent = resultado.mensagem;
+  }
+});
+</script>
 </body>
 </html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KOKORO 心 - Relatórios Financeiros</title>
+  <link rel="stylesheet" href="/admin/css/linkbtn.css">
+  <link rel="stylesheet" href="/admin/css/btns.css">
+  <style>
+    :root { --cor-fundo:#121212; --cor-container:#1a1a1a; --cor-borda:#333;
+            --cor-texto-principal:#f0f0f0; --cor-azul:#3498db; }
+    body{margin:0;background:var(--cor-fundo);color:var(--cor-texto-principal);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial}
+    .container{max-width:1600px;margin:0 auto;padding:24px}
+    .topbar{display:flex;gap:12px;justify-content:flex-end;padding:10px 16px}
+    .btn{border:1px solid #334155;border-radius:.6rem;background:#111827;color:#bfdbfe;text-decoration:none;padding:.55rem .9rem}
+    .btn:hover{border-color:#3b82f6;color:#dbeafe}
+    h1{color:var(--cor-azul);text-align:center;margin:8px 0 20px}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .card{background:linear-gradient(180deg,#1a1a1a,#171717);border:1px solid var(--cor-borda);border-radius:12px;padding:16px}
+    .kpis{display:grid;gap:12px;grid-template-columns:repeat(3,1fr);margin:16px 0}
+    .kpi{background:#181818;border:1px solid #2a2a2a;border-radius:10px;padding:14px;text-align:center}
+    .kpi h3{margin:2px 0 6px;font-size:.95rem;opacity:.8}
+    .kpi p{margin:0;font-weight:800;font-size:1.5rem}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 16px}
+    .toolbar input,.toolbar select,.toolbar button{background:#2a2a2a;color:#fff;border:1px solid #3a3a3a;border-radius:8px;padding:10px}
+    canvas{width:100%;height:320px;max-height:420px}
+    .muted{opacity:.75;font-size:.9rem}
+  </style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="btn" href="/admin/financeiro/financeiro.html">← Voltar ao Financeiro</a>
+    <a class="btn" href="/admin/index.html">Admin</a>
+  </nav>
+  <div class="container">
+    <h1>Relatórios Financeiros</h1>
+
+    <div class="toolbar">
+      <select id="preset">
+        <option value="30">Últimos 30 dias</option>
+        <option value="90">Últimos 90 dias</option>
+        <option value="365" selected>Últimos 12 meses</option>
+        <option value="custom">Personalizado…</option>
+      </select>
+      <input type="date" id="ini" />
+      <input type="date" id="fim" />
+      <button id="btn-atualizar">Atualizar</button>
+      <button id="btn-pdf">Gerar PDF</button>
+      <button id="btn-docx">Gerar DOCX</button>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><h3>Receitas</h3><p id="kpi-receitas">R$ 0,00</p></div>
+      <div class="kpi"><h3>Despesas + Repasses</h3><p id="kpi-despesas">R$ 0,00</p></div>
+      <div class="kpi"><h3>Saldo</h3><p id="kpi-saldo">R$ 0,00</p></div>
+    </div>
+
+    <div class="grid">
+      <div class="card"><h3>Receitas vs Despesas (Linha)</h3><canvas id="chartLinha"></canvas></div>
+      <div class="card"><h3>Composição de Receita (Pizza)</h3><canvas id="chartPizza"></canvas></div>
+      <div class="card"><h3>Receitas por Mês (Barras)</h3><canvas id="chartBarras"></canvas></div>
+      <div class="card"><h3>Despesas & Repasses por Mês (Colunas)</h3><canvas id="chartColunas"></canvas></div>
+    </div>
+
+    <p class="muted">v1: esta tela já está online. Na próxima etapa, conectaremos estes gráficos diretamente às APIs /api/financeiro para dados 100% do backend.</p>
+  </div>
+
+  <!-- Chart.js CDN (leve) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+  const fmtBR = n => (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+  // v1: dados de amostra locais (substituiremos por fetch às APIs)
+  function dadosMock(){
+    const meses = Array.from({length:12},(_,i)=>new Date(new Date().getFullYear(), new Date().getMonth()-11+i, 1))
+      .map(d=>d.toLocaleDateString('pt-BR',{month:'short'}));
+    const rec = meses.map(()=>Math.round(2000+Math.random()*3500));
+    const des = meses.map(()=>Math.round(800+Math.random()*2200));
+    const rep = meses.map(()=>Math.round(300+Math.random()*1200));
+
+    const receitas = rec.reduce((a,b)=>a+b,0);
+    const despesas = des.reduce((a,b)=>a+b,0) + rep.reduce((a,b)=>a+b,0);
+    return { meses, rec, des, rep, receitas, despesas };
+  }
+
+  // cria/atualiza gráficos
+  let gLinha,gPizza,gBarras,gColunas;
+  function render(){
+    const { meses, rec, des, rep, receitas, despesas } = dadosMock();
+    document.getElementById('kpi-receitas').textContent = fmtBR(receitas);
+    document.getElementById('kpi-despesas').textContent = fmtBR(despesas);
+    document.getElementById('kpi-saldo').textContent    = fmtBR(receitas-despesas);
+
+    const ctxL = document.getElementById('chartLinha'), ctxP = document.getElementById('chartPizza'),
+          ctxB = document.getElementById('chartBarras'), ctxC = document.getElementById('chartColunas');
+
+    [gLinha,gPizza,gBarras,gColunas].forEach(g=>g && g.destroy());
+
+    gLinha = new Chart(ctxL, {
+      type:'line',
+      data:{ labels:meses, datasets:[
+        { label:'Receitas', data:rec },
+        { label:'Despesas', data:des.map((v,i)=>v+rep[i]), },
+      ]},
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom' } } }
+    });
+
+    gPizza = new Chart(ctxP, {
+      type:'pie',
+      data:{ labels:['Mensalidades','Produtos','Serviços'],
+             datasets:[{ data:[55,25,20] }] },
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom' } } }
+    });
+
+    gBarras = new Chart(ctxB, {
+      type:'bar',
+      data:{ labels:meses, datasets:[{ label:'Receitas', data:rec }] },
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom' } } }
+    });
+
+    gColunas = new Chart(ctxC, {
+      type:'bar',
+      data:{ labels:meses, datasets:[
+        { label:'Despesas', data:des },
+        { label:'Repasses', data:rep }
+      ]},
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom' } } }
+    });
+  }
+
+  document.getElementById('btn-atualizar').addEventListener('click', render);
+  document.getElementById('btn-pdf').addEventListener('click', () => {
+    window.print(); // v1 simples; depois trocamos por jsPDF com imagens dos gráficos
+  });
+
+  // presets/intervalo (v1 ainda não filtra dados mock)
+  const preset = document.getElementById('preset'), ini = document.getElementById('ini'), fim = document.getElementById('fim');
+  function setPreset(){
+    const v = preset.value;
+    if(v==='custom'){ ini.disabled=false; fim.disabled=false; }
+    else{
+      ini.disabled=true; fim.disabled=true;
+      const dias = Number(v)||365;
+      const dFim = new Date(); const dIni = new Date(Date.now()-dias*86400000);
+      ini.valueAsDate = dIni; fim.valueAsDate = dFim;
+    }
+  }
+  preset.addEventListener('change', setPreset); setPreset();
+
+  render();
+  </script>
+  <script src="https://unpkg.com/docx@7.7.0/build/index.js"></script>
+
+  <script>
+  // Gera DOCX com docx.js: inclui KPIs e os 4 gráficos como imagens
+  async function canvasToArrayBuffer(canvas){
+    const dataUrl = canvas.toDataURL('image/png');
+    const res = await fetch(dataUrl);
+    return await res.arrayBuffer();
+  }
+<script>
+// ==== gerarDOCX: captura dados e canvases, monta o .docx ====
+function gerarDOCX(){
+  try{
+    if(!(window.docx && window.saveAs)){
+      alert("Bibliotecas do DOCX não carregadas. Recarregue a página (Ctrl+Shift+R).");
+      return;
+    }
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell, WidthType, Media } = docx;
+
+    // helpers
+    const brl = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    const getText = sel => (document.querySelector(sel)?.textContent || '').trim();
+
+    // Totais (ajuste os seletores caso estejam diferentes)
+    const totalRec  = getText('#total-receitas');
+    const totalDesp = getText('#total-despesas');
+    const saldo     = getText('#saldo-final');
+
+    // captura canvases (se alguns não existirem, segue)
+    const canvasIds = ['chartLinha','chartPizza','chartBarras','chartColunas'];
+    const chartParas = [];
+    const images = [];
+
+    canvasIds.forEach(id=>{
+      const c = document.getElementById(id);
+      if(!c) return;
+      try{
+        const dataUrl = c.toDataURL('image/png', 1.0);
+        images.push({id, dataUrl});
+      }catch(_){}
+    });
+
+    // monta o documento
+    const children = [];
+
+    children.push(new Paragraph({
+      text: "Relatórios Financeiros",
+      heading: HeadingLevel.TITLE,
+      alignment: AlignmentType.CENTER
+    }));
+
+    children.push(new Paragraph({ text: "Resumo", heading: HeadingLevel.HEADING_2 }));
+    children.push(new Paragraph({ text: `Total de Receitas: ${totalRec}` }));
+    children.push(new Paragraph({ text: `Total de Despesas: ${totalDesp}` }));
+    children.push(new Paragraph({ text: `Saldo Final: ${saldo}` }));
+    children.push(new Paragraph({ text: " " }));
+
+    // pequena tabela-resumo
+    const table = new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({ children:[new Paragraph({children:[new TextRun({text:"Indicador", bold:true})]})]}),
+            new TableCell({ children:[new Paragraph({children:[new TextRun({text:"Valor", bold:true})]})]})
+          ]
+        }),
+        new TableRow({
+          children: [
+            new TableCell({ children:[new Paragraph("Receitas")]}),
+            new TableCell({ children:[new Paragraph(totalRec)]})
+          ]
+        }),
+        new TableRow({
+          children: [
+            new TableCell({ children:[new Paragraph("Despesas")]}),
+            new TableCell({ children:[new Paragraph(totalDesp)]})
+          ]
+        }),
+        new TableRow({
+          children: [
+            new TableCell({ children:[new Paragraph("Saldo")]}),
+            new TableCell({ children:[new Paragraph(saldo)]})
+          ]
+        })
+      ]
+    });
+    children.push(table);
+    children.push(new Paragraph({ text: " " }));
+
+    if(images.length){
+      children.push(new Paragraph({ text: "Gráficos", heading: HeadingLevel.HEADING_2 }));
+      images.forEach((img,i)=>{
+        children.push(new Paragraph({ text: `Figura ${i+1}`, heading: HeadingLevel.HEADING_3 }));
+        const pngData = img.dataUrl.split(',')[1]; // base64
+        const image = Media.addImage(
+          new Document(), // dummy para obter o media (será reencapsulado abaixo)
+          Uint8Array.from(atob(pngData), c => c.charCodeAt(0)),
+          600,  // largura px aproximada
+          320   // altura px aproximada
+        );
+        // NOTA: para usar Media.addImage corretamente, precisamos adicionar depois no doc real.
+        chartParas.push(image);
+        children.push(new Paragraph(" "));
+      });
+    }
+
+    // cria doc
+    const doc = new Document({ sections: [{ children: [] }] });
+
+    // reconstroi images dentro do doc real
+    const rebuiltChildren = [];
+    for(const ch of children){
+      if(ch._media){ // objeto antigo com media? evitamos
+        continue;
+      }
+      rebuiltChildren.push(ch);
+      // onde tínhamos colocado placeholder de chart, já inserimos um parágrafo de imagem
+      if(ch.options && ch.options.text && /^Figura \d+/.test(ch.options.text)){
+        const idx = Number(ch.options.text.replace(/[^\d]/g,'')) - 1;
+        if(chartParas[idx]){
+          const dataUrl = images[idx].dataUrl.split(',')[1];
+          const img = Media.addImage(
+            doc,
+            Uint8Array.from(atob(dataUrl), c => c.charCodeAt(0)),
+            600, 320
+          );
+          rebuiltChildren.push(new Paragraph(img));
+        }
+      }
+    }
+    doc.Sections[0].children = rebuiltChildren;
+
+    Packer.toBlob(doc).then(blob=>{
+      const nome = `Relatorio_Financeiro_${new Date().toISOString().slice(0,10)}.docx`;
+      saveAs(blob, nome);
+    }).catch(err=>{
+      console.error("Falha ao empacotar DOCX:", err);
+      alert("Não foi possível gerar o DOCX. Veja o console (F12) para detalhes.");
+    });
+  }catch(e){
+    console.error(e);
+    alert("Não foi possível gerar o DOCX. Veja o console (F12) para detalhes.");
+  }
+}
+// liga o botão se existir
+document.addEventListener('DOMContentLoaded', ()=>{
+  const btn = document.getElementById('btn-docx') || document.querySelector('[data-action="gerar-docx"]');
+  if(btn){
+    btn.disabled = false;
+    btn.addEventListener('click', gerarDOCX);
+  }
+});
+// fim gerarDOCX
+</script>

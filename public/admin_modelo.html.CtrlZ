@@ -425,6 +425,12 @@ body{
   const panel = document.getElementById('settingsPanel');
   const root = document.documentElement;
 
+  // Guard: painel/temas removidos do HTML
+  if(!document.querySelector('.theme-option')){
+    return;
+  }
+
+
   function openClose(){
     if(!panel) return;
     panel.classList.toggle('active');

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Financeiro</title>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:16px;max-width:900px}
+    h1{margin:0 0 8px}
+    table{border-collapse:collapse;width:100%;margin-top:16px}
+    th,td{border:1px solid #ddd;padding:8px} thead th{background:#f2f2f2}
+    td.valor{text-align:right} .center{text-align:center;color:#666}
+  </style>
+</head>
+<body>
+  <h1>Financeiro</h1>
+  <div class="total">Total: <span id="total">R$ 0,00</span></div>
+  <table>
+    <thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th>Valor</th></tr></thead>
+    <tbody id="tbody"><tr><td class="center" colspan="4">Carregando...</td></tr></tbody>
+  </table>
+  <script>
+    function money(n){try{return Number(n).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}catch{return "R$ "+Number(n||0).toFixed(2)}}
+    function iso(d){return String(d||"").slice(0,10)}
+    async function load(){
+      const tbody=document.getElementById("tbody"); const totalEl=document.getElementById("total");
+      try{
+        const r=await fetch("/api/financeiro/lancamentos",{cache:"no-store"}); const data=await r.json();
+        if(!Array.isArray(data)||data.length==0){tbody.innerHTML='<tr><td class="center" colspan="4">Nenhum lançamento</td></tr>'; totalEl.textContent=money(0);return}
+        let total=0;
+        tbody.innerHTML=data.map(l=>{const v=Number(l.valor||0); total+= (l.tipo==="receita"?v:-v);
+          return `<tr><td>${iso(l.data)}</td><td>${l.tipo}</td><td>${l.descricao??"-"}</td><td class="valor">${money(v)}</td></tr>`}).join("");
+        totalEl.textContent=money(total);
+      }catch(e){tbody.innerHTML=`<tr><td class="center" colspan="4">Erro ao carregar: ${String(e)}</td></tr>`}
+    }
+    load();
+  </script>
+</body>
+</html>

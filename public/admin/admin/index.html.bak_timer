@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin • Kokoro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg-main:#0d0c0f;
+            --bg-card:rgba(20,18,23,.65);
+            --border-color:rgba(60,50,70,.7);
+            --text-primary:#f0e7ff;
+            --text-muted:#a093b0;
+            --primary-color:#f77f00;
+            --secondary-color:#d62828;
+            --accent-glow:rgba(247,127,0,.3);
+            --radius:16px;
+            --shadow:0 8px 32px rgba(0,0,0,.4);
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        body{
+            font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+            background-color:var(--bg-main);
+            color:var(--text-primary);
+            line-height:1.6;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            position:relative; overflow-x:hidden;
+        }
+        body::before, body::after{
+            content:''; position:fixed; top:50%; left:50%;
+            width:800px; height:800px; border-radius:50%;
+            opacity:.2; filter:blur(120px); z-index:-1; will-change:transform;
+        }
+        body::before{background:radial-gradient(circle,var(--primary-color),transparent 60%); transform:translate(-70%,-70%); animation:move-aurora-1 15s infinite alternate ease-in-out}
+        body::after {background:radial-gradient(circle,var(--secondary-color),transparent 60%); transform:translate(20%,20%);   animation:move-aurora-2 18s infinite alternate ease-in-out}
+        @keyframes move-aurora-1{0%{transform:translate(-70%,-70%) scale(1)}100%{transform:translate(-50%,-80%) scale(1.2)}}
+        @keyframes move-aurora-2{0%{transform:translate(20%,20%)  scale(1)}100%{transform:translate(40%,10%)  scale(1.3)}}
+
+        .container{max-width:1100px; margin:auto; position:relative; z-index:1; padding:24px}
+        header{display:flex; justify-content:space-between; align-items:center; padding-bottom:24px; border-bottom:1px solid var(--border-color)}
+        h1{font-size:2rem; margin:0; letter-spacing:-1px}
+        .grid{display:grid; gap:20px; padding-top:24px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); animation:fadeIn .5s ease-out forwards}
+
+        a.card{
+            display:flex; flex-direction:column; gap:16px; padding:24px;
+            background:var(--bg-card); border:1px solid var(--border-color);
+            border-radius:var(--radius); text-decoration:none; color:var(--text-primary);
+            transition:all .2s ease-in-out; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+            box-shadow:var(--shadow);
+        }
+        a.card:hover{transform:translateY(-5px) scale(1.03); border-color:var(--primary-color); box-shadow:0 10px 40px rgba(0,0,0,.5)}
+        .card-icon{width:48px; height:48px}
+        .card-icon svg{width:100%; height:100%}
+        .card-text strong{font-size:1.1rem; font-weight:600}
+        .card-text small{color:var(--text-muted)}
+        .btn-nav{
+            background:transparent; color:var(--text-muted); border:1px solid var(--border-color);
+            padding:10px 16px; border-radius:8px; text-decoration:none;
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            cursor:pointer; font-weight:600; transition:all .2s ease-in-out
+        }
+        .btn-nav:hover{background:rgba(60,50,70,.4); color:var(--text-primary); border-color:var(--text-muted); transform:translateY(-2px)}
+    </style>
+</head>
+<body>
+
+<!-- Gradiente para ícones -->
+<svg width="0" height="0" style="position:absolute">
+    <defs>
+        <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"  style="stop-color:var(--primary-color);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:var(--secondary-color);stop-opacity:1" />
+        </linearGradient>
+    </defs>
+</svg>
+
+<div class="container">
+    <header>
+        <h1>Admin • Kokoro</h1>
+        <nav style="display:flex; gap:10px;">
+            <a class="btn-nav" href="/" target="_blank" rel="noopener">Ver site ↗️</a>
+            <button class="btn-nav" id="btn-logout" type="button">Sair</button>
+        </nav>
+    </header>
+
+    <main class="grid">
+        <!-- Alunos • Lista (grupo, frente em degradê; fundos verde/azul) -->
+        <a class="card" href="/admin/cadastro/lista.html">
+            <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <!-- Grupo de pessoas coloridos -->
+                    <circle cx="12" cy="7" r="3" fill="url(#icon-gradient)"></circle>
+                    <circle cx="5.5" cy="9" r="2.5" fill="green"></circle>
+                    <circle cx="18.5" cy="9" r="2.5" fill="blue"></circle>
+                    <!-- Base central -->
+                    <path d="M5 18c0-2.8 3.6-5 7-5s7 2.2 7 5v1H5v-1z" fill="url(#icon-gradient)"></path>
+                    <!-- Bases laterais -->
+                    <path d="M1.5 18.5c0-1.9 1.9-3.6 4.3-3.6 1.1 0 2.2.3 3 .8 -1.7.8-2.9 2.2-3.1 3.3H1.5z" fill="green"></path>
+                    <path d="M15.2 15.7c.8-.5 1.9-.8 3-.8 2.4 0 4.3 1.7 4.3 3.6H19.3c-.2-1.1-1.4-2.5-3.1-3.3z" fill="blue"></path>
+                </svg>
+            </div>
+            <div class="card-text">
+                <strong>Alunos • Lista</strong><br><small>Ver/editar cadastros</small>
+            </div>
+        </a>
+
+        <!-- Aluno • Editar (livro aberto com 3 linhas pretas por lado) -->
+        <a class="card" href="/admin/cadastro/editar.html">
+            <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <!-- Livro aberto -->
+                    <path d="M3 6h8a2 2 0 0 1 2 2v12H5a2 2 0 0 1-2-2V6z" fill="url(#icon-gradient)"/>
+                    <path d="M21 6h-8a2 2 0 0 0-2 2v12h8a2 2 0 0 0 2-2V6z" fill="url(#icon-gradient)"/>
+                    <!-- Linhas das páginas (pretas, finas, 3 por lado) -->
+                    <line x1="5" y1="9"  x2="11" y2="9"  stroke="#000000" stroke-width="0.3"/>
+                    <line x1="5" y1="11" x2="11" y2="11" stroke="#000000" stroke-width="0.3"/>
+                    <line x1="5" y1="13" x2="11" y2="13" stroke="#000000" stroke-width="0.3"/>
+                    <line x1="13" y1="9"  x2="19" y2="9"  stroke="#000000" stroke-width="0.3"/>
+                    <line x1="13" y1="11" x2="19" y2="11" stroke="#000000" stroke-width="0.3"/>
+                    <line x1="13" y1="13" x2="19" y2="13" stroke="#000000" stroke-width="0.3"/>
+                </svg>
+            </div>
+            <div class="card-text">
+                <strong>Aluno • Editar</strong><br><small>Gerenciar cadastro</small>
+            </div>
+        </a>
+
+        <!-- Graduação (numeração) — capelo com rabicho preto -->
+        <a class="card" href="/admin/graduacao/lista.html">
+            <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <!-- Capelo (chapéu de formatura) -->
+                    <path d="M12 3L2 9l10 6 10-6-10-6z" fill="url(#icon-gradient)"/>
+                    <path d="M4 10v4c0 1.5 3.6 3 8 3s8-1.5 8-3v-4l-8 4-8-4z" fill="url(#icon-gradient)"/>
+                    <!-- Penduricalho do capelo em preto -->
+                    <line x1="12" y1="3" x2="12" y2="12" stroke="#000000" stroke-width="0.8"/>
+                    <circle cx="12" cy="13" r="0.8" fill="#000000"/>
+                </svg>
+            </div>
+            <div class="card-text">
+                <strong>Graduação (numeração)</strong><br><small>Controle vitalício</small>
+            </div>
+        </a>
+
+        <!-- Novo cadastro (sem alterações) -->
+        <a class="card" href="/user/cadastro/cadastro.html?from=admin">
+            <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="url(#icon-gradient)">
+                    <path d="M6.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM3.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
+                </svg>
+            </div>
+            <div class="card-text">
+                <strong>Novo cadastro</strong><br><small>Formulário público</small>
+            </div>
+        </a>
+
+        <!-- Financeiro — cifrão com degradê -->
+        <a class="card" href="/admin/financeiro/financeiro.html">
+            <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <text x="6" y="18" font-size="16" font-weight="bold" fill="url(#icon-gradient)">$</text>
+                </svg>
+            </div>
+            <div class="card-text">
+                <strong>Financeiro</strong><br><small>Mensalidades, recebimentos</small>
+            </div>
+        </a>
+    </main>
+</div>
+
+<script>
+    // Botão Sair — garante que só existe UM id="btn-logout"
+    document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("btn-logout");
+        if (!btn) return;
+
+        btn.addEventListener("click", () => {
+            try {
+                // limpa chaves comuns usadas ao longo do app
+                localStorage.removeItem("adminSecret");
+                localStorage.removeItem("kokoro_admin_secret");
+                localStorage.removeItem("kkr_admin_secret");
+                sessionStorage.clear();
+            } catch(_) {}
+            alert("Você saiu do sistema!");
+            window.location.href = "/";
+        });
+    });
+</script>
+
+<!-- ===== Controle de inatividade (25 min) ===== -->
+<script>
+    (function () {
+        const INACTIVITY_LIMIT_MS = 25 * 60 * 1000; // 25 minutos
+        let timerId;
+
+        function performLogout() {
+            // Tenta reutilizar exatamente o fluxo do botão "Sair"
+            const btn = document.getElementById("btn-logout");
+            if (btn) {
+                btn.click();
+                return;
+            }
+            // Fallback caso o botão não exista por algum motivo
+            try {
+                localStorage.removeItem("adminSecret");
+                localStorage.removeItem("kokoro_admin_secret");
+                localStorage.removeItem("kkr_admin_secret");
+                sessionStorage.clear();
+            } catch(_) {}
+            alert("Sessão expirada por inatividade (25 minutos).");
+            window.location.href = "/";
+        }
+
+        function resetTimer() {
+            clearTimeout(timerId);
+            // Atualiza último uso no storage (robusto p/ múltiplas abas)
+            try { localStorage.setItem("kokoro_last_activity", String(Date.now())); } catch (_) {}
+            timerId = setTimeout(() => {
+                performLogout();
+            }, INACTIVITY_LIMIT_MS);
+        }
+
+        // Sincroniza entre abas: se outra aba atualizar a atividade, reseta aqui também
+        window.addEventListener("storage", (e) => {
+            if (e.key === "kokoro_last_activity") resetTimer();
+        });
+
+        // Eventos que contam como atividade
+        ["click","keydown","mousemove","scroll","touchstart","visibilitychange"].forEach(evt => {
+            window.addEventListener(evt, resetTimer, { passive: true });
+        });
+
+        // Inicializa ao carregar
+        resetTimer();
+    })();
+</script>
+<!-- ===== /Controle de inatividade ===== -->
+
+</body>
+</html>

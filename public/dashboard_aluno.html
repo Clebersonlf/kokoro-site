@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Aluno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root.tema-verde {
+            --bg1: #0a1f1a;
+            --bg2: #16302b;
+            --accent: #4ecca3;
+            --glass-bg: rgba(78, 204, 163, 0.1);
+            --glass-border: rgba(78, 204, 163, 0.3);
+        }
+
+        :root.tema-azul {
+            --bg1: #0a1427;
+            --bg2: #162540;
+            --accent: #4a90e2;
+            --glass-bg: rgba(74, 144, 226, 0.1);
+            --glass-border: rgba(74, 144, 226, 0.3);
+        }
+
+        :root.tema-oceano {
+            --bg1: #0d1b2a;
+            --bg2: #1b263b;
+            --accent: #00b4d8;
+            --glass-bg: rgba(0, 180, 216, 0.1);
+            --glass-border: rgba(0, 180, 216, 0.3);
+        }
+
+        :root {
+            --bg1: #0a1f1a;
+            --bg2: #16302b;
+            --accent: #4ecca3;
+            --glass-bg: rgba(78, 204, 163, 0.1);
+            --glass-border: rgba(78, 204, 163, 0.3);
+            --text: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+
+        .top-bar h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .btn-tema {
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+    
+        
+    
+    /* Saúde Esportiva - Forçar cor branca */
+    a[href="/consultoria_alunos.html"],
+    a[href="/consultoria_alunos.html"] div,
+    a[href="/consultoria_alunos.html"] span {
+        color: #ffffff !important;
+    }
+    
+    a[href="/consultoria_alunos.html"] .icon svg {
+        stroke: #ffffff !important;
+    }
+
+    
+/* FORÇAR BOTÃO SAÚDE ESPORTIVA */
+a[href="/consultoria_alunos.html"] {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* === FORÇAR BOTÃO SAÚDE ESPORTIVA === */
+a[href="/consultoria_alunos.html"],
+a[href="/consultoria_alunos.html"] *,
+a[href="/consultoria_alunos.html"] svg,
+a[href="/consultoria_alunos.html"] path {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Botão top-bar */
+.top-bar-actions a[href="/consultoria_alunos.html"] {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Sidebar link */
+.sidebar a[href="/consultoria_alunos.html"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+</style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>🎓 Dashboard do Aluno</h1>
+        <div class="top-bar-actions">
+            <a href="/consultoria_alunos.html" class="btn btn-tema" title="Saúde Esportiva" style="margin-right: 5px;">❤️</a>
+                <a href="/chat.html?voltar=/dashboard_aluno.html" class="btn btn-tema" title="Chat" style="margin-right: 5px;">💬</a>
+            <button class="btn btn-tema" onclick="trocarTema()" title="Trocar Tema">🎨</button>
+            <a href="/admin_Dashboard.html" class="btn">← Admin</a>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card stat">
+            <div class="stat-value">12</div>
+            <div class="stat-label">📚 Aulas Concluídas</div>
+        </div>
+        <div class="card stat">
+            <div class="stat-value">85%</div>
+            <div class="stat-label">🏆 Frequência</div>
+        </div>
+        <div class="card stat">
+            <div class="stat-value">4.8</div>
+            <div class="stat-label">⭐ Avaliação</div>
+        </div>
+    </div>
+
+    <div class="grid" style="margin-top: 20px;">
+        <div class="card">
+            <h3>📅 Próximas Aulas</h3>
+            <p style="color: var(--text-muted);">Karate Básico - Hoje, 18:00</p>
+            <p style="color: var(--text-muted);">Kata Intermediário - Amanhã, 19:00</p>
+        </div>
+        <div class="card">
+            <h3>💰 Mensalidades</h3>
+            <p style="color: var(--text-muted);">Janeiro/2026 - ✅ Pago</p>
+            <p style="color: var(--text-muted);">Fevereiro/2026 - ⏳ Vence em 5 dias</p>
+        </div>
+        <div class="card">
+            <h3>📊 Meu Progresso</h3>
+            <p style="color: var(--text-muted);">Técnicas Básicas: 90%</p>
+            <p style="color: var(--text-muted);">Kata: 75%</p>
+        </div>
+    </div>
+
+    <script>
+        const temas = ['tema-verde', 'tema-azul', 'tema-oceano'];
+        let temaAtual = 0;
+
+        // Carregar tema salvo
+        const temaSalvo = localStorage.getItem('tema-aluno');
+        if (temaSalvo) {
+            document.documentElement.className = temaSalvo;
+            temaAtual = temas.indexOf(temaSalvo);
+        } else {
+            document.documentElement.className = temas[0];
+        }
+
+        function trocarTema() {
+            temaAtual = (temaAtual + 1) % temas.length;
+            const novoTema = temas[temaAtual];
+            document.documentElement.className = novoTema;
+            localStorage.setItem('tema-aluno', novoTema);
+        }
+    </script>
+</body>
+</html>

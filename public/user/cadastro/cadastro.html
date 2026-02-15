@@ -56,7 +56,53 @@
   </main>
 
   <script>
-    document.getElementById("btn-salvar").addEventListener("click", () => {
+    // ========== DETECTAR MODO: NOVO OU EDIÇÃO ==========
+    const urlParams = new URLSearchParams(window.location.search);
+    const alunoId = urlParams.get('id');
+    const isEdicao = !!alunoId;
+
+    // Atualizar título
+    if (isEdicao) {
+      document.querySelector('h2').textContent = 'Editar aluno';
+      document.getElementById('btn-salvar').textContent = 'Atualizar';
+    }
+
+    // ========== CARREGAR DADOS DO ALUNO (SE EDIÇÃO) ==========
+    async function carregarAluno(id) {
+      try {
+        // TODO: Substituir pela API real quando estiver pronta
+        // const response = await fetch(`/api/alunos/${id}`);
+        // const aluno = await response.json();
+        
+        // SIMULAÇÃO (remover depois)
+        const aluno = {
+          id: id,
+          nome: "João da Silva (Exemplo)",
+          email: "joao@exemplo.com",
+          telefone: "(31) 99999-9999",
+          perfil: "aluno"
+        };
+        
+        // Preencher campos
+        document.getElementById("nome").value = aluno.nome || "";
+        document.getElementById("email").value = aluno.email || "";
+        document.getElementById("telefone").value = aluno.telefone || "";
+        document.getElementById("perfil").value = aluno.perfil || "aluno";
+        
+        console.log('Aluno carregado:', aluno);
+      } catch (error) {
+        console.error('Erro ao carregar aluno:', error);
+        alert('Erro ao carregar dados do aluno.');
+      }
+    }
+
+    // Carregar dados se for edição
+    if (isEdicao) {
+      carregarAluno(alunoId);
+    }
+
+    // ========== SALVAR (INSERT OU UPDATE) ==========
+    document.getElementById("btn-salvar").addEventListener("click", async () => {
       const nome = document.getElementById("nome").value.trim();
       const email = document.getElementById("email").value.trim();
       const telefone = document.getElementById("telefone").value.trim();
@@ -64,12 +110,36 @@
 
       if (!nome || !email) return alert("Preencha Nome e E-mail.");
 
-      alert("Cadastro salvo (simulado): " + nome + " • " + email + " • " + perfil);
+      const dados = { nome, email, telefone, perfil };
 
-      // Aqui depois entra a integração (Firebase/Supabase/etc.)
-      // Ex.: salvar {nome,email,telefone,perfil} no banco
+      if (isEdicao) {
+        // UPDATE
+        console.log('Atualizando aluno ID:', alunoId, dados);
+        alert(`✅ Aluno atualizado (simulado):
+${nome} • ${email} • ${perfil}`);
+        
+        // TODO: Integrar com API
+        // await fetch(`/api/alunos/${alunoId}`, {
+        //   method: 'PUT',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(dados)
+        // });
+      } else {
+        // INSERT
+        console.log('Criando novo aluno:', dados);
+        alert(`✅ Cadastro criado (simulado):
+${nome} • ${email} • ${perfil}`);
+        
+        // TODO: Integrar com API
+        // await fetch('/api/alunos', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(dados)
+        // });
+      }
     });
 
+    // ========== LIMPAR CAMPOS ==========
     document.getElementById("btn-limpar").addEventListener("click", () => {
       document.getElementById("nome").value = "";
       document.getElementById("email").value = "";

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Enviar Mensagem - Admin</title>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background-color: #f1f5f9; margin: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 40px; }
+    .container { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); width: 100%; max-width: 600px; }
+    h1 { font-size: 24px; margin: 0 0 20px; color: #1e293b; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; color: #475569; }
+    input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+    textarea { min-height: 150px; resize: vertical; }
+    .btn { padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .btn-primary { background-color: #2563eb; color: white; }
+    .btn-secondary { background-color: #e2e8f0; color: #1e293b; }
+    .actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+    a.btn { text-decoration: none; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Escrever Mensagem</h1>
+    <form id="form-enviar-mensagem">
+      <div class="form-group">
+        <label for="destinatario">Para:</label>
+        <input type="text" id="destinatario" name="destinatario" placeholder="email@exemplo.com, +55119... ou #canal" required>
+      </div>
+      <div class="form-group">
+        <label for="assunto">Assunto:</label>
+        <input type="text" id="assunto" name="assunto">
+      </div>
+      <div class="form-group">
+        <label for="corpo">Mensagem:</label>
+        <textarea id="corpo" name="corpo" required></textarea>
+      </div>
+      <div class="actions">
+        <a href="/admin_Dashboard.html" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

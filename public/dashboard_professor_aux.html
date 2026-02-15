@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Professor Auxiliar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root.tema-roxo {
+            --bg1: #150a1f;
+            --bg2: #251630;
+            --accent: #a78bfa;
+            --glass-bg: rgba(167, 139, 250, 0.1);
+            --glass-border: rgba(167, 139, 250, 0.3);
+        }
+
+        :root.tema-violeta {
+            --bg1: #1a0a1f;
+            --bg2: #2a1630;
+            --accent: #c084fc;
+            --glass-bg: rgba(192, 132, 252, 0.1);
+            --glass-border: rgba(192, 132, 252, 0.3);
+        }
+
+        :root.tema-lilas {
+            --bg1: #1f0a1f;
+            --bg2: #301630;
+            --accent: #e879f9;
+            --glass-bg: rgba(232, 121, 249, 0.1);
+            --glass-border: rgba(232, 121, 249, 0.3);
+        }
+
+        :root {
+            --bg1: #150a1f;
+            --bg2: #251630;
+            --accent: #a78bfa;
+            --glass-bg: rgba(167, 139, 250, 0.1);
+            --glass-border: rgba(167, 139, 250, 0.3);
+            --text: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+
+        .top-bar h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .btn-tema {
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+    
+        
+    
+    /* Saúde Esportiva - Forçar cor branca */
+    a[href="/consultoria_alunos.html"],
+    a[href="/consultoria_alunos.html"] div,
+    a[href="/consultoria_alunos.html"] span {
+        color: #ffffff !important;
+    }
+    
+    a[href="/consultoria_alunos.html"] .icon svg {
+        stroke: #ffffff !important;
+    }
+
+    
+/* === FORÇAR BOTÃO SAÚDE ESPORTIVA === */
+a[href="/consultoria_alunos.html"],
+a[href="/consultoria_alunos.html"] *,
+a[href="/consultoria_alunos.html"] svg,
+a[href="/consultoria_alunos.html"] path {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Botão top-bar */
+.top-bar-actions a[href="/consultoria_alunos.html"] {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Sidebar link */
+.sidebar a[href="/consultoria_alunos.html"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+</style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>🥋 Dashboard - Professor Auxiliar</h1>
+        <div class="top-bar-actions">
+            <a href="/consultoria_alunos.html" class="btn btn-tema" title="Saúde Esportiva" style="margin-right: 5px;">❤️</a>
+                <a href="/chat.html?voltar=/dashboard_professor_aux.html" class="btn btn-tema" title="Chat" style="margin-right: 5px;">💬</a>
+            <button class="btn btn-tema" onclick="trocarTema()" title="Trocar Tema">🎨</button>
+            <a href="/admin_Dashboard.html" class="btn">← Admin</a>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card stat">
+            <div class="stat-value">18</div>
+            <div class="stat-label">📚 Aulas Ministradas</div>
+        </div>
+        <div class="card stat">
+            <div class="stat-value">156</div>
+            <div class="stat-label">✅ Check-ins</div>
+        </div>
+        <div class="card stat">
+            <div class="stat-value">R$ 1.800</div>
+            <div class="stat-label">💰 A Receber</div>
+        </div>
+        <div class="card stat">
+            <div class="stat-value">4.7</div>
+            <div class="stat-label">⭐ Avaliação</div>
+        </div>
+    </div>
+
+    <div class="grid" style="margin-top: 20px;">
+        <div class="card">
+            <h3>📚 Lançar Plano de Aula</h3>
+            <div class="form-group">
+                <label class="form-label">Turma</label>
+                <select class="form-control">
+                    <option>Iniciante A - 18:00</option>
+                    <option>Intermediário B - 19:00</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Data</label>
+                <input type="date" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Conteúdo</label>
+                <textarea class="form-control" placeholder="Descreva o conteúdo..."></textarea>
+            </div>
+            <button class="btn" style="width: 100%;">Salvar Plano</button>
+        </div>
+
+        <div class="card">
+            <h3>✅ Check-in de Alunos</h3>
+            <div class="form-group">
+                <label class="form-label">Turma</label>
+                <select class="form-control">
+                    <option>Iniciante A - 18:00</option>
+                    <option>Intermediário B - 19:00</option>
+                </select>
+            </div>
+            <div style="padding: 12px; background: rgba(255,255,255,0.03); border-radius: 10px; margin-bottom: 10px;">
+                <label style="display: flex; justify-content: space-between; cursor: pointer;">
+                    <span>João Silva - Faixa Branca</span>
+                    <input type="checkbox" style="width: 20px; height: 20px;">
+                </label>
+            </div>
+            <div style="padding: 12px; background: rgba(255,255,255,0.03); border-radius: 10px; margin-bottom: 10px;">
+                <label style="display: flex; justify-content: space-between; cursor: pointer;">
+                    <span>Maria Santos - Faixa Amarela</span>
+                    <input type="checkbox" style="width: 20px; height: 20px;" checked>
+                </label>
+            </div>
+            <button class="btn" style="width: 100%; margin-top: 10px;">Confirmar Presenças</button>
+        </div>
+
+        <div class="card">
+            <h3>💰 Repasses a Receber</h3>
+            <p style="color: var(--text-muted); margin-bottom: 10px;">Janeiro/2026: R$ 1.600 - ✅ Pago</p>
+            <p style="color: var(--text-muted); margin-bottom: 10px;">Fevereiro/2026: R$ 1.800 - ⏳ Pendente</p>
+            <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 16px 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700;">
+                <span>Total:</span>
+                <span style="color: var(--accent);">R$ 1.800</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const temas = ['tema-roxo', 'tema-violeta', 'tema-lilas'];
+        let temaAtual = 0;
+
+        const temaSalvo = localStorage.getItem('tema-professor');
+        if (temaSalvo) {
+            document.documentElement.className = temaSalvo;
+            temaAtual = temas.indexOf(temaSalvo);
+        } else {
+            document.documentElement.className = temas[0];
+        }
+
+        function trocarTema() {
+            temaAtual = (temaAtual + 1) % temas.length;
+            const novoTema = temas[temaAtual];
+            document.documentElement.className = novoTema;
+            localStorage.setItem('tema-professor', novoTema);
+        }
+    </script>
+</body>
+</html>

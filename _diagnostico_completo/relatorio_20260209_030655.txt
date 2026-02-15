@@ -1,0 +1,69 @@
+
+
+=== ARQUIVOS HTML (public/) ===
+-rwxrwxrwx 1 cleberson cleberson  466 Feb  8 23:25 public/admin.html
+-rwxrwxrwx 1 cleberson cleberson  22K Feb  9 02:18 public/admin_modelo.html
+-rwxrwxrwx 1 cleberson cleberson 2.8K Feb  8 16:36 public/admin_novo.html
+-rwxrwxrwx 1 cleberson cleberson 4.9K Feb  8 03:00 public/completar-cadastro.html
+-rwxrwxrwx 1 cleberson cleberson 1.3K Feb  8 03:00 public/gerar_hash.html
+-rwxrwxrwx 1 cleberson cleberson  870 Feb  8 15:08 public/home.html
+-rwxrwxrwx 1 cleberson cleberson  870 Feb  8 15:09 public/index.html
+-rwxrwxrwx 1 cleberson cleberson 1.2K Feb  8 03:00 public/login.html
+-rwxrwxrwx 1 cleberson cleberson 2.3K Feb  8 23:40 public/mensagens_enviar.html
+-rwxrwxrwx 1 cleberson cleberson  998 Feb  5 03:27 public/politica-de-privacidade.html
+
+
+=== BACKUPS CTRLZ ===
+-rwxrwxrwx 1 cleberson cleberson 16K Feb  8 23:40 public/admin_modelo.html.CtrlZ_step11
+-rwxrwxrwx 1 cleberson cleberson 16K Feb  8 23:44 public/admin_modelo.html.CtrlZ_step12
+-rwxrwxrwx 1 cleberson cleberson 16K Feb  8 23:56 public/admin_modelo.html.CtrlZ_step13
+-rwxrwxrwx 1 cleberson cleberson 18K Feb  8 23:59 public/admin_modelo.html.CtrlZ_step18
+-rwxrwxrwx 1 cleberson cleberson 18K Feb  9 00:01 public/admin_modelo.html.CtrlZ_step20
+-rwxrwxrwx 1 cleberson cleberson 19K Feb  9 00:23 public/admin_modelo.html.CtrlZ_step23
+-rwxrwxrwx 1 cleberson cleberson 19K Feb  9 00:23 public/admin_modelo.html.CtrlZ_step24
+-rwxrwxrwx 1 cleberson cleberson 19K Feb  9 00:26 public/admin_modelo.html.CtrlZ_step27
+-rwxrwxrwx 1 cleberson cleberson 20K Feb  9 00:33 public/admin_modelo.html.CtrlZ_step28
+-rwxrwxrwx 1 cleberson cleberson 20K Feb  9 00:34 public/admin_modelo.html.CtrlZ_step29
+-rwxrwxrwx 1 cleberson cleberson 20K Feb  9 00:37 public/admin_modelo.html.CtrlZ_step31
+-rwxrwxrwx 1 cleberson cleberson 20K Feb  9 01:13 public/admin_modelo.html.CtrlZ_step31b
+-rwxrwxrwx 1 cleberson cleberson 20K Feb  9 01:16 public/admin_modelo.html.CtrlZ_step34
+-rwxrwxrwx 1 cleberson cleberson 21K Feb  9 01:27 public/admin_modelo.html.CtrlZ_step40
+-rwxrwxrwx 1 cleberson cleberson 21K Feb  9 01:33 public/admin_modelo.html.CtrlZ_step44
+-rwxrwxrwx 1 cleberson cleberson 22K Feb  9 01:35 public/admin_modelo.html.CtrlZ_step51
+-rwxrwxrwx 1 cleberson cleberson 22K Feb  9 01:36 public/admin_modelo.html.CtrlZ_step54
+-rwxrwxrwx 1 cleberson cleberson 22K Feb  9 01:37 public/admin_modelo.html.CtrlZ_step57
+-rwxrwxrwx 1 cleberson cleberson 22K Feb  9 01:44 public/admin_modelo.html.CtrlZ_step67
+-rwxrwxrwx 1 cleberson cleberson 22K Feb  9 01:46 public/admin_modelo.html.CtrlZ_step72
+
+
+=== ÚLTIMOS 30 COMMITS ===
+0559151 | 2026-02-09 | Restaura admin_modelo.html para CtrlZ_step51
+397fadf | 2026-02-08 | backup dashboard (antes de ...)
+fc721dc | 2026-02-08 | Padroniza links de retorno para /admin.html
+f5b9d52 | 2026-02-08 | Redirect /admin to /admin.html
+70475aa | 2026-02-08 | Fix admin.html to serve real dashboard
+71a0fa6 | 2026-02-08 | Restore site state to ba9387a
+7af1cc0 | 2026-02-05 | Restore KOKORO home on / using static home.html
+ba9387a | 2026-02-05 | Restore original black dashboard as site home (public/index.html)
+372f60b | 2026-02-05 | Home redirect to /admin.html (real page)
+b5942dd | 2026-02-05 | Fix home to redirect to real page
+35c7de3 | 2026-02-05 | Fix Vercel Next.js output (.next) to restore /
+6a16e04 | 2026-02-05 | Restaurando arquivos originais
+ffe0946 | 2026-02-05 | Add cadastro page at /user/cadastro/cadastro.html
+30731ad | 2026-02-05 | Fix Vercel outputDirectory for Next.js (.next)
+f2724aa | 2026-02-05 | Force Vercel to treat project as Next.js
+9961370 | 2026-02-05 | Add public index.html to prevent Vercel root 404
+868eed6 | 2026-02-05 | Rename root api directory to avoid Vercel/Next conflict
+bdf580d | 2026-02-05 | Add Next.js app router pages (root layout and routes)
+b5404cd | 2026-02-04 | Security: strengthen .gitignore to prevent sensitive files
+112a950 | 2026-02-04 | Daily backup
+8658c12 | 2026-02-04 | Security: ensure env files are not tracked
+fa7dde1 | 2026-02-04 | Cleanup: remove old backups and temporary files
+e44c00a | 2026-02-04 | Cleanup: remove duplicate admin/ folder (now using public/admin/)
+b47908c | 2026-02-04 | Fix: move admin dark/cards to public/ for Vercel serving
+dd069f1 | 2026-02-04 | Restore Express api/ temporarily while fixing Next routes
+36a53cf | 2026-02-04 | Disable old Express api/ folder (use Next pages/api only)
+7b5e295 | 2026-02-04 | Remove duplicate route /api/financeiro_lancamentos
+349c58f | 2026-02-04 | Fix import path in financeiro/lancamentos
+d9df571 | 2026-02-04 | Add Next route /api/financeiro/lancamentos
+9bf499d | 2026-02-04 | Add Next.js API routes (pages/api)

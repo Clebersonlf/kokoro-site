@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { redirect } from 'next/navigation';
 
 export default function AdminPage() {
-  redirect("/admin.html");
+  redirect('/admin_modelo.html#entrada');
 }
