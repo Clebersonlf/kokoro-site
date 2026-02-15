@@ -339,6 +339,19 @@ body{
     display: flex !important;
     color: white !important;
 }
+
+/* Diferenciar botões Saúde x Consultoria */
+.sidebar a[href="/consultoria_alunos.html"] div {
+    color: white !important;
+}
+
+.sidebar a[href="/dashboard_consultoria.html"] div {
+    color: #4ecca3 !important; /* Verde claro */
+}
+
+.sidebar a[href="/dashboard_consultoria.html"] svg {
+    stroke: #4ecca3 !important; /* Verde claro */
+}
 </style>
 
 
@@ -391,7 +404,8 @@ body{
 
         <a href="/admin.html"><div class="left"><div class="icon">⟵</div><div>Voltar ao Admin atual</div></div></a>
         <a id="btn-saude-esportiva" href="/consultoria_alunos.html"><div class="left"><div class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" style="display: inline-block !important; visibility: visible !important;" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><polyline points="3.5 12 7 12 9 7 11 17 13 12 16.5 12"></polyline></svg></div><div>Saúde Esportiva</div></div></a>
-        <a href="/chat.html?voltar=/admin_Dashboard.html"><div class="left"><div class="icon">💬</div><div>Chat Kokoro</div></div></a>
+                <a href="/dashboard_consultoria.html"><div class="left"><div class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><polyline points="3.5 12 7 12 9 7 11 17 13 12 16.5 12"></polyline></svg></div><div>Consultoria Esportiva</div></div></a>
+<a href="/chat.html?voltar=/admin_Dashboard.html"><div class="left"><div class="icon">💬</div><div>Chat Kokoro</div></div></a>
         <hr style="border:0;border-top:1px solid rgba(255,255,255,.15);margin:20px 0">
         <a href="/dashboard_aluno.html"><div class="left"><div class="icon">🎓</div><div>Dashboard - Aluno</div></div></a>
         <a href="/dashboard_instrutor.html"><div class="left"><div class="icon">👨‍🏫</div><div>Dashboard - Instrutor</div></div></a>
