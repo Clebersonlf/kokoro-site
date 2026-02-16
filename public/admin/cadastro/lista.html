@@ -107,14 +107,69 @@
     .fin-pendente{color:var(--red);font-weight:900}
   </style>
 
+
+        <style>
+            .header-back-btn {
+                position: fixed;
+                top: 29px;
+                right: 296px;
+                z-index: 100;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 10px 24px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+                transition: all 0.3s ease;
+            }
+            
+            .header-back-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+            }
+            
+            .header-back-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            }
+        </style>
+        
+
+        <style>
+            .page-header-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding: 0 20px;
+            }
+            
+            .page-header-wrapper h1,
+            .page-header-wrapper h2 {
+                margin: 0;
+            }
+        </style>
+        
+
+        <style>
+            body, body > div:first-child, .main-container {
+                position: relative;
+            }
+        </style>
+        
 </head>
 <body>
+<a href="/admin_Dashboard.html" class="header-back-btn">Voltar ao Dashboard Admin</a>
+
   <div class="lista-container">
     <div class="header-lista">
       <h1>Gestão de Alunos</h1>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a href="/admin/cadastro/exclusoes.html" class="btn-local" style="text-decoration:none;color:#111827">Memória (Exclusões)</a>
-        <a href="/admin/#alunos" class="btn-local btn-local-dark" style="text-decoration:none;color:#fff">← Voltar ao Painel</a>
+        
       </div>
     </div>
 
@@ -683,5 +738,11 @@
 
   renderizarTabela();
 </script>
+
+    
+    
+
+    
+    
 </body>
 </html>
