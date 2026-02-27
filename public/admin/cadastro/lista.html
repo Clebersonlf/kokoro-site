@@ -779,9 +779,9 @@
           <td>${badgeStatus(aluno.status)}</td>
           <td>
             <div class="acoes">
-              <button class="btn-local btn-local-dark" type="button" onclick="editarAluno(${aluno.id})">EDITAR</button>
-              <button type="button" onclick="abrirModalStatus(${aluno.id})" class="btn">STATUS</button>
-              <button class="btn-local btn-local-danger" type="button" onclick="excluirDaLista(${aluno.id})">EXCLUIR</button>
+              <button class="btn-local btn-local-dark" type="button" onclick="editarAluno('${aluno.id}')">EDITAR</button>
+              <button type="button" onclick="abrirModalStatus('${aluno.id}')" class="btn">STATUS</button>
+              <button class="btn-local btn-local-danger" type="button" onclick="excluirDaLista('${aluno.id}')">EXCLUIR</button>
             </div>
           </td>
         `;
