@@ -569,12 +569,17 @@
     `).join("");
   }
 
+  function capitalizarNome(nome){
+    if (!nome) return "";
+    return nome.toLowerCase().replace(/\w/g, c => c.toUpperCase());
+  }
+
   function escapeHtml(str){
     return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
   function abrirModalStatus(id){
-    alunoSelecionado = alunos.find(a => a.id === id);
+    alunoSelecionado = alunos.find(a => a.id == id);
     document.getElementById("modalNomeAluno").textContent = `Situação: ${alunoSelecionado.nome}`;
     document.getElementById("selectNovoStatus").value = alunoSelecionado.status;
     document.getElementById("textoMotivo").value = "";
@@ -707,7 +712,7 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td style="text-align:center;font-weight:700;color:#6b7280;">${i + 1}</td>
-          <td><strong>${escapeHtml(aluno.nome)}</strong><br><small style="color:#6b7280">${escapeHtml(aluno.email)}</small><br><small style="color:#ffffff;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small></td>
+          <td><strong>${capitalizarNome(escapeHtml(aluno.nome))}</strong><br><small style="color:#6b7280">${escapeHtml(aluno.email)}</small><br><small style="color:#ffffff;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small></td>
           <td>
             <span class="faixa-tag">
               <span class="faixa-cor" style="background:${getCorFaixa(aluno.faixa)}"></span>
