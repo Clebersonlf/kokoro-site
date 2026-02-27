@@ -571,7 +571,7 @@
 
   function capitalizarNome(nome){
     if (!nome) return "";
-    return nome.toLowerCase().replace(/\w/g, c => c.toUpperCase());
+    return nome.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   }
 
   function escapeHtml(str){
