@@ -447,7 +447,7 @@
                     <div class="card-title">Total de Alunos</div>
                     <div class="card-icon">👥</div>
                 </div>
-                <div class="card-value">245</div>
+                <div class="card-value" id="cardTotalAlunos">--</div>
                 <a href="/admin/cadastro/lista.html" class="btn">Ver Alunos</a>
             </div>
 
@@ -456,7 +456,7 @@
                     <div class="card-title">Receita Mensal</div>
                     <div class="card-icon">💰</div>
                 </div>
-                <div class="card-value">R$ 45.2K</div>
+                <div class="card-value" id="cardReceita">--</div>
                 <a href="/admin/financeiro/index.html" class="btn">Ver Financeiro</a>
             </div>
 
@@ -465,7 +465,7 @@
                     <div class="card-title">Consultorias Ativas</div>
                     <div class="card-icon">❤️</div>
                 </div>
-                <div class="card-value">12</div>
+                <div class="card-value" id="cardConsultorias">0</div>
                 <a href="/dashboard_consultoria.html" class="btn">Acessar</a>
             </div>
 
@@ -474,7 +474,7 @@
                     <div class="card-title">Mensagens Novas</div>
                     <div class="card-icon">📬</div>
                 </div>
-                <div class="card-value">8</div>
+                <div class="card-value" id="cardMensagens">0</div>
                 <a href="/chat.html" class="btn">Ver Chat</a>
             </div>
         </div>
@@ -510,5 +510,38 @@
             });
         });
     </script>
+
+    <script>
+        // ===== DADOS REAIS DO DASHBOARD =====
+        async function carregarDados() {
+            // 1. Total de alunos (localStorage)
+            try {
+                const raw = localStorage.getItem('kokoro_alunos_dados');
+                const alunos = raw ? JSON.parse(raw) : [];
+                const ativos = Array.isArray(alunos) ? alunos.filter(a => a.status !== 'excluido').length : 0;
+                document.getElementById('cardTotalAlunos').textContent = ativos;
+            } catch(e) {
+                document.getElementById('cardTotalAlunos').textContent = '0';
+            }
+
+            // 2. Reserva de caixa (API)
+            try {
+                const res = await fetch('/api/financeiro/reserva_caixa');
+                const data = await res.json();
+                if (data.ok) {
+                    const valor = Number(data.reservaTotal || 0);
+                    const formatado = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    document.getElementById('cardReceita').textContent = formatado;
+                } else {
+                    document.getElementById('cardReceita').textContent = 'R$ 0,00';
+                }
+            } catch(e) {
+                document.getElementById('cardReceita').textContent = 'R$ 0,00';
+            }
+        }
+
+        carregarDados();
+    </script>
+
 </body>
 </html>
