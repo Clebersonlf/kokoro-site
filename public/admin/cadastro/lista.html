@@ -697,13 +697,13 @@
 
     body.innerHTML = "";
     // Atualizar contador
-    const ativos = lista.filter(a => a.status !== 'excluido' && a.status !== 'inativo').length;
+    const ativos = alunos.filter(a => a.status !== 'excluido' && a.status !== 'inativo').length;
     const contador = document.getElementById("contadorAlunos");
     if (contador) contador.innerHTML = `👥 Total de alunos ativos: <span style="color:#2563eb;font-size:16px;">${ativos}</span>`;
     alunos
       .filter(a => (!q || (a.nome+a.email).toLowerCase().includes(q)))
       .filter(a => (!st || a.status === st))
-      .forEach(aluno => {
+      .forEach((aluno, i) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td style="text-align:center;font-weight:700;color:#6b7280;">${i + 1}</td>
