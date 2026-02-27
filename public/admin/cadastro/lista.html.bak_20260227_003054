@@ -105,44 +105,6 @@
 
     .fin-ok{color:var(--green);font-weight:900}
     .fin-pendente{color:var(--red);font-weight:900}
-
-  .modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.7);
-    z-index:9999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .modal{
-    background:#1a2332;
-    border:1px solid #2d3f55;
-    border-radius:14px;
-    width:100%;
-    max-width:520px;
-    max-height:90vh;
-    overflow-y:auto;
-    padding:0;
-    box-shadow:0 20px 60px rgba(0,0,0,0.6);
-  }
-  .modal-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:16px 20px;
-    border-bottom:1px solid #2d3f55;
-  }
-  .modal-body{
-    padding:20px;
-  }
-  .modal-footer{
-    display:flex;
-    gap:10px;
-    justify-content:flex-end;
-    padding:16px 20px;
-    border-top:1px solid #2d3f55;
-  }
   </style>
 
 
@@ -223,13 +185,9 @@
     </div>
 
     <div class="tabela-wrapper">
-      <div id="contadorAlunos" style="margin-bottom:10px; font-size:14px; font-weight:600; color:#555;">
-        Carregando...
-      </div>
       <table>
         <thead>
           <tr>
-            <th style="width:40px; text-align:center;">Nº</th>
             <th>Nome</th>
             <th>Graduação</th>
             <th>Última Graduação</th>
@@ -575,23 +533,6 @@
   }
 ];
   let alunos = carregarAlunosLocal(alunosFallback);
-  (async function(){
-    try{
-      var r=await fetch('/api/alunos/listar');
-      if(!r.ok) throw new Error('API indisponivel');
-      var d=await r.json();
-      if(d&&d.length>0){
-        alunos=d.map(function(a){return{
-          id:a.id,nome:a.nome,email:a.email||'',
-          faixa:a.faixa||'branca',grau:a.grau||'0º Grau',
-          ultima:a.ultima||'-',financeiro:a.financeiro||'ok',
-          status:a.status||'ativo',historico:a.historico||[],
-          numeroCertificado:a.numeroCertificado||a.numero_certificado||''
-        };});
-        renderizarTabela();
-      }
-    }catch(e){console.warn('API alunos indisponivel, usando fallback:',e.message);}
-  })();
 
   let alunoSelecionado = null;
   const LS_EXCLUSOES_DEF = "kokoro_exclusoes_definitivas";
@@ -624,17 +565,12 @@
     `).join("");
   }
 
-  function capitalizarNome(nome){
-    if (!nome) return "";
-    return nome.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-  }
-
   function escapeHtml(str){
     return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
   function abrirModalStatus(id){
-    alunoSelecionado = alunos.find(a => a.id == id);
+    alunoSelecionado = alunos.find(a => a.id === id);
     document.getElementById("modalNomeAluno").textContent = `Situação: ${alunoSelecionado.nome}`;
     document.getElementById("selectNovoStatus").value = alunoSelecionado.status;
     document.getElementById("textoMotivo").value = "";
@@ -756,18 +692,13 @@
     const st = document.getElementById("filtroStatus").value;
 
     body.innerHTML = "";
-    // Atualizar contador
-    const ativos = alunos.filter(a => a.status !== 'excluido' && a.status !== 'inativo').length;
-    const contador = document.getElementById("contadorAlunos");
-    if (contador) contador.innerHTML = `👥 Total de alunos ativos: <span style="color:#2563eb;font-size:16px;">${ativos}</span>`;
     alunos
       .filter(a => (!q || (a.nome+a.email).toLowerCase().includes(q)))
       .filter(a => (!st || a.status === st))
-      .forEach((aluno, i) => {
+      .forEach(aluno => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td style="text-align:center;font-weight:700;color:#6b7280;">${i + 1}</td>
-          <td><strong>${capitalizarNome(escapeHtml(aluno.nome))}</strong><br><small style="color:#6b7280">${escapeHtml(aluno.email)}</small><br><small style="color:#ffffff;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small></td>
+          <td><strong>${escapeHtml(aluno.nome)}</strong><br><small style="color:#6b7280">${escapeHtml(aluno.email)}</small><br><small style="color:#111827;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small></td>
           <td>
             <span class="faixa-tag">
               <span class="faixa-cor" style="background:${getCorFaixa(aluno.faixa)}"></span>
@@ -780,7 +711,7 @@
           <td>
             <div class="acoes">
               <button class="btn-local btn-local-dark" type="button" onclick="editarAluno(${aluno.id})">EDITAR</button>
-              <button type="button" onclick="abrirModalStatus(${aluno.id})" class="btn">STATUS</button>
+              <button type="button" onclick="abrirModalStatus(${aluno.id})" style="background:#111827 !important;color:#ffffff !important;border:1px solid #111827 !important;border-radius:8px;padding:8px 12px;font-weight:1000;font-size:12px;opacity:1 !important;line-height:1;cursor:pointer;">STATUS</button>
               <button class="btn-local btn-local-danger" type="button" onclick="excluirDaLista(${aluno.id})">EXCLUIR</button>
             </div>
           </td>
@@ -790,7 +721,7 @@
   }
 
   function editarAluno(id){
-    window.location.href = `/cadastro/formulario-completo.html?from=admin&id=${id}`;
+    window.location.href = `/user/cadastro/cadastro.html?from=admin&id=${id}`;
   }
 
   // "Excluir" (mantém a lógica de existir, mas aqui é remoção simples da lista de teste)

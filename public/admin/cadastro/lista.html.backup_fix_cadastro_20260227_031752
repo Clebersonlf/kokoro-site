@@ -575,23 +575,6 @@
   }
 ];
   let alunos = carregarAlunosLocal(alunosFallback);
-  (async function(){
-    try{
-      var r=await fetch('/api/alunos/listar');
-      if(!r.ok) throw new Error('API indisponivel');
-      var d=await r.json();
-      if(d&&d.length>0){
-        alunos=d.map(function(a){return{
-          id:a.id,nome:a.nome,email:a.email||'',
-          faixa:a.faixa||'branca',grau:a.grau||'0º Grau',
-          ultima:a.ultima||'-',financeiro:a.financeiro||'ok',
-          status:a.status||'ativo',historico:a.historico||[],
-          numeroCertificado:a.numeroCertificado||a.numero_certificado||''
-        };});
-        renderizarTabela();
-      }
-    }catch(e){console.warn('API alunos indisponivel, usando fallback:',e.message);}
-  })();
 
   let alunoSelecionado = null;
   const LS_EXCLUSOES_DEF = "kokoro_exclusoes_definitivas";

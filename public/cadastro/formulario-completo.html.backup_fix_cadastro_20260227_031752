@@ -1042,7 +1042,6 @@
         <h2 id="successModalTitle">Cadastro Realizado!</h2>
         <p>Seu cadastro foi enviado com sucesso. Bem-vindo à plataforma Kokoro!</p>
         <button id="successModalClose" class="modal-button">Fechar</button>
-        <button onclick="window.location.href='/admin/cadastro/lista.html'" class="modal-button modal-button-secondary" style="margin-top:0.5rem;">&#8592; Voltar para Lista</button>
     </div>
 </div>
 
@@ -1060,44 +1059,6 @@
         const form = document.getElementById('registerForm');
         const body = document.body;
         if (!form) return;
-
-        // === MODO EDICAO: le ?id= da URL e preenche o form ===
-        (function(){
-          const _p=new URLSearchParams(window.location.search);
-          const _id=_p.get('id');
-          if(!_id) return;
-          form.dataset.alunoId=_id;
-          document.title='Editar Aluno - Kokoro';
-          fetch('/api/alunos/buscar?id='+_id)
-            .then(function(r){return r.ok?r.json():null;})
-            .then(function(a){
-              if(!a) return;
-              var s=function(id,v){var e=document.getElementById(id);if(e&&v)e.value=v;};
-              s('nomeCompleto',a.nome); s('email',a.email);
-              var am=document.getElementById('arteMarcial');
-              if(am&&!am.value){am.value='jiu-jitsu';am.dispatchEvent(new Event('change'));}
-              setTimeout(function(){
-                var cf=document.getElementById('corFaixa');
-                if(cf&&a.faixa){
-                  for(var i=0;i<cf.options.length;i++){
-                    if(cf.options[i].value.toLowerCase().indexOf(a.faixa.toLowerCase())>=0){
-                      cf.value=cf.options[i].value;
-                      cf.dispatchEvent(new Event('change'));break;}
-                  }
-                }
-                setTimeout(function(){
-                  var gr=document.getElementById('grau');
-                  if(gr&&a.grau){for(var j=0;j<gr.options.length;j++){if(gr.options[j].value===a.grau){gr.value=a.grau;break;}}}
-                },250);
-              },250);
-              var bn=document.getElementById('adminBanner');
-              if(bn){bn.classList.remove('hidden-field');
-                var bp=bn.querySelector('p');
-                if(bp) bp.textContent='Modo Edicao: '+a.nome+' (Nr '+( a.numeroCertificado||a.numero_certificado||'')+')';}
-            })
-            .catch(function(e){console.warn('Erro ao buscar aluno:',e);});
-        })();
-
 
         // --- BANCO DE DADOS DAS GRADUAÇÕES ---
         const graduacoes = {
@@ -1302,19 +1263,7 @@
                 return;
             }
 
-            const _id=form.dataset.alunoId;
-            const _payload={
-              nome:document.getElementById('nomeCompleto')?.value||'',
-              email:document.getElementById('email')?.value||'',
-              faixa:(document.getElementById('corFaixa')?.value||'branca').toLowerCase().split(' ').pop(),
-              grau:document.getElementById('grau')?.value||'0º Grau',
-              numeroCertificado:'',status:'ativo'
-            };
-            if(_id) _payload.id=_id;
-            fetch('/api/alunos/salvar',{method:_id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_payload)})
-            .then(r=>r.json())
-            .then(d=>{ if(d.error){alert('Erro: '+d.error);return;} successModal.openModal(); })
-            .catch(e=>{ console.error(e); successModal.openModal(); });
+            successModal.openModal();
         });
 
         successModalClose.addEventListener('click', () => {
