@@ -185,9 +185,13 @@
     </div>
 
     <div class="tabela-wrapper">
+      <div id="contadorAlunos" style="margin-bottom:10px; font-size:14px; font-weight:600; color:#555;">
+        Carregando...
+      </div>
       <table>
         <thead>
           <tr>
+            <th style="width:40px; text-align:center;">Nº</th>
             <th>Nome</th>
             <th>Graduação</th>
             <th>Última Graduação</th>
@@ -692,12 +696,17 @@
     const st = document.getElementById("filtroStatus").value;
 
     body.innerHTML = "";
+    // Atualizar contador
+    const ativos = lista.filter(a => a.status !== 'excluido' && a.status !== 'inativo').length;
+    const contador = document.getElementById("contadorAlunos");
+    if (contador) contador.innerHTML = `👥 Total de alunos ativos: <span style="color:#2563eb;font-size:16px;">${ativos}</span>`;
     alunos
       .filter(a => (!q || (a.nome+a.email).toLowerCase().includes(q)))
       .filter(a => (!st || a.status === st))
       .forEach(aluno => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
+          <td style="text-align:center;font-weight:700;color:#6b7280;">${i + 1}</td>
           <td><strong>${escapeHtml(aluno.nome)}</strong><br><small style="color:#6b7280">${escapeHtml(aluno.email)}</small><br><small style="color:#111827;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small></td>
           <td>
             <span class="faixa-tag">
