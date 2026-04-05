@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard do Atleta — Redesign</title>
+  <title>Dashboard do Aluno — Redesign</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -49,27 +49,27 @@
     .icon-btn:hover,.admin-btn:hover{transform:translateY(-1px);border-color:var(--line-strong);background:rgba(96,165,250,.12)}
 
     .main-grid{display:grid;grid-template-columns:1.45fr .95fr;gap:18px}
-    .hero{border-radius:var(--radius-xl);padding:22px;display:grid;grid-template-columns:140px minmax(0,1fr) minmax(220px,280px);gap:22px;align-items:center;min-height:220px;position:relative;overflow:hidden}
+    .hero{border-radius:var(--radius-xl);padding:22px;display:grid;grid-template-columns:140px 1fr auto;gap:22px;align-items:center;min-height:220px;position:relative;overflow:hidden}
     .hero::after{content:"";position:absolute;right:-80px;top:-50px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle, rgba(34,211,238,.15), transparent 65%)}
-    .avatar-wrap{position:relative;z-index:1;align-self:start;margin-top:6px}
+    .avatar-wrap{position:relative;z-index:1}
     .avatar{width:120px;height:120px;border-radius:32px;object-fit:cover;border:3px solid rgba(96,165,250,.65);background:#0b1526;display:block}
     .avatar-ring{position:absolute;inset:-8px;border-radius:38px;border:1px solid rgba(34,211,238,.25)}
     .hero-info{position:relative;z-index:1;min-width:0}
     .eyebrow{color:var(--cyan);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-    .hero-name{font-size:clamp(22px,2.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.02;margin-bottom:8px}
-    .hero-sub{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .hero-name{font-size:clamp(28px, 3vw, 40px);font-weight:800;letter-spacing:-.03em;line-height:1.04;margin-bottom:10px}
+    .hero-sub{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
     .pill{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid var(--line);background:rgba(255,255,255,.03)}
     .pill.green{color:#d1fae5;border-color:rgba(34,197,94,.28);background:rgba(34,197,94,.1)}
     .pill.blue{color:#dbeafe}
-    .hero-meta{display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:10px;margin-top:8px}
-    .meta-box{min-width:0;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);overflow-wrap:anywhere;word-break:break-word}
+    .hero-meta{display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:12px;margin-top:10px}
+    .meta-box{min-width:0;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);overflow-wrap:anywhere;word-break:break-word}
     .meta-label{font-size:12px;color:var(--muted);margin-bottom:6px}
     .meta-value{font-size:15px;font-weight:700}
     .contato-box{grid-column:1 / -1}
     .endereco-box{grid-column:1 / -1}
     .hero-side{display:grid;gap:12px;min-width:220px;position:relative;z-index:1}
     .quick-card{padding:14px 16px;border-radius:18px}
-    .quick-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+    .quick-label{font-size:12px;color:var(--muted);margin-bottom:7px}
     .quick-value{font-size:22px;font-weight:800;letter-spacing:-.03em}
     .quick-value.ok{color:var(--green)}
     .quick-value.warn{color:var(--amber)}
@@ -165,75 +165,7 @@
       border:1px solid rgba(255,255,255,.08);
     }
 
-
-    .admin-edit-link{
-      display:none;
-      margin-top:12px;
-    }
-    .admin-edit-link a{
-      display:inline-block;
-      text-decoration:none;
-      border-radius:12px;
-      padding:10px 14px;
-      font-size:14px;
-      font-weight:800;
-      background:linear-gradient(135deg,#38bdf8,#2563eb);
-      color:#fff;
-    }
-
-    .status-ok{
-      color:#22c55e;
-    }
-
-    .modalidade-select{
-      position:absolute;
-      background:#0b1b35;
-      border:1px solid rgba(255,255,255,.1);
-      border-radius:10px;
-      padding:6px;
-      display:none;
-      flex-direction:column;
-      z-index:999;
-    }
-    .modalidade-select div{
-      padding:8px 10px;
-      cursor:pointer;
-      border-radius:6px;
-    }
-    .modalidade-select div:hover{
-      background:rgba(255,255,255,.08);
-    }
-
-.modalidade-dropdown{
-  width:100%;
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(0,0,0,.25);
-  color:#fff;
-  font-size:14px;
-  outline:none;
-  cursor:pointer;
-}
-.modalidade-dropdown option{
-  color:#000;
-}
-
-.faixa-dropdown{
-  width:100%;
-  padding:8px 10px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(0,0,0,.25);
-  color:#fff;
-  font-size:13px;
-}
-.faixa-dropdown option{
-  color:#000;
-}
 </style>
-
-
 </head>
 <body>
   <div class="shell">
@@ -241,12 +173,10 @@
       <div class="brand">
         <div class="brand-badge">🎓</div>
         <div>
-          <h1>Dashboard do Atleta</h1>
+          <h1>Dashboard do Aluno</h1>
         </div>
       </div>
       <div class="top-actions">
-<button class="icon-btn" onclick="sairAdmin()" title="Sair do admin">🔓</button>
-<button class="icon-btn" onclick="ativarAdmin()" title="Admin">🔐</button>
         <a href="/consultoria_alunos.html" class="icon-btn" title="Saúde Esportiva">❤️</a>
         <a href="/chat.html?voltar=/dashboard_aluno.html" class="icon-btn" title="Chat">💬</a>
         <button class="icon-btn" onclick="trocarTema()" title="Trocar tema">🎨</button>
@@ -262,135 +192,44 @@
             <div class="avatar-ring"></div>
           </div>
           <div class="hero-info">
-            <div class="eyebrow">Painel do aluno</div>
-            <div class="hero-name" id="nomeAluno">Aluno não identificado</div>
+            <div class="eyebrow">Editar dados do aluno</div>
+            <div class="hero-name" id="nomeAluno">Editar informações</div>
             <div class="hero-sub">
-              
-<select id="faixaAluno" class="faixa-dropdown">
-<option value="">Selecione a faixa</option>
-<option>Faixa Branca</option>
-<option>Faixa Branca (1º Grau)</option>
-<option>Faixa Branca (2º Grau)</option>
-<option>Faixa Branca (3º Grau)</option>
-<option>Faixa Branca (4º Grau)</option>
-<option>Faixa Cinza e Branca</option>
-<option>Faixa Cinza e Branca (1º Grau)</option>
-<option>Faixa Cinza e Branca (2º Grau)</option>
-<option>Faixa Cinza e Branca (3º Grau)</option>
-<option>Faixa Cinza e Branca (4º Grau)</option>
-<option>Faixa Cinza</option>
-<option>Faixa Cinza (1º Grau)</option>
-<option>Faixa Cinza (2º Grau)</option>
-<option>Faixa Cinza (3º Grau)</option>
-<option>Faixa Cinza (4º Grau)</option>
-<option>Faixa Cinza e Preta</option>
-<option>Faixa Cinza e Preta (1º Grau)</option>
-<option>Faixa Cinza e Preta (2º Grau)</option>
-<option>Faixa Cinza e Preta (3º Grau)</option>
-<option>Faixa Cinza e Preta (4º Grau)</option>
-<option>Faixa Amarela</option>
-<option>Faixa Amarela (1º Grau)</option>
-<option>Faixa Amarela (2º Grau)</option>
-<option>Faixa Amarela (3º Grau)</option>
-<option>Faixa Amarela (4º Grau)</option>
-<option>Faixa Amarela e Preta</option>
-<option>Faixa Amarela e Preta (1º Grau)</option>
-<option>Faixa Amarela e Preta (2º Grau)</option>
-<option>Faixa Amarela e Preta (3º Grau)</option>
-<option>Faixa Amarela e Preta (4º Grau)</option>
-<option>Laranja</option>
-<option>Laranja (1º Grau)</option>
-<option>Laranja (2º Grau)</option>
-<option>Laranja (3º Grau)</option>
-<option>Laranja (4º Grau)</option>
-<option>Laranja e Preta</option>
-<option>Laranja e Preta (1º Grau)</option>
-<option>Laranja e Preta (2º Grau)</option>
-<option>Laranja e Preta (3º Grau)</option>
-<option>Laranja e Preta (4º Grau)</option>
-<option>Verde</option>
-<option>Verde (1º Grau)</option>
-<option>Verde (2º Grau)</option>
-<option>Verde (3º Grau)</option>
-<option>Verde (4º Grau)</option>
-<option>Verde e Preta</option>
-<option>Verde e Preta (1º Grau)</option>
-<option>Verde e Preta (2º Grau)</option>
-<option>Verde e Preta (3º Grau)</option>
-<option>Verde e Preta (4º Grau)</option>
-<option>Faixa Azul</option>
-<option>Faixa Azul (1º Grau)</option>
-<option>Faixa Azul (2º Grau)</option>
-<option>Faixa Azul (3º Grau)</option>
-<option>Faixa Azul (4º Grau)</option>
-<option>Faixa Roxa</option>
-<option>Faixa Roxa (1º Grau)</option>
-<option>Faixa Roxa (2º Grau)</option>
-<option>Faixa Roxa (3º Grau)</option>
-<option>Faixa Roxa (4º Grau)</option>
-<option>Faixa Marrom</option>
-<option>Faixa Marrom (1º Grau)</option>
-<option>Faixa Marrom (2º Grau)</option>
-<option>Faixa Marrom (3º Grau)</option>
-<option>Faixa Marrom (4º Grau)</option>
-<option>Faixa Preta</option>
-<option>Faixa Preta (1º Grau)</option>
-<option>Faixa Preta (2º Grau)</option>
-<option>Faixa Preta (3º Grau)</option>
-<option>Faixa Preta (4º Grau)</option>
-<option>Faixa Preta (5º Grau)</option>
-<option>Faixa Preta (6º Grau)</option>
-<option>Faixa Vermelha e Preta (7º Grau)</option>
-<option>Faixa Vermelha e Branca (8º Grau)</option>
-<option>Faixa Vermelha (9º Grau)</option>
-<option>Faixa Vermelha (10º Grau)</option>
-</select>
-
+              <span class="pill blue" id="faixaAluno">Faixa não definida</span>
               <span class="pill green" id="statusAluno">Status indisponível</span>
-            </div>
-            <div id="adminEditLink" class="admin-edit-link">
-              <a href="/editar_aluno.html">✏️ Editar dados</a>
             </div>
             <div class="hero-meta">
               <div class="meta-box">
                 <div class="meta-label">Arte / Modalidade</div>
-                
-<select id="modalidadeAluno" class="modalidade-dropdown">
-  <option value="">Selecione</option>
-  <option>Jiu-jitsu</option>
-  <option>Judô</option>
-  <option>Karatê</option>
-</select>
-
-<div id="modalidadeSelect" class="modalidade-select">
-<div>Jiu-jitsu</div>
-<div>Judô</div>
-<div>Karatê</div>
-</div>
+                <input class="edit-input" id="modalidadeAluno" value="Não informado" />
               </div>
               <div class="meta-box">
                 <div class="meta-label">Matrícula</div>
-                <div class="meta-value" id="matriculaAluno">—</div>
+                <input class="edit-input" id="matriculaAluno" value="Não definida" />
               </div>
               <div class="meta-box contato-box">
                 <div class="meta-label">Contato</div>
-                <div class="meta-value" id="emailAluno">—</div>
+                <input class="edit-input" id="emailAluno" value="" placeholder="email@exemplo.com" />
               </div>
 
               <div class="meta-box">
                 <div class="meta-label">WhatsApp</div>
-                <div class="meta-value" id="whatsappAluno">—</div>
+                <input class="edit-input" id="whatsappAluno" value="" placeholder="(32) 99999-9999" />
               </div>
 
               <div class="meta-box">
                 <div class="meta-label">Contato de Emergência</div>
-                <div class="meta-value" id="emergenciaAluno">—</div>
+                <input class="edit-input" id="emergenciaAluno" value="" placeholder="Nome e telefone" />
               </div>
 
               <div class="meta-box endereco-box">
                 <div class="meta-label">Endereço de Emergência</div>
-                <div class="meta-value" id="enderecoEmergenciaAluno">—</div>
+                <input class="edit-input" id="enderecoEmergenciaAluno" value="" placeholder="Rua, número, bairro, cidade" />
               </div>
+            </div>
+            <div class="edit-actions">
+              <button class="edit-btn primary" id="btnSalvarAluno" type="button">Salvar alterações</button>
+              <button class="edit-btn secondary" id="btnVoltarAluno" type="button">Voltar</button>
             </div>
           </div>
           <div class="hero-side">
@@ -400,7 +239,7 @@
             </div>
             <div class="quick-card">
               <div class="quick-label">Situação do Cadastro</div>
-              <div class="quick-value" id="cadastroAluno" class="status-ok">ATIVO</div>
+              <div class="quick-value" id="cadastroAluno">ATIVO</div>
             </div>
           </div>
         </section>
@@ -487,248 +326,100 @@
     </div>
   </div>
 
-  
+  <script>
+    const temas = ['tema-verde', 'tema-azul', 'tema-oceano'];
+    let temaAtual = 0;
+    const temaSalvo = localStorage.getItem('tema-aluno');
+    if (temaSalvo) {
+      document.documentElement.className = temaSalvo;
+      temaAtual = temas.indexOf(temaSalvo);
+    } else {
+      document.documentElement.className = temas[0];
+    }
+    function trocarTema() {
+      temaAtual = (temaAtual + 1) % temas.length;
+      const novoTema = temas[temaAtual];
+      document.documentElement.className = novoTema;
+      localStorage.setItem('tema-aluno', novoTema);
+    }
 
+    const fallbackAvatar = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect width=%22100%25%22 height=%22100%25%22 rx=%2232%22 fill=%22%230b1526%22/><text x=%2250%25%22 y=%2256%25%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-family=%22Arial%22>👤</text></svg>';
 
+    async function carregarPerfilAluno() {
+      const url = new URL(window.location.href);
+      const id = url.searchParams.get('id');
 
+      if (!id) {
+        document.getElementById('faixaAluno').textContent = 'Abra com ?id=...';
+        document.getElementById('statusAluno').textContent = 'Status indisponível';
+        document.getElementById('financeiroAluno').textContent = '—';
+        document.getElementById('cadastroAluno').textContent = 'SEM IDENTIFICAÇÃO';
+        return;
+      }
 
+      try {
+        const res = await fetch('/api/alunos/listar');
+        const alunos = await res.json();
+        const aluno = Array.isArray(alunos) ? alunos.find(a => a.id === id) : null;
 
+        if (!aluno) {
+          document.getElementById('nomeAluno').textContent = 'Aluno não encontrado';
+          document.getElementById('faixaAluno').textContent = 'Verifique o link';
+          document.getElementById('statusAluno').textContent = 'Status indisponível';
+          return;
+        }
 
+        const faixa = (aluno.faixa || 'branca').toUpperCase();
+        const grau = aluno.grau || '0º Grau';
+        const financeiro = (aluno.financeiro || 'ok').toUpperCase() === 'OK' ? 'EM DIA' : 'PENDENTE';
+        const status = (aluno.status || 'ativo').toUpperCase();
+        const modalidade = aluno.esporte || aluno.modalidade || 'Não informado';
 
+        document.getElementById('fotoAluno').src = aluno.foto || fallbackAvatar;
+        document.getElementById('nomeAluno').textContent = aluno.nome || 'Aluno';
+        document.getElementById('faixaAluno').textContent = `${faixa} • ${grau}`;
+        document.getElementById('statusAluno').textContent = `Status: ${status}`;
+        document.getElementById('modalidadeAluno').textContent = modalidade;
+        document.getElementById('matriculaAluno').textContent = aluno.numeroCertificado || 'Não definida';
+        document.getElementById('emailAluno').textContent = aluno.email || 'Não informado';
+        document.getElementById('financeiroAluno').textContent = financeiro;
+        document.getElementById('cadastroAluno').textContent = status;
 
+        document.getElementById('infoNome').textContent = aluno.nome || '—';
+        document.getElementById('infoEmail').textContent = aluno.email || '—';
+        document.getElementById('infoFaixa').textContent = `${faixa} • ${grau}`;
+        document.getElementById('infoCertificado').textContent = aluno.numeroCertificado || '—';
+        document.getElementById('infoFinanceiro').textContent = financeiro;
+        document.getElementById('infoObservacoes').textContent = aluno.observacoes || 'Sem observações';
+      } catch (e) {
+        document.getElementById('nomeAluno').textContent = 'Erro ao carregar';
+        document.getElementById('faixaAluno').textContent = 'Tente novamente';
+        document.getElementById('statusAluno').textContent = 'Falha na conexão';
+      }
+    }
 
-
-
-
-
-
-
-
-
+    carregarPerfilAluno();
+  </script>
 
 <script>
-// =========================
-// 🔥 CORE SISTEMA KOKORO
-// =========================
+document.getElementById("btnSalvarAluno").onclick = function(){
+  const dados = {
+    email: document.getElementById("emailAluno").value,
+    whatsapp: document.getElementById("whatsappAluno").value,
+    emergencia: document.getElementById("emergenciaAluno").value,
+    enderecoEmergencia: document.getElementById("enderecoEmergenciaAluno").value,
+    modalidade: document.getElementById("modalidadeAluno").value,
+    matricula: document.getElementById("matriculaAluno").value
+  };
 
-// 🔐 ADMIN
-function ativarAdmin(){
-  let senha = localStorage.getItem("admin_senha");
+  localStorage.setItem("aluno_dados", JSON.stringify(dados));
 
-  if(!senha){
-    const nova = prompt("Crie uma senha de administrador:");
-    if(nova){
-      localStorage.setItem("admin_senha", nova);
-      alert("Senha definida!");
-    }
-    return;
-  }
+  alert("Dados salvos com sucesso!");
+};
 
-  const tentativa = prompt("Digite a senha:");
-  if(tentativa === senha){
-    localStorage.setItem("admin", "true");
-    location.reload();
-  } else {
-    alert("Senha incorreta");
-  }
-}
-
-function sairAdmin(){
-  localStorage.removeItem("admin");
-  location.reload();
-}
-
-// 🎛️ PERMISSÃO
-function isAdmin(){
-  return localStorage.getItem("admin") === "true";
-}
-
-function aplicarPermissoes(){
-  const campos = [
-    document.getElementById("modalidadeAluno"),
-    document.getElementById("faixaAluno")
-  ];
-
-  campos.forEach(c => {
-    if(!c) return;
-    c.disabled = !isAdmin();
-    c.style.opacity = isAdmin() ? "1" : "0.6";
-  });
-
-  const btn = document.getElementById("adminEditLink");
-  if(btn){
-    btn.style.display = isAdmin() ? "block" : "none";
-  }
-}
-
-// 💾 SALVAR
-function salvar(chave, valor){
-  if(isAdmin()){
-    localStorage.setItem(chave, valor);
-  }
-}
-
-// 🎨 STATUS
-function aplicarCoresStatus(){
-  const el = document.getElementById("cadastroAluno");
-  if(!el) return;
-
-  const t = el.innerText.toUpperCase();
-
-  el.classList.remove("status-ok","status-bad","status-warn");
-
-  if(t.includes("ATIVO")) el.classList.add("status-ok");
-  else if(t.includes("INATIVO") || t.includes("EXCLU")) el.classList.add("status-bad");
-  else if(t.includes("SUSPENSO")) el.classList.add("status-warn");
-}
-
-// 🚀 INIT
-document.addEventListener("DOMContentLoaded", () => {
-
-  aplicarPermissoes();
-  aplicarCoresStatus();
-
-  // Modalidade
-  const mod = document.getElementById("modalidadeAluno");
-  if(mod){
-    const salvo = localStorage.getItem("modalidade");
-    if(salvo) mod.value = salvo;
-
-    mod.addEventListener("change", () => salvar("modalidade", mod.value));
-  }
-
-  // Faixa
-  const faixa = document.getElementById("faixaAluno");
-  if(faixa){
-    const salvo = localStorage.getItem("faixa");
-    if(salvo) faixa.value = salvo;
-
-    faixa.addEventListener("change", () => salvar("faixa", faixa.value));
-  }
-
-});
-</script>
-
-
-<script>
-function q(name){
-  return new URLSearchParams(location.search).get(name);
-}
-
-async function carregarAluno(){
-  let aluno = null;
-
-  const id = q("id");
-  if (id){
-    try{
-      const r = await fetch('/api/alunos/get?id=' + encodeURIComponent(id), { cache: 'no-store' });
-      const j = await r.json();
-      if (j && j.ok && j.aluno) aluno = j.aluno;
-    }catch(e){
-      console.error("Erro ao buscar aluno pela API:", e);
-    }
-  }
-
-  if (!aluno){
-    const raw = localStorage.getItem("aluno");
-    if (!raw) return;
-    try{
-      aluno = JSON.parse(raw);
-    }catch(e){
-      console.error("Erro ao ler localStorage(aluno):", e);
-      return;
-    }
-  }
-
-  const nomeCompleto =
-    aluno.nomeCompleto ||
-    aluno.nome ||
-    "Aluno não identificado";
-
-  const emailValor =
-    aluno.email ||
-    "—";
-
-  const faixaValor =
-    aluno.faixa ||
-    aluno.graduacao ||
-    "—";
-
-  const certificadoValor =
-    aluno.certificado ||
-    aluno.numeroCertificado ||
-    aluno.certificadoNumero ||
-    "—";
-
-  const financeiroValor =
-    aluno.financeiro ||
-    aluno.situacaoFinanceira ||
-    "—";
-
-  const observacoesValor =
-    aluno.observacoes ||
-    aluno.obs ||
-    "Sem observações";
-
-  const whatsappValor =
-    aluno.whatsapp ||
-    aluno.telefone ||
-    "—";
-
-  const emergenciaValor =
-    aluno.contatoEmergencia ||
-    aluno.emergencia ||
-    "—";
-
-  const enderecoEmergenciaValor =
-    aluno.enderecoEmergencia ||
-    "—";
-
-  const statusValor =
-    aluno.status ||
-    "ATIVO";
-
-  const nome = document.getElementById("nomeAluno");
-  if(nome) nome.innerText = nomeCompleto;
-
-  const email = document.getElementById("emailAluno");
-  if(email) email.innerText = emailValor;
-
-  const whatsapp = document.getElementById("whatsappAluno");
-  if(whatsapp) whatsapp.innerText = whatsappValor;
-
-  const emergencia = document.getElementById("emergenciaAluno");
-  if(emergencia) emergencia.innerText = emergenciaValor;
-
-  const enderecoEmergencia = document.getElementById("enderecoEmergenciaAluno");
-  if(enderecoEmergencia) enderecoEmergencia.innerText = enderecoEmergenciaValor;
-
-  const cadastroAluno = document.getElementById("cadastroAluno");
-  if(cadastroAluno) cadastroAluno.innerText = String(statusValor).toUpperCase();
-
-  const statusAluno = document.getElementById("statusAluno");
-  if(statusAluno) statusAluno.innerText = String(statusValor).toUpperCase();
-
-  const infoNome = document.getElementById("infoNome");
-  if(infoNome) infoNome.innerText = nomeCompleto;
-
-  const infoEmail = document.getElementById("infoEmail");
-  if(infoEmail) infoEmail.innerText = emailValor;
-
-  const infoFaixa = document.getElementById("infoFaixa");
-  if(infoFaixa) infoFaixa.innerText = faixaValor;
-
-  const infoCertificado = document.getElementById("infoCertificado");
-  if(infoCertificado) infoCertificado.innerText = certificadoValor;
-
-  const infoFinanceiro = document.getElementById("infoFinanceiro");
-  if(infoFinanceiro) infoFinanceiro.innerText = financeiroValor;
-
-  const infoObservacoes = document.getElementById("infoObservacoes");
-  if(infoObservacoes) infoObservacoes.innerText = observacoesValor;
-}
-
-document.addEventListener("DOMContentLoaded", carregarAluno);
+document.getElementById("btnVoltarAluno").onclick = function(){
+  window.location.href = "/dashboard_aluno.html";
+};
 </script>
 
 </body>

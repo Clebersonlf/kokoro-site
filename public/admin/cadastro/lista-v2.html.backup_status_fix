@@ -164,8 +164,6 @@
     .modal-footer .btn-local{background:#e5e7eb;color:#111;}
     .modal-footer .btn-local-dark{background:#111827;color:#fff;}
     .modal-footer .btn-local-danger{background:#dc2626;color:#fff;}
-    .modal-footer button[onclick="salvarStatus()"]{background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;}
-    .modal-footer .btn-salvar{background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;}
 
   </style>
 
@@ -189,7 +187,7 @@ table td small{
       <h1>Gestão de Alunos</h1>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <a href="/admin/cadastro/excluidos-definitivos.html" class="btn-local" style="text-decoration:none;color:#111827"><span style="color:#ffffff;font-weight:700;">Memória (Exclusões)</span></a>
-        <a href="/admin.html#alunos" class="btn-local btn-local-dark" style="text-decoration:none;color:#fff">← Voltar para Dashboard</a>
+        <a href="/admin.html#alunos" class="btn-local btn-local-dark" style="text-decoration:none;color:#fff">← Voltar ao Painel</a>
       </div>
     </div>
 
@@ -201,11 +199,6 @@ table td small{
         <option value="inativo">Inativo</option>
         <option value="suspenso">Suspenso</option>
         <option value="excluido">Excluído</option>
-      </select>
-      <select id="ordenacaoAlunos" class="filtro-select">
-        <option value="nome">Ordenar: Nome (A–Z)</option>
-        <option value="faixa">Ordenar: Graduação</option>
-        <option value="certificado">Ordenar: Nº Certificado</option>
       </select>
     </div>
 
@@ -273,7 +266,7 @@ table td small{
       <div class="modal-footer">
         <button class="btn-local" type="button" onclick="fecharModal()" style="color:#111827">CANCELAR</button>
         <button class="btn-local btn-local-danger" type="button" onclick="excluirDefinitivoModal()">EXCLUIR DEFINITIVO</button>
-        <button class="btn-local btn-salvar" type="button" onclick="salvarStatus()" style="background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;">SALVAR ALTERAÇÃO</button>
+        <button class="btn-local btn-local-dark" type="button" onclick="salvarStatus()">SALVAR ALTERAÇÃO</button>
       </div>
     </div>
   </div>
@@ -634,7 +627,7 @@ table td small{
     alunoSelecionado = null;
   }
 
-  async function salvarStatus(){
+  function salvarStatus(){
     if (!alunoSelecionado) return;
     const novo = document.getElementById("selectNovoStatus").value;
     const motivo = (document.getElementById("textoMotivo").value || "").trim();
@@ -645,41 +638,19 @@ table td small{
       return;
     }
 
-    const historicoAtual = Array.isArray(alunoSelecionado.historico) ? alunoSelecionado.historico : [];
-    const novoRegistro = {
+    alunoSelecionado.status = novo;
+    alunoSelecionado.historico = Array.isArray(alunoSelecionado.historico) ? alunoSelecionado.historico : [];
+    alunoSelecionado.historico.unshift({
       tipo: "status",
       data: dataEvento || new Date().toLocaleDateString("pt-BR"),
       dataHora: new Date().toLocaleString("pt-BR"),
       status: novo,
       motivo: motivo,
-    };
+    });
 
-    try{
-      const res = await fetch(`/api/alunos/${encodeURIComponent(alunoSelecionado.id)}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: novo,
-          historico: [novoRegistro, ...historicoAtual]
-        })
-      });
-
-      if (!res.ok){
-        let msg = "Erro ao salvar status.";
-        try{
-          const data = await res.json();
-          if (data && data.error) msg = data.error;
-        }catch(e){}
-        throw new Error(msg);
-      }
-
-      alunoSelecionado.status = novo;
-      alunoSelecionado.historico = [novoRegistro, ...historicoAtual];
-      fecharModal();
-      await carregarAlunosAPI();
-    }catch(e){
-      alert("Erro ao salvar status: " + e.message);
-    }
+    salvarAlunosLocal();
+    fecharModal();
+    renderizarTabela();
   }
 
   function atribuirProximoNumero(){
@@ -755,145 +726,16 @@ table td small{
     }
   }
 
-  
-function getRankGraduacao(faixa, grau){
-
-  const base = String(faixa || "").toLowerCase();
-
-  const mapa = {
-    "branca": 1,
-    "cinza e branca": 6,
-    "cinza": 11,
-    "cinza e preta": 16,
-    "amarela e branca": 21,
-    "amarela": 22,
-    "amarela e preta": 27,
-    "laranja e branca": 32,
-    "laranja": 37,
-    "laranja e preta": 42,
-    "verde e branca": 47,
-    "verde": 52,
-    "verde e preta": 57,
-    "azul": 62,
-    "roxa": 67,
-    "marrom": 72,
-    "preta": 77,
-    "vermelha e preta": 84,
-    "vermelha e branca": 85,
-    "vermelha": 86
-  };
-
-  let rank = mapa[base] || 999;
-
-  const g = parseInt(String(grau || "").replace(/\D/g,'')) || 0;
-
-  return rank + g;
-}
-
-
-function getNivelFaixa(faixa){
-  const f = String(faixa || "")
-    .toLowerCase()
-    .replace(/^faixa\s+/, "")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const ordem = {
-    "vermelha": 1,
-    "vermelha e branca": 2,
-    "vermelha e preta": 3,
-    "preta": 4,
-    "marrom": 5,
-    "roxa": 6,
-    "azul": 7,
-    "verde e preta": 8,
-    "verde": 9,
-    "verde e branca": 10,
-    "laranja e preta": 11,
-    "laranja": 12,
-    "laranja e branca": 13,
-    "amarela e preta": 14,
-    "amarela": 15,
-    "amarela e branca": 16,
-    "cinza e preta": 17,
-    "cinza": 18,
-    "cinza e branca": 19,
-    "branca": 20
-  };
-
-  return ordem[f] || 999;
-}
-
-
-function renderizarTabela(){
+  function renderizarTabela(){
   const body = document.getElementById("tabelaBody");
   const q = (document.getElementById("inputBusca").value || "").toLowerCase().trim();
   const st = document.getElementById("filtroStatus").value;
 
   body.innerHTML = "";
 
-  const ord = (document.getElementById("ordenacaoAlunos")?.value || "nome");
-
-  const ordemFaixas = {
-    "branca": 1,
-    "cinza e branca": 2,
-    "cinza": 3,
-    "cinza e preta": 4,
-    "amarela e branca": 5,
-    "amarela": 6,
-    "amarela e preta": 7,
-    "laranja e branca": 8,
-    "laranja": 9,
-    "laranja e preta": 10,
-    "verde e branca": 11,
-    "verde": 12,
-    "verde e preta": 13,
-    "azul": 14,
-    "roxa": 15,
-    "marrom": 16,
-    "preta": 17,
-    "vermelha e preta": 18,
-    "vermelha e branca": 19,
-    "vermelha": 20
-  };
-
-  function normalizarFaixa(valor){
-    return String(valor || "")
-      .toLowerCase()
-      .replace(/^faixa\s+/,'')
-      .replace(/\s+/g,' ')
-      .trim();
-  }
-
   const filtrados = alunos
-    .filter(a => (!q || ((a.nome || "") + (a.email || "")).toLowerCase().includes(q)))
-    .filter(a => (!st || a.status === st))
-    .slice()
-    .sort((a, b) => {
-      if (ord === "nome") {
-        return (a.nome || "").localeCompare((b.nome || ""), "pt-BR", { sensitivity: "base" });
-      }
-
-      if (ord === "certificado") {
-        const na = parseInt(String(a.numeroCertificado || "").replace(/\D/g, ""), 10);
-        const nb = parseInt(String(b.numeroCertificado || "").replace(/\D/g, ""), 10);
-        const va = isNaN(na) ? 999999 : na;
-        const vb = isNaN(nb) ? 999999 : nb;
-        return va - vb;
-      }
-
-      if (ord === "faixa") {
-        const fa = getRankGraduacao(normalizarFaixa(a.faixa), a.grau);
-        const fb = getRankGraduacao(normalizarFaixa(b.faixa), b.grau);
-        if (fa !== fb) return fb - fa;
-
-        const ga = parseInt(String(a.grau || "0").replace(/\D/g, ""), 10) || 0;
-        const gb = parseInt(String(b.grau || "0").replace(/\D/g, ""), 10) || 0;
-        return gb - ga;
-      }
-
-      return 0;
-    });
+    .filter(a => (!q || (a.nome+a.email).toLowerCase().includes(q)))
+    .filter(a => (!st || a.status === st));
 
   // contador
   const contador = document.getElementById("contadorAlunos");
@@ -903,27 +745,13 @@ function renderizarTabela(){
 
   filtrados.forEach(function(aluno, i){
     const tr = document.createElement("tr");
-    const faixaTxt = (aluno.faixa || "branca");
-    const grauTxt = (aluno.grau || "0º Grau");
-    const emailTxt = (aluno.email || "");
     tr.innerHTML = `
       <td style="text-align:center;font-weight:700;color:#9ca3af;">${i+1}</td>
-      <td>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <img src="${aluno.foto || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e5e7eb%22/><text x=%2250%25%22 y=%2254%25%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22%236b7280%22 font-family=%22Arial%22>👤</text></svg>'}" alt="Foto do aluno" style="width:48px;height:48px;border-radius:999px;object-fit:cover;border:1px solid #d1d5db;background:#f3f4f6;flex-shrink:0;">
-          <div>
-            <strong style="cursor:pointer;color:#2563eb;" onclick="abrirDashboard('${aluno.id}')">
-${escapeHtml(aluno.nome)}
-</strong><br>
-            <small style="color:#6b7280">${escapeHtml(emailTxt)}</small><br>
-            <small style="color:#111827;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small>
-          </div>
-        </div>
-      </td>
+      <td><strong>${escapeHtml(aluno.nome)}</strong><br><small style="color:#6b7280">${escapeHtml(aluno.email)}</small><br><small style="color:#111827;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small></td>
       <td>
         <span class="faixa-tag">
-          <span class="faixa-cor" style="background:${getCorFaixa(faixaTxt)}"></span>
-          ${faixaTxt.toUpperCase()} (${grauTxt})
+          <span class="faixa-cor" style="background:${getCorFaixa(aluno.faixa)}"></span>
+          ${aluno.faixa.toUpperCase()} (${aluno.grau})
         </span>
       </td>
       <td>${escapeHtml(aluno.ultima)}</td>
@@ -940,11 +768,6 @@ ${escapeHtml(aluno.nome)}
     body.appendChild(tr);
   });
 }
-
-  const ordenacaoAlunosEl = document.getElementById("ordenacaoAlunos");
-  if (ordenacaoAlunosEl){
-    ordenacaoAlunosEl.addEventListener("change", renderizarTabela);
-  }
 
   function editarAluno(id){
     window.location.href = `/cadastro/formulario-completo.html?id=${id}`;
@@ -969,17 +792,7 @@ ${escapeHtml(aluno.nome)}
     }
   }
 
-  document.getElementById("inputBusca").addEventListener("input", renderizarTabela);
-  document.getElementById("filtroStatus").addEventListener("change", renderizarTabela);
-
   renderizarTabela();
 </script>
-
-<script>
-function abrirDashboard(id){
-  window.location.href = `/dashboard_aluno.html?id=${id}`;
-}
-</script>
-
 </body>
 </html>

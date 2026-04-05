@@ -355,7 +355,7 @@
             </a>
 
             <!-- GESTÃO -->
-            <a href="/admin/cadastro/lista.html" class="nav-item">
+            <a href="/admin/cadastro/lista-v2.html?v=1" class="nav-item">
                 <i class="fas fa-users"></i>
                 <span>Gestão de Alunos</span>
             </a>
@@ -459,10 +459,27 @@
                     <span style="font-size:14px; color:#a093b0; font-weight:600;">Total de Alunos:</span>
                     <span id="cardTotalAlunos" style="font-size:20px; font-weight:700; color:#4ade80;">--</span>
                 </div>
-                <a href="/admin/cadastro/lista.html" class="btn">Ver Alunos</a>
+                <a href="/admin/cadastro/lista-v2.html?v=1" class="btn">Ver Alunos</a>
                 <a href="/cadastro/formulario-completo.html" class="btn" style="margin-top:6px;">Cadastrar Aluno</a>
                 <a href="/admin/invite.html" class="btn" style="margin-top:6px;">Enviar Convite</a>
             </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📊 Controle de Sessões</div>
+                    <div class="card-icon">⏱️</div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px; margin: 8px 0;">
+                    <span style="font-size:14px; color:#a093b0; font-weight:600;">
+                        Sessões hoje: <strong id="cardSessoesHoje">--</strong>
+                    </span>
+                    <span style="font-size:14px; color:#a093b0; font-weight:600;">
+                        Horas/aula hoje: <strong id="cardHorasHoje">--</strong>
+                    </span>
+                </div>
+                <a href="/admin/sessoes.html" class="btn">Abrir Módulo</a>
+            </div>
+
 
             <div class="card">
                 <div class="card-header">
@@ -538,15 +555,14 @@
         ];
 
         async function carregarDados() {
-            // 1. Total de alunos (localStorage ou fallback)
+            // 1. Total real de alunos (API)
             try {
-                const raw = localStorage.getItem('kokoro_alunos_dados');
-                const alunos = (raw ? JSON.parse(raw) : null);
-                const base = (Array.isArray(alunos) && alunos.length > 0) ? alunos : ALUNOS_FALLBACK;
-                const ativos = base.filter(a => a.status !== 'excluido' && a.status !== 'inativo').length;
-                document.getElementById('cardTotalAlunos').textContent = ativos;
+                const res = await fetch('/api/alunos/listar');
+                const alunos = await res.json();
+                const total = Array.isArray(alunos) ? alunos.length : 0;
+                document.getElementById('cardTotalAlunos').textContent = total;
             } catch(e) {
-                document.getElementById('cardTotalAlunos').textContent = '20';
+                document.getElementById('cardTotalAlunos').textContent = '0';
             }
 
             // 2. Reserva de caixa (API)

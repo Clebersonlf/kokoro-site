@@ -2,106 +2,587 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>Admin — Enviar convite</title>
+  <title>Enviar convite • Kokoro</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-:root{--bg-main:#0d0c0f;--bg-card:rgba(20,18,23,.65);--border-color:rgba(60,50,70,.7);--text-primary:#f0e7ff;--text-muted:#a093b0;--primary-color:#4ade80;--secondary-color:#38bdf8;--accent-glow:rgba(74,222,128,.3);--radius:16px;--shadow:0 8px 32px rgba(0,0,0,.4);} 
-body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg-main);color:var(--text-primary);max-width:720px;margin:20px auto;padding:0 12px;}
-    label{display:block;margin:10px 0 4px}
-    input{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .actions{margin-top:16px;display:flex;gap:12px;align-items:center}
-    .ok{color:#0a0}.err{color:#c00}
-    .links a{display:inline-block;margin:6px 6px 0 0}
-    .card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:14px;margin-top:14px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
-input{background:rgba(255,255,255,.06);border:1px solid var(--border-color);color:var(--text-primary)}
-input::placeholder{color:rgba(160,147,176,.85)}
-button{padding:10px 14px;border-radius:12px;border:1px solid var(--border-color);background:linear-gradient(90deg,var(--secondary-color),var(--primary-color));color:#0d0c0f;font-weight:700;cursor:pointer}
-button:hover{filter:brightness(1.05)}
-a{color:var(--secondary-color)}
+    :root{
+      --bg:#070b14;
+      --bg2:#0b1220;
+      --card:rgba(17,24,39,.82);
+      --card-strong:rgba(15,23,42,.95);
+      --border:rgba(59,130,246,.18);
+      --border-strong:rgba(59,130,246,.35);
+      --text:#eef2ff;
+      --muted:#94a3b8;
+      --blue:#3b82f6;
+      --cyan:#22d3ee;
+      --green:#34d399;
+      --green-2:#10b981;
+      --danger:#f87171;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 450px at 10% 0%, rgba(34,211,238,.10), transparent 60%),
+        radial-gradient(800px 400px at 100% 0%, rgba(59,130,246,.12), transparent 55%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      min-height:100vh;
+    }
+
+    .page{
+      max-width:980px;
+      margin:0 auto;
+      padding:28px 18px 40px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .top-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .top-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--text);
+      text-decoration:none;
+      background:rgba(255,255,255,.03);
+      font-size:14px;
+      font-weight:700;
+      transition:.18s ease;
+    }
+
+    .top-link:hover{
+      border-color:var(--border-strong);
+      background:rgba(59,130,246,.10);
+      transform:translateY(-1px);
+    }
+
+    .hero{
+      background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(2,8,23,.82));
+      border:1px solid var(--border);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:28px;
+      margin-bottom:22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:auto -120px -120px auto;
+      width:280px;
+      height:280px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(34,211,238,.14), transparent 65%);
+      pointer-events:none;
+    }
+
+    .breadcrumb{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(28px,4vw,42px);
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .hero p{
+      margin:0;
+      color:#cbd5e1;
+      font-size:16px;
+      line-height:1.6;
+      max-width:720px;
+    }
+
+    .hero-badges{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(52,211,153,.18);
+      background:rgba(16,185,129,.10);
+      color:#d1fae5;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.25fr .85fr;
+      gap:20px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+    }
+
+    .card-head{
+      padding:20px 22px 0;
+    }
+
+    .card-head h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .card-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .card-body{
+      padding:20px 22px 22px;
+    }
+
+    label{
+      display:block;
+      margin:0 0 14px;
+      color:#dbeafe;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .hint{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:500;
+      margin-top:4px;
+    }
+
+    input{
+      width:100%;
+      margin-top:8px;
+      padding:14px 14px;
+      border:1px solid rgba(148,163,184,.20);
+      border-radius:14px;
+      background:rgba(15,23,42,.85);
+      color:var(--text);
+      outline:none;
+      font-size:15px;
+      transition:.18s ease;
+    }
+
+    input::placeholder{color:#64748b}
+    input:focus{
+      border-color:rgba(34,211,238,.55);
+      box-shadow:0 0 0 4px rgba(34,211,238,.10);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      margin-top:6px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      border-radius:14px;
+      font-weight:800;
+      transition:.18s ease;
+    }
+
+    .btn-primary{
+      padding:14px 18px;
+      background:linear-gradient(90deg,var(--cyan),var(--green));
+      color:#05131b;
+      box-shadow:0 12px 28px rgba(16,185,129,.18);
+    }
+
+    .btn-primary:hover{transform:translateY(-1px);filter:brightness(1.03)}
+
+    .btn-secondary{
+      padding:10px 14px;
+      background:rgba(59,130,246,.10);
+      color:#dbeafe;
+      border:1px solid rgba(59,130,246,.22);
+    }
+
+    .btn-secondary:hover{
+      background:rgba(59,130,246,.16);
+      transform:translateY(-1px);
+    }
+
+    .status{
+      min-height:22px;
+      font-size:14px;
+      font-weight:700;
+    }
+    .ok{color:#6ee7b7}
+    .err{color:#fca5a5}
+
+    .side-list{
+      display:grid;
+      gap:12px;
+      margin-top:4px;
+    }
+
+    .side-item{
+      border:1px solid rgba(148,163,184,.12);
+      border-radius:18px;
+      background:rgba(15,23,42,.72);
+      padding:15px 16px;
+    }
+
+    .side-item strong{
+      display:block;
+      margin-bottom:5px;
+      color:#e0f2fe;
+      font-size:14px;
+    }
+
+    .side-item span{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .result{
+      display:none;
+      margin-top:22px;
+      background:var(--card-strong);
+      border:1px solid rgba(52,211,153,.22);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .result-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      padding:18px 20px;
+      border-bottom:1px solid rgba(52,211,153,.16);
+      background:rgba(16,185,129,.08);
+    }
+
+    .result-head h3{
+      margin:0;
+      font-size:20px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(16,185,129,.14);
+      border:1px solid rgba(16,185,129,.22);
+      color:#d1fae5;
+      font-size:13px;
+      font-weight:800;
+    }
+
+    .result-body{
+      padding:18px 20px 20px;
+    }
+
+    .link-box{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+
+    .link-display{
+      display:block;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(15,23,42,.85);
+      border:1px solid rgba(148,163,184,.16);
+      color:#93c5fd;
+      text-decoration:none;
+      word-break:break-all;
+      font-size:14px;
+    }
+
+    .quick-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .quick-links a{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:11px 14px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#e2e8f0;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(148,163,184,.16);
+      font-size:14px;
+      font-weight:700;
+      transition:.18s ease;
+    }
+
+    .quick-links a:hover{
+      transform:translateY(-1px);
+      border-color:rgba(34,211,238,.25);
+      background:rgba(34,211,238,.08);
+    }
+
+    .quick-links a.disabled{
+      opacity:.45;
+      pointer-events:none;
+    }
+
+    @media (max-width: 860px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 640px){
+      .page{padding:18px 12px 28px}
+      .hero,.card-body,.card-head,.result-body,.result-head{padding-left:16px;padding-right:16px}
+      .row,.link-box{grid-template-columns:1fr}
+      .topbar{align-items:flex-start}
+      .hero h1{font-size:30px}
+    }
   </style>
 </head>
 <body>
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <div style="display: flex; gap: 15px;">
-      <a href="/admin.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 5px;">🏠 Dashboard</a>
-      <a href="/user/cadastro/cadastro.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 5px;">📝 Novo Cadastro</a>
-    </div>
-  </div>
-  <h1>Admin — Enviar convite</h1>
-  <p>Preencha no mínimo <b>e-mail</b> (telefone é opcional). O sistema cria/atualiza o aluno como <i>pendente</i> e gera o link de completar cadastro.</p>
-
-  <div id="msg"></div>
-
-  <div class="card">
-    <label>Nome (opcional)
-      <input id="nome" placeholder="Ex.: João Silva">
-    </label>
-    <div class="row">
-      <div>
-        <label>E-mail (recomendado)
-          <input id="email" type="email" placeholder="exemplo@dominio.com">
-        </label>
-      </div>
-      <div>
-        <label>Telefone (só números, com DDI+DDD, opcional)
-          <input id="telefone" placeholder="559999999999">
-        </label>
+  <div class="page">
+    <div class="topbar">
+      <div class="top-links">
+        <a class="top-link" href="/admin_Dashboard.html">🏠 Dashboard</a>
+        <a class="top-link" href="/admin/cadastro/lista-v2.html">👥 Gestão de Alunos</a>
       </div>
     </div>
-    <div class="actions">
-      <button id="btnEnviar">Gerar convite</button>
-      <span id="status"></span>
-    </div>
-  </div>
 
-  <div id="resultado" class="card" style="display:none">
-    <h3>Convite gerado</h3>
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-      <b>Link:</b> <a id="lk" href="#" target="_blank" style="flex: 1; word-break: break-all;"></a>
-      <button id="btnCopy" style="padding: 6px 12px; background: var(--secondary-color); border: none; border-radius: 8px; color: #0d0c0f; font-size: 12px; cursor: pointer;">Copiar</button>
+    <section class="hero">
+      <div class="breadcrumb">Dashboard > Convites > Enviar convite</div>
+      <h1>Enviar convite para novo aluno</h1>
+      <p>Crie um link de cadastro e envie para o aluno preencher os dados completos de forma rápida, organizada e profissional.</p>
+      <div class="hero-badges">
+        <span class="badge">✅ E-mail obrigatório</span>
+        <span class="badge">📲 Telefone opcional</span>
+        <span class="badge">🔗 Link pronto para envio</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card-head">
+          <h2>Gerar convite</h2>
+          <p>Informe os dados iniciais do aluno. O sistema cria ou atualiza o cadastro como pendente e monta o link para conclusão.</p>
+        </div>
+        <div class="card-body">
+          <div id="msg" class="status"></div>
+
+          <label>
+            Nome do aluno
+            <span class="hint">Campo opcional, útil para personalizar o convite.</span>
+            <input id="nome" placeholder="Ex.: João Silva">
+          </label>
+
+          <div class="row">
+            <label>
+              E-mail
+              <span class="hint">Campo recomendado e obrigatório para gerar o convite.</span>
+              <input id="email" type="email" placeholder="exemplo@dominio.com">
+            </label>
+
+            <label>
+              Telefone
+              <span class="hint">Somente números com DDI + DDD. Opcional.</span>
+              <input id="telefone" placeholder="559999999999">
+            </label>
+          </div>
+
+          <div class="actions">
+            <button id="btnEnviar" class="btn-primary">Gerar convite</button>
+            <span id="status" class="status"></span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="card-head">
+          <h2>Como usar</h2>
+          <p>Fluxo ideal para o administrativo.</p>
+        </div>
+        <div class="card-body">
+          <div class="side-list">
+            <div class="side-item">
+              <strong>1. Preencha os dados iniciais</strong>
+              <span>Digite pelo menos o e-mail do aluno para gerar o convite com segurança.</span>
+            </div>
+            <div class="side-item">
+              <strong>2. Gere o link</strong>
+              <span>O sistema cria o acesso e prepara atalhos para copiar ou encaminhar.</span>
+            </div>
+            <div class="side-item">
+              <strong>3. Envie ao aluno</strong>
+              <span>Compartilhe por WhatsApp, Telegram, SMS ou e-mail, conforme sua necessidade.</span>
+            </div>
+            <div class="side-item">
+              <strong>4. Acompanhe o cadastro</strong>
+              <span>Depois, acompanhe a evolução do aluno pela gestão de alunos.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
-    <div class="links">
-      <a id="lkWa" target="_blank">Abrir WhatsApp</a>
-      <a id="lkTg" target="_blank">Abrir Telegram</a>
-      <a id="lkSms" target="_blank">Abrir SMS</a>
-      <a id="lkMail" target="_blank">Abrir e-mail</a>
-    </div>
+
+    <section id="resultado" class="result">
+      <div class="result-head">
+        <h3>Convite gerado com sucesso</h3>
+        <span class="pill">✅ Link pronto para envio</span>
+      </div>
+      <div class="result-body">
+        <div class="link-box">
+          <a id="lk" class="link-display" href="#" target="_blank" rel="noopener noreferrer"></a>
+          <button id="btnCopy" class="btn-secondary" type="button">Copiar link</button>
+        </div>
+
+        <div class="quick-links">
+          <a id="lkWa" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+          <a id="lkTg" target="_blank" rel="noopener noreferrer">✈️ Telegram</a>
+          <a id="lkSms" target="_blank" rel="noopener noreferrer">📱 SMS</a>
+          <a id="lkMail" target="_blank" rel="noopener noreferrer">✉️ E-mail</a>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
     const $ = s => document.querySelector(s);
-    const msg = $('#msg'); const st = $('#status');
-    function setMsg(t, ok=false){ msg.className = ok?'ok':'err'; msg.textContent = t||''; }
-    function setSt (t, ok=false){ st.className  = ok?'ok':'err'; st.textContent  = t||''; }
+    const msg = $('#msg');
+    const st = $('#status');
+
+    function setMsg(t, ok=false){
+      msg.className = 'status ' + (ok ? 'ok' : 'err');
+      msg.textContent = t || '';
+    }
+
+    function setSt(t, ok=false){
+      st.className = 'status ' + (ok ? 'ok' : 'err');
+      st.textContent = t || '';
+    }
+
+    function toggleActionLink(el, url){
+      if (!url){
+        el.href = '#';
+        el.classList.add('disabled');
+        return;
+      }
+      el.href = url;
+      el.classList.remove('disabled');
+    }
 
     $('#btnEnviar').addEventListener('click', async () => {
-      setSt('Enviando...', true);
+      setMsg('', true);
+      setSt('Gerando convite...', true);
+
       const nome = $('#nome').value.trim() || null;
       const email = $('#email').value.trim() || null;
-      const telefone = $('#telefone').value.replace(/\\D/g,'') || null;
+      const telefone = $('#telefone').value.replace(/\D/g,'') || null;
 
-      if (!email) { setSt('Informe ao menos o e-mail.', false); return; }
+      if (!email){
+        setSt('Informe ao menos o e-mail do aluno.', false);
+        return;
+      }
 
-      try {
+      try{
         const r = await fetch('/api/send-welcome', {
-          method: 'POST', headers:{'Content-Type':'application/json'},
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
           body: JSON.stringify({ nome, email, telefone, via:'email' })
         });
-        const data = await r.json().catch(()=>({}));
-        if (!r.ok || !data.ok) { setSt(data.message || 'Falha ao gerar convite.', false); return; }
 
-        setSt('Convite gerado.', true);
-        const rs = $('#resultado'); rs.style.display = '';
-        $('#lk').href = data.link; $('#lk').textContent = data.link;
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok || !data.ok){
+          setSt(data.message || 'Falha ao gerar convite.', false);
+          return;
+        }
+
+        setSt('Convite gerado com sucesso.', true);
+        setMsg('Agora você já pode copiar o link ou enviar diretamente para o aluno.', true);
+
+        const rs = $('#resultado');
+        rs.style.display = 'block';
+
+        $('#lk').href = data.link;
+        $('#lk').textContent = data.link;
 
         const sug = data.delivery?.suggestions || {};
-        $('#lkWa').href  = sug.whatsapp || '#';  $('#lkWa').style.opacity  = sug.whatsapp ? 1 : .5;
-        $('#lkTg').href  = sug.telegram || '#';  $('#lkTg').style.opacity  = sug.telegram ? 1 : .5;
-        $('#lkSms').href = sug.sms || '#';       $('#lkSms').style.opacity = sug.sms ? 1 : .5;
-        $('#lkMail').href= sug.mailto || '#';    $('#lkMail').style.opacity= sug.mailto ? 1 : .5;
+        toggleActionLink($('#lkWa'), sug.whatsapp);
+        toggleActionLink($('#lkTg'), sug.telegram);
+        toggleActionLink($('#lkSms'), sug.sms);
+        toggleActionLink($('#lkMail'), sug.mailto);
 
-      } catch(e){ setSt('Erro de conexão.', false); }
+        rs.scrollIntoView({ behavior:'smooth', block:'start' });
+      }catch(e){
+        setSt('Erro de conexão ao gerar convite.', false);
+      }
+    });
+
+    $('#btnCopy').addEventListener('click', async () => {
+      const lk = $('#lk').textContent.trim();
+      if (!lk) return;
+
+      try{
+        await navigator.clipboard.writeText(lk);
+        setMsg('Link copiado para a área de transferência.', true);
+      }catch(e){
+        setMsg('Não foi possível copiar automaticamente. Copie o link manualmente.', false);
+      }
     });
   </script>
   <script src="/admin/_session_timer.js" defer></script>

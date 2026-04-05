@@ -100,7 +100,7 @@
 <header>
   <h1>Aluno • Editar</h1>
   <!-- UM ÚNICO LINK ESTILIZADO COMO BOTÃO -->
-  <nav><a class="btn" href="/admin/cadastro/lista.html"><span class="chevron">←</span> Voltar à Lista</a></nav>
+  <nav><a class="btn" href="/admin/cadastro/lista-v2.html?v=1"><span class="chevron">←</span> Voltar à Lista</a></nav>
 </header>
 
 <main>
@@ -182,7 +182,7 @@
       body: JSON.stringify({ id: idEl.value })
     });
     const j = await r.json();
-    if (j.ok){ location.href = '/admin/cadastro/lista.html'; }
+    if (j.ok){ location.href = '/admin/cadastro/lista-v2.html?v=1'; }
     else { msg.textContent = j.message || 'Erro ao excluir'; }
   }
 

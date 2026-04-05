@@ -516,6 +516,7 @@
         <a href="/admin/invite.html" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; background: var(--bg-card); border: 1px solid var(--primary-color); border-radius: 20px; color: var(--primary-color); text-decoration: none; font-size: 11px; backdrop-filter: blur(5px); box-shadow: 0 0 8px var(--accent-glow); margin-left: 15px; vertical-align: middle; border: 1px solid rgba(74, 222, 128, 0.5);">✉️ Gerar Convite</a>
         <div class="header-controls">
             <a href="/admin_Dashboard.html">Voltar para Dashboard</a>
+<a href="/admin/cadastro/lista-v2.html" style="margin-left:10px;color:#3b82f6;font-weight:600;text-decoration:none;">← Voltar para Lista</a>
             <div class="admin-mode-container">
                 <label for="adminToggle" class="admin-toggle-label">Admin</label>
                 <label class="switch">
@@ -1308,7 +1309,8 @@
               email:document.getElementById('email')?.value||'',
               faixa:(document.getElementById('corFaixa')?.value||'branca').toLowerCase().split(' ').pop(),
               grau:document.getElementById('grau')?.value||'0º Grau',
-              numeroCertificado:'',status:'ativo'
+              numeroCertificado:'',status:'ativo',
+              foto: document.getElementById('photoData')?.value || null
             };
             if(_id) _payload.id=_id;
             fetch('/api/alunos/salvar',{method:_id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_payload)})
@@ -1783,6 +1785,56 @@
         }
     })();
 </script>
+
+
+
+<script>
+function salvarAlunoCompleto(){
+
+  const LS = "kokoro_alunos_dados";
+
+  const aluno = {
+    id: Date.now(),
+    nome: document.querySelector('[name="nome"]')?.value || "",
+    email: document.querySelector('[name="email"]')?.value || "",
+    faixa: "",
+    grau: "",
+    ultima: "-",
+    financeiro: "ok",
+    status: "ativo",
+    historico: [],
+    numeroCertificado: ""
+  };
+
+  let lista = [];
+
+  try{
+    const raw = localStorage.getItem(LS);
+    if(raw){
+      lista = JSON.parse(raw);
+    }
+  }catch(e){}
+
+  lista.push(aluno);
+
+  localStorage.setItem(LS, JSON.stringify(lista));
+
+  alert("Aluno cadastrado com sucesso!");
+
+  location.reload();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.querySelector('button[type="submit"]');
+  if(btn){
+    btn.onclick = function(e){
+      e.preventDefault();
+      salvarAlunoCompleto();
+    }
+  }
+});
+</script>
+
 </body>
 <script>
 (function () {

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Alunos • Kokoro</title>
+  <link rel="stylesheet" href="/admin/css/admin-layout.css">
+  <style>
+    :root{--bg:#0f1115;--card:#161a22;--card2:#131722;--border:#2a3140;--text:#e7e9ee;--muted:#a9b2c3;--blue:#3498db;--green:#2ecc71;--red:#e74c3c;--orange:#f39c12;}
+    *{box-sizing:border-box}
+    body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial;background:radial-gradient(900px 420px at 50% 0%,rgba(52,152,219,.18),transparent 55%),var(--bg);color:var(--text);min-height:100vh;}
+    .lista-container{max-width:1200px;margin:0 auto;padding:28px}
+    h1{margin:0 0 18px;text-align:left;color:var(--blue);letter-spacing:.3px}
+    .panel,.box,.card,.tabela-wrapper{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 10px 28px rgba(0,0,0,.35);margin-bottom:18px;}
+    .controles{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+    .busca-input,.filtro-select,input,select{background:#0f1320;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:11px 14px;outline:none;font-size:14px;}
+    input:focus,select:focus{border-color:rgba(52,152,219,.8);box-shadow:0 0 0 3px rgba(52,152,219,.15)}
+    .busca-input{flex:1;min-width:240px}
+    .btn-lite,.btn,button{padding:10px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;font-weight:800;font-size:13px;text-decoration:none;transition:.15s ease;}
+    .btn-lite:hover,.btn:hover,button:hover{background:rgba(255,255,255,.10);border-color:rgba(52,152,219,.7)}
+    .btn-primary{background:var(--blue);border-color:transparent;color:#fff}
+    .btn-danger{background:var(--red);border-color:transparent;color:#fff}
+    table{width:100%;border-collapse:collapse}
+    thead th{text-align:left;font-size:12px;color:#cfe4ff;background:#101827;border-bottom:1px solid var(--border);padding:12px 12px;letter-spacing:.4px;text-transform:uppercase;}
+    tbody td{padding:12px 12px;border-bottom:1px solid var(--border);color:var(--text);font-size:14px;vertical-align:middle;}
+    tbody tr:hover{background:rgba(255,255,255,.03)}
+    .badge{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;text-transform:uppercase}
+    .st-ativo{background:rgba(46,204,113,.15);color:var(--green);border:1px solid rgba(46,204,113,.3)}
+    .st-inativo{background:rgba(169,178,195,.15);color:var(--muted);border:1px solid var(--border)}
+    .st-suspenso{background:rgba(243,156,18,.15);color:var(--orange);border:1px solid rgba(243,156,18,.3)}
+    .st-excluido{background:rgba(231,76,60,.15);color:var(--red);border:1px solid rgba(231,76,60,.3)}
+    .fin-ok{color:var(--green);font-weight:900}
+    .fin-pendente{color:var(--red);font-weight:900}
+    .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:1000}
+    .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:500px;width:90%}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .modal-body{margin-bottom:20px}
+    .modal-footer{display:flex;gap:10px;justify-content:flex-end}
+    .field{margin-bottom:15px}
+    .field label{display:block;margin-bottom:5px;font-weight:600;color:var(--text)}
+    .field input,.field select,.field textarea{width:100%;padding:10px;background:#0f1320;border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit}
+    .field textarea{min-height:80px;resize:vertical}
+    .loading{text-align:center;padding:20px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="lista-container">
+    <div class="header-lista">
+      <h1>Gestão de Alunos</h1>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="/admin_Dashboard.html" class="btn-lite" style="text-decoration:none;color:#fff">← Voltar ao Dashboard</a>
+        <a href="/admin/cadastro/excluidos-definitivos.html" class="btn-lite" style="text-decoration:none;color:#fff">Excluídos definitivos</a>
+      </div>
+    </div>
+
+    <div class="controles">
+      <input id="inputBusca" type="text" class="busca-input" placeholder="Buscar por nome ou e-mail...">
+      <select id="filtroStatus" class="filtro-select">
+        <option value="">Situação: Todas</option>
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+        <option value="suspenso">Suspenso</option>
+        <option value="excluido">Excluído</option>
+      </select>
+    </div>
+
+    <div class="tabela-wrapper">
+      <div id="loading" class="loading">Carregando alunos...</div>
+      <table id="tabelaAlunos" style="display:none">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="cursor:pointer" onclick="ordenarTabela('nome')">Nome</th>
+            <th>Graduação</th>
+            <th>Financeiro</th>
+            <th>Situação</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalStatus">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitulo">Alterar Status</h3>
+        <button class="btn-lite" onclick="fecharModal()" style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;">X</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>Novo Status</label>
+          <select id="selectStatus">
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+            <option value="suspenso">Suspenso</option>
+            <option value="excluido">Excluído</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-lite" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-danger" onclick="excluirDefinitivo()">Excluir definitivo</button>
+        <button class="btn-primary" onclick="salvarStatus()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalEditar">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Editar Aluno</h3>
+        <button class="btn-lite" onclick="fecharModalEditar()" style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;">X</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>Nome</label>
+          <input type="text" id="editNome">
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="editEmail">
+        </div>
+        <div class="field">
+          <label>Faixa</label>
+          <select id="editFaixa">
+            <option value="">Selecione</option>
+            <option value="branca">Branca</option>
+            <option value="azul">Azul</option>
+            <option value="roxa">Roxa</option>
+            <option value="marrom">Marrom</option>
+            <option value="preta">Preta</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Grau</label>
+          <input type="text" id="editGrau">
+        </div>
+        <div class="field">
+          <label>Financeiro</label>
+          <select id="editFinanceiro">
+            <option value="ok">Em Dia</option>
+            <option value="pendente">Pendente</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-lite" onclick="fecharModalEditar()">Cancelar</button>
+        <button class="btn-danger" onclick="excluirDefinitivo()">Excluir definitivo</button>
+        <button class="btn-primary" onclick="salvarEdicao()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+let alunos = [];
+let alunoSelecionado = null;
+
+
+let ordemAtual = { campo: 'nome', direcao: 'asc' };
+
+function ordenarTabela(campo){
+  if(ordemAtual.campo === campo){
+    ordemAtual.direcao = ordemAtual.direcao === 'asc' ? 'desc' : 'asc';
+  } else {
+    ordemAtual.campo = campo;
+    ordemAtual.direcao = 'asc';
+  }
+
+  alunos.sort((a,b)=>{
+    let vA = (a[campo] || '').toString().toLowerCase();
+    let vB = (b[campo] || '').toString().toLowerCase();
+
+    if(vA < vB) return ordemAtual.direcao === 'asc' ? -1 : 1;
+    if(vA > vB) return ordemAtual.direcao === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  renderizarTabela();
+}
+
+</script>
+</body>
+</html>

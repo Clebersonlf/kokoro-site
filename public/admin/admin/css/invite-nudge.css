@@ -1,9 +1,0 @@
-/* Nudge extra à esquerda – força com !important */
-#kkrInviteModal .kkr-card{
-  padding-left: 18px !important; /* leve ajuste no card */
-}
-#kkrInviteModal .kkr-field input,
-#kkrInviteModal .kkr-field textarea{
-  transform: translateX(-8px) !important;      /* move 8px p/ esquerda */
-  width: calc(100% + 8px) !important;           /* compensa p/ manter borda direita alinhada */
-}

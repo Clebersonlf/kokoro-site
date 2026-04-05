@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Sessões</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#0f172a;
+    color:#fff;
+    padding:20px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+h1{
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+}
+
+.card h2{
+    margin-bottom:10px;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:8px;
+    margin-top:6px;
+    margin-bottom:10px;
+    border-radius:6px;
+    border:none;
+}
+
+button{
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    background:#22c55e;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📊 Controle de Sessões e Horas/Aula</h1>
+
+<div class="grid">
+
+<div class="card">
+<h2>Check-in de Treino</h2>
+
+<input placeholder="ID do aluno">
+<select>
+<option>Tipo</option>
+<option>Normal</option>
+<option>Experimental</option>
+</select>
+
+<button>Registrar Sessão</button>
+</div>
+
+<div class="card">
+<h2>Horas/Aula</h2>
+
+<p>Total: --</p>
+<p>Experimental: --</p>
+<p>Saldo: --</p>
+
+</div>
+
+<div class="card">
+<h2>Docência</h2>
+
+<input placeholder="Plano de aula">
+<input placeholder="Aula ministrada">
+<input placeholder="Tipo de treino">
+<textarea placeholder="Técnica ministrada"></textarea>
+
+<button>Salvar Docência</button>
+
+</div>
+
+<div class="card">
+<h2>Histórico</h2>
+
+<p>Sem registros...</p>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
