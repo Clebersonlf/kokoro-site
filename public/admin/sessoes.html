@@ -66,6 +66,12 @@ button{
 
 <h1>📊 Controle de Sessões e Horas/Aula</h1>
 
+<div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
+  <a href="/admin_Dashboard.html" class="btn-back">← Dashboard Admin</a>
+  <a href="/dashboard_professor_titular.html" class="btn-back">👑 Dashboard Professor</a>
+</div>
+
+
 <div class="grid">
 
 <div class="card">
@@ -105,7 +111,7 @@ button{
 <div class="card">
 <h2>Histórico</h2>
 
-<p>Sem registros...</p>
+<div id="historico-sessoes">Carregando sessões...</div>
 
 </div>
 
@@ -113,5 +119,40 @@ button{
 
 </div>
 
+
+<script>
+async function carregarSessoes(){
+    try{
+        const res = await fetch('/api/sessoes/listar');
+        const payload = await res.json();
+
+        const container = document.getElementById('historico-sessoes');
+
+        if(!payload.ok || !payload.sessoes || !payload.sessoes.length){
+            container.innerHTML = "<p>Sem sessões registradas.</p>";
+            return;
+        }
+
+        container.innerHTML = payload.sessoes.map(s => `
+            <div style="background:#0f172a;padding:10px;margin-bottom:10px;border-radius:8px;">
+                <strong>ID:</strong> ${s.id ?? '---'} <br>
+                <strong>Aluno:</strong> ${s.aluno_id ?? '---'} <br>
+                <strong>Data:</strong> ${s.data_sessao ? new Date(s.data_sessao).toLocaleDateString('pt-BR') : '---'} <br>
+                <strong>Início:</strong> ${s.hora_inicio || '---'} <br>
+                <strong>Fim:</strong> ${s.hora_fim || 'Em andamento'} <br>
+                <strong>Tipo:</strong> ${s.tipo || '---'} <br>
+                <strong>Horas/Aula:</strong> ${s.horas_aula ?? '---'} <br>
+                <strong>Status:</strong> ${s.status || '---'}
+            </div>
+        `).join('');
+    }catch(e){
+        console.error(e);
+        document.getElementById('historico-sessoes').innerHTML = "Erro ao carregar sessões";
+    }
+}
+
+carregarSessoes();
+</script>
 </body>
+
 </html>
