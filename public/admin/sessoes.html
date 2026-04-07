@@ -56,6 +56,20 @@ button{
     font-weight:bold;
     cursor:pointer;
 }
+
+.btn-back{
+    display:inline-block;
+    background:#3498db;
+    color:#fff;
+    padding:10px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:800;
+    border:1px solid transparent;
+    transition:.15s ease;
+}
+.btn-back:hover{filter:brightness(1.06)}
+
 </style>
 
 </head>
@@ -72,19 +86,25 @@ button{
 </div>
 
 
+<div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
+  <a href="/admin_Dashboard.html" class="btn-back">← Dashboard Admin</a>
+  <a href="/dashboard_professor_titular.html" class="btn-back">👑 Dashboard Professor</a>
+</div>
+
+
 <div class="grid">
 
 <div class="card">
 <h2>Check-in de Treino</h2>
 
-<input placeholder="ID do aluno">
-<select>
+<input id="aluno_id" placeholder="ID do aluno">
+<select id="tipo_sessao">
 <option>Tipo</option>
 <option>Normal</option>
 <option>Experimental</option>
 </select>
 
-<button>Registrar Sessão</button>
+<button onclick="registrarSessao()">Registrar Sessão</button>
 </div>
 
 <div class="card">
@@ -120,7 +140,112 @@ button{
 </div>
 
 
+
+
 <script>
+async function registrarSessao(){
+    try{
+        const alunoId = Number(document.getElementById('aluno_id').value || 0);
+        const tipo = (document.getElementById('tipo_sessao').value || 'normal').toLowerCase();
+
+        if(!alunoId){
+            alert('Informe o ID do aluno.');
+            return;
+        }
+
+        const agora = new Date();
+        const horaInicio = agora.toLocaleTimeString('pt-BR');
+
+        const res = await fetch('/api/sessoes/criar', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+                aluno_id: alunoId,
+                tipo: tipo,
+                hora_inicio: horaInicio
+            })
+        });
+
+        const payload = await res.json();
+
+        if(!payload.ok){
+            alert(payload.message || 'Erro ao registrar sessão.');
+            return;
+        }
+
+        document.getElementById('aluno_id').value = '';
+        document.getElementById('tipo_sessao').value = 'Normal';
+
+        await carregarSessoes();
+        alert('Sessão registrada com sucesso.');
+    }catch(e){
+        console.error(e);
+        alert('Erro ao registrar sessão.');
+    }
+}
+
+
+async function finalizarSessao(id){
+    try{
+        const agora = new Date();
+        const horaFim = agora.toLocaleTimeString('pt-BR');
+
+        const resLista = await fetch('/api/sessoes/listar');
+        const dadosLista = await resLista.json();
+
+        if(!dadosLista.ok || !dadosLista.sessoes){
+            alert('Não foi possível localizar a sessão.');
+            return;
+        }
+
+        const sessao = dadosLista.sessoes.find(s => Number(s.id) === Number(id));
+
+        if(!sessao){
+            alert('Sessão não encontrada.');
+            return;
+        }
+
+        let horasAula = sessao.horas_aula || 0;
+
+        if(sessao.hora_inicio){
+            const hoje = new Date().toISOString().slice(0,10);
+
+            const inicio = new Date(`${hoje}T${sessao.hora_inicio}`);
+            const fim = new Date(`${hoje}T${horaFim}`);
+
+            let diffMs = fim - inicio;
+            if (diffMs < 0) diffMs = 0;
+
+            const diffHoras = diffMs / (1000 * 60 * 60);
+            horasAula = Math.max(0.5, Number(diffHoras.toFixed(2)));
+        }
+
+        const res = await fetch('/api/sessoes/atualizar', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+                id,
+                hora_fim: horaFim,
+                horas_aula: horasAula
+            })
+        });
+
+        const payload = await res.json();
+
+        if(!payload.ok){
+            alert(payload.message || 'Erro ao finalizar sessão.');
+            return;
+        }
+
+        await carregarSessoes();
+        alert('Treino finalizado com sucesso.');
+    }catch(e){
+        console.error(e);
+        alert('Erro ao finalizar sessão.');
+    }
+}
+
+
 async function carregarSessoes(){
     try{
         const res = await fetch('/api/sessoes/listar');
@@ -142,7 +267,9 @@ async function carregarSessoes(){
                 <strong>Fim:</strong> ${s.hora_fim || 'Em andamento'} <br>
                 <strong>Tipo:</strong> ${s.tipo || '---'} <br>
                 <strong>Horas/Aula:</strong> ${s.horas_aula ?? '---'} <br>
-                <strong>Status:</strong> ${s.status || '---'}
+                <strong>Status:</strong> ${s.status || '---'} <br><br>
+
+    ${!s.hora_fim ? `<button onclick="finalizarSessao(${s.id})">Finalizar Treino</button>` : ''}
             </div>
         `).join('');
     }catch(e){
@@ -153,6 +280,7 @@ async function carregarSessoes(){
 
 carregarSessoes();
 </script>
+
 </body>
 
 </html>
