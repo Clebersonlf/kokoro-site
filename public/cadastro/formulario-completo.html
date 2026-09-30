@@ -503,6 +503,45 @@
             .sub-section { grid-column: span 1; }
         }
     </style>
+
+<link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css">
+<script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
+
+
+<style>
+body.modo-convite-aluno a[href="/admin/invite.html"],
+body.modo-convite-aluno a[href="/admin_Dashboard.html"],
+body.modo-convite-aluno a[href="/admin/cadastro/lista-v2.html"],
+body.modo-convite-aluno a[href*="admin"],
+body.modo-convite-aluno #adminToggle,
+body.modo-convite-aluno label[for="adminToggle"],
+body.modo-convite-aluno .admin-toggle,
+body.modo-convite-aluno .admin-area,
+body.modo-convite-aluno .admin-only {
+  display: none !important;
+}
+</style>
+
+
+<script>
+(function(){
+  if (new URLSearchParams(window.location.search).has('token')) {
+    document.documentElement.classList.add('modo-convite-aluno-html');
+  }
+})();
+</script>
+<style>
+html.modo-convite-aluno-html .admin-only,
+html.modo-convite-aluno-html .header-controls,
+html.modo-convite-aluno-html a[href*="admin"],
+html.modo-convite-aluno-html a[href*="Dashboard"],
+html.modo-convite-aluno-html a[href*="lista"],
+html.modo-convite-aluno-html #adminToggle,
+html.modo-convite-aluno-html label[for="adminToggle"] {
+  display: none !important;
+}
+</style>
+
 </head>
 <body class="form-body">
 
@@ -513,8 +552,8 @@
 <main class="form-wrapper">
     <header class="form-main-header">
         <h1>Cadastro</h1>
-        <a href="/admin/invite.html" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; background: var(--bg-card); border: 1px solid var(--primary-color); border-radius: 20px; color: var(--primary-color); text-decoration: none; font-size: 11px; backdrop-filter: blur(5px); box-shadow: 0 0 8px var(--accent-glow); margin-left: 15px; vertical-align: middle; border: 1px solid rgba(74, 222, 128, 0.5);">✉️ Gerar Convite</a>
-        <div class="header-controls">
+        <a class="admin-only" href="/admin/invite.html" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; background: var(--bg-card); border: 1px solid var(--primary-color); border-radius: 20px; color: var(--primary-color); text-decoration: none; font-size: 11px; backdrop-filter: blur(5px); box-shadow: 0 0 8px var(--accent-glow); margin-left: 15px; vertical-align: middle; border: 1px solid rgba(74, 222, 128, 0.5);">✉️ Gerar Convite</a>
+        <div class="header-controls admin-only">
             <a href="/admin_Dashboard.html">Voltar para Dashboard</a>
 <a href="/admin/cadastro/lista-v2.html" style="margin-left:10px;color:#3b82f6;font-weight:600;text-decoration:none;">← Voltar para Lista</a>
             <div class="admin-mode-container">
@@ -527,7 +566,7 @@
         </div>
     </header>
 
-    <form id="registerForm" action="/cadastro" method="post" novalidate>
+    <form id="registerForm" action="javascript:void(0);" method="post" novalidate>
         <fieldset class="form-section section-personal">
             <legend>Dados Pessoais</legend>
             <div class="grid-container">
@@ -548,6 +587,13 @@
                         </label>
                     </div>
                 </div>
+                <div class="form-group span-2" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35); padding: 14px; border-radius: 12px; margin-bottom: 10px;">
+                    <strong style="display:block; margin-bottom:8px; color:#93c5fd;">ℹ️ Atenção</strong>
+                    <span style="color:#e5e7eb; font-size:14px; line-height:1.5;">
+                        Para alunos menores de 18 anos, preencha inicialmente os dados do aluno (criança/adolescente). Após informar a data de nascimento, o sistema exibirá automaticamente o termo obrigatório para preenchimento pelo responsável legal.
+                    </span>
+                </div>
+
                 <div class="form-group">
                     <label class="required" for="nomeMae">Mãe</label>
                     <input type="text" id="nomeMae" name="nomeMae" required>
@@ -638,7 +684,7 @@
                 <p><strong>Atenção:</strong> Como o atleta é menor de 18 anos, o cadastro deve ser preenchido e autorizado pelo seu responsável legal.</p>
             </div>
 
-            <h3 class="sub-section-title">TERMO DE AUTORIZAÇÃO PARA PRÁTICA ESPORTIVA – JIU-JITSU</h3>
+            <h3 class="sub-section-title">TERMO DE AUTORIZAÇÃO, RESPONSABILIDADE E CIÊNCIA DE RISCOS PARA MENOR DE IDADE</h3>
 
             <div class="grid-container">
                 <div class="form-group span-2">
@@ -679,37 +725,37 @@
             </div>
 
             <div class="termo-texto">
-                <p>Autorizo a participação do(a) menor em aulas e treinamentos de Jiu-Jitsu nas modalidades:</p>
+                <p>Autorizo a participação do(a) menor nas atividades esportivas, educacionais e de treinamento promovidas pelo KOKORO / Luiz Guinder Team, incluindo:</p>
                 <ul>
-                    <li>Jiu-Jitsu Tradicional, Jiu-Jitsu Competidor, Jiu-Jitsu Militar, Submission, Autodefesa, Atemi</li>
+                    <li>Jiu-Jitsu, Judô, Karatê, Defesa Pessoal, atividades físicas correlatas, seminários, eventos, competições e treinamentos internos.</li>
                 </ul>
-                <p>Declaro estar ciente de que se trata de um esporte de contato com riscos reais à integridade física, incluindo torções, quedas, contusões e, eventualmente, lesões mais graves. Estou ciente também de que a prática será acompanhada por profissionais habilitados, mas que tais riscos são inerentes à natureza do esporte.</p>
+                <p>Declaro estar ciente de que artes marciais, esportes de contato e atividades físicas possuem riscos inerentes, incluindo quedas, torções, impactos, contusões, escoriações, luxações, fraturas, distensões musculares e outras intercorrências compatíveis com a natureza da atividade esportiva.</p>
             </div>
 
             <h3 class="sub-section-title">✅ Responsabilidade e dever de informação</h3>
             <div class="termo-texto">
-                <p>Assumo total responsabilidade quanto:</p>
+                <p>Como responsável legal, comprometo-me quanto:</p>
                 <ul>
-                    <li>À condição física e psicológica do(a) menor para a prática esportiva;</li>
-                    <li>À realização de exames médicos periódicos por minha conta;</li>
-                    <li>Ao dever de comunicar previamente ao professor ou responsável qualquer condição de saúde relevante (doenças, moléstias, lesões anteriores, histórico clínico ou limitações físicas);</li>
-                    <li>À comunicação imediata de sintomas ou situações que surgirem durante os treinos.</li>
+                    <li>À veracidade das informações prestadas sobre a condição física, clínica e psicológica do(a) menor;</li>
+                    <li>À realização de avaliação médica quando necessária ou recomendada;</li>
+                    <li>Ao dever de comunicar previamente qualquer condição de saúde relevante, lesão, limitação física, histórico clínico, tratamento ou uso de medicamentos;</li>
+                    <li>À comunicação imediata de sintomas, acidentes, mal-estar ou qualquer alteração relevante durante ou após os treinos.</li>
                 </ul>
             </div>
 
-            <h3 class="sub-section-title">💊 Declaração sobre uso de substâncias</h3>
+            <h3 class="sub-section-title">💊 Declaração sobre saúde, medicamentos e segurança</h3>
             <div class="termo-texto">
-                <p>Declaro que o(a) menor:</p>
+                <p>Declaro, como responsável legal, que informarei qualquer condição, medicamento ou substância que possa interferir na segurança do(a) menor durante as atividades.</p>
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="substancias_nao" name="substancias_nao" required>
-                <label for="substancias_nao">Não faz uso de substâncias tóxicas, entorpecentes, psicoativas ou psicotrópicas.</label>
+                <label for="substancias_nao">Estou ciente de que o menor não deve participar das atividades sob efeito de álcool, substâncias ilícitas ou qualquer condição que comprometa sua segurança ou a segurança de terceiros.</label>
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="medicamentos_nao" name="medicamentos_nao" required>
-                <label for="medicamentos_nao">Não utiliza medicamentos que alterem o estado físico ou mental.</label>
+                <label for="medicamentos_nao">Comprometo-me a informar eventual uso de medicamento contínuo, controlado ou relevante para a prática esportiva.</label>
             </div>
-            <p class="termo-texto">Se SIM para medicamentos, preencha abaixo:</p>
+            <p class="termo-texto">Caso o menor utilize medicamento contínuo, controlado ou relevante, preencha abaixo:</p>
             <div class="grid-container">
                 <div class="form-group span-2">
                     <label>Nome do(s) medicamento(s):</label>
@@ -730,12 +776,12 @@
 
             <h3 class="sub-section-title">🚑 Emergências médicas</h3>
             <div class="termo-texto">
-                <p>Autorizo, em caso de acidentes ou episódios graves, que o(a) menor receba atendimento médico imediato, podendo ser removido(a) para unidade de saúde (hospital, pronto-socorro, etc.), inclusive com auxílio de ambulância, SAMU ou Corpo de Bombeiros, na ausência ou até a chegada do responsável legal.</p>
+                <p>Autorizo, em caso de acidente, mal súbito ou intercorrência, a adoção das medidas emergenciais cabíveis, incluindo primeiros socorros, acionamento do SAMU, Corpo de Bombeiros, contato com responsável legal e encaminhamento para unidade de saúde, quando necessário.</p>
             </div>
 
-            <h3 class="sub-section-title">📸 Uso de imagem</h3>
-            <div class="termo-texto">
-                <p>Autorizo o uso de imagens e vídeos do(a) menor durante treinos, aulas, competições ou eventos internos, para fins institucionais e promocionais da academia, em mídias como redes sociais, jornais, sites, revistas, cartazes, folders, panfletos ou banners, sem fins lucrativos e sem necessidade de nova autorização ou compensação financeira.</p>
+            <h3 class="sub-section-title hidden-field">📸 Uso de imagem do menor</h3>
+            <div class="termo-texto hidden-field">
+                <p>O uso de imagem do(a) menor deverá observar autorização específica, em campo próprio deste cadastro, para fins institucionais e promocionais do KOKORO / Luiz Guinder Team, em meios físicos ou digitais, podendo ser revogado mediante solicitação formal, respeitadas as utilizações já realizadas anteriormente.</p>
             </div>
 
             <h3 class="sub-section-title">📋 Compromisso de conduta</h3>
@@ -745,7 +791,7 @@
                     <li>✔️ Respeitar o professor e colegas de treino</li>
                     <li>✔️ Cumprir todas as orientações durante as aulas</li>
                     <li>✔️ Não executar técnicas sem supervisão do professor</li>
-                    <li>✔️ Não usar as técnicas fora da academia, exceto em legítima defesa, conforme a lei</li>
+                    <li>✔️ Não utilizar técnicas aprendidas de forma indevida, perigosa ou fora das hipóteses permitidas em lei</li>
                     <li>✔️ Manter conduta respeitosa (sem palavrões ou agressividade verbal)</li>
                 </ul>
             </div>
@@ -771,7 +817,7 @@
                 <div class="form-group span-2">
                     <div class="checkbox-group">
                         <input type="checkbox" id="responsavel_assinatura_check" name="responsavel_assinatura_check" required>
-                        <label for="responsavel_assinatura_check" class="required">Ao marcar esta caixa, declaro que li e concordo com todos os termos acima e assino digitalmente este documento em nome do responsável legal.</label>
+                        <label for="responsavel_assinatura_check" class="required">Ao marcar esta caixa, declaro que li, compreendi e concordo com o Termo de Autorização, Responsabilidade e Ciência de Riscos para Menor de Idade, assinando digitalmente este documento em nome do responsável legal.</label>
                     </div>
                 </div>
             </div>
@@ -953,13 +999,15 @@
 
         <div class="final-section">
             <div class="terms-box" tabindex="0">
-                <strong>Termos e Condições de Uso e Responsabilidade</strong><br>
+                <strong>Termo de Responsabilidade, Adesão e Ciência de Riscos - KOKORO / Luiz Guinder Team</strong><br>
                 <ol>
-                    <li><strong>Veracidade das Informações:</strong> Você declara que todas as informações fornecidas neste formulário são verdadeiras, completas e precisas.</li>
-                    <li><strong>Recomendação Médica:</strong> Você reconhece que, se respondeu "Sim" a qualquer uma das perguntas do PAR-Q, é altamente recomendável consultar um médico antes de iniciar ou aumentar a intensidade de qualquer atividade física.</li>
-                    <li><strong>Assunção de Risco:</strong> Você compreende e aceita que a prática de artes marciais e atividades físicas relacionadas envolve riscos inerentes de lesões. Você assume voluntariamente todos os riscos associados à sua participação.</li>
-                    <li><strong>Isenção de Responsabilidade:</strong> Você isenta o portal Kokoro, seus instrutores, administradores e parceiros de qualquer responsabilidade por lesões, danos ou perdas que possam ocorrer como resultado de sua participação.</li>
-                    <li><strong>Uso de Dados (LGPD):</strong> Você autoriza o portal Kokoro a coletar e utilizar seus dados para fins de gestão de cadastro, comunicação e emergência, em conformidade com a Lei Geral de Proteção de Dados (LGPD).</li>
+                    <li><strong>Veracidade das Informações:</strong> Declaro que todas as informações fornecidas neste formulário são verdadeiras, completas e atualizadas, responsabilizando-me civil e legalmente por eventual falsidade, omissão ou inexatidão relevante.</li>
+                    <li><strong>Condições de Saúde:</strong> Declaro estar ciente de que a prática de artes marciais, esportes de contato e atividades físicas exige condições adequadas de saúde. Comprometo-me a informar qualquer limitação médica, condição clínica preexistente, lesão, tratamento, uso de medicamentos ou restrição relevante. Caso necessário, poderá ser solicitada avaliação médica.</li>
+                    <li><strong>Ciência dos Riscos Inerentes:</strong> Reconheço que a prática de Jiu-Jitsu, Judô, Karatê, Defesa Pessoal, treinamentos físicos, seminários, eventos, competições e atividades correlatas envolve riscos inerentes, incluindo quedas, torções, contusões, impactos físicos, luxações, fraturas, escoriações, distensões musculares e outras intercorrências compatíveis com a natureza esportiva da atividade.</li>
+                    <li><strong>Responsabilidade Legal:</strong> Declaro compreender que o reconhecimento dos riscos inerentes da atividade não exclui eventuais responsabilidades legais decorrentes de condutas ilícitas, negligência, imprudência ou imperícia, observada a legislação aplicável. Reconheço, contudo, que eventos compatíveis com os riscos normais da prática esportiva não configuram, por si só, responsabilidade da instituição ou dos instrutores.</li>
+                    <li><strong>Deveres do Atleta:</strong> Comprometo-me a respeitar professores, instrutores, monitores, colegas e equipe administrativa; cumprir orientações técnicas e de segurança; não executar técnicas sem autorização; comunicar imediatamente qualquer mal-estar, lesão ou intercorrência; e não participar das atividades sob efeito de álcool, substâncias ilícitas ou qualquer condição que comprometa a segurança.</li>
+                    <li><strong>Atendimento Emergencial:</strong> Em caso de acidente, mal súbito ou intercorrência durante atividades vinculadas à academia, autorizo a adoção das medidas emergenciais cabíveis, incluindo primeiros socorros, acionamento de SAMU, Corpo de Bombeiros, encaminhamento hospitalar e comunicação com contato emergencial cadastrado.</li>
+                    <li><strong>Proteção de Dados Pessoais (LGPD):</strong> Autorizo e reconheço o tratamento dos meus dados pessoais pelo KOKORO / Luiz Guinder Team, nos termos da Lei nº 13.709/2018 (LGPD), para finalidades relacionadas à gestão cadastral, controle administrativo, comunicação institucional, segurança, emergências, organização esportiva, histórico técnico, emissão de certificados, controle financeiro e demais finalidades legítimas vinculadas à relação com a academia.</li>
                 </ol>
             </div>
             <div class="checkbox-group">
@@ -968,10 +1016,14 @@
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="aceitoTermos" name="aceitoTermos" required>
-                <label for="aceitoTermos">Li e aceito os termos e condições.</label>
+                <label for="aceitoTermos">Li, compreendi e aceito o Termo de Responsabilidade, Adesão e Ciência de Riscos.</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="autorizoImagem" name="autorizoImagem">
+                <label for="autorizoImagem">Autorizo o uso de imagem do atleta para divulgação institucional e promocional do KOKORO / Luiz Guinder Team em meios físicos e digitais, ciente de que esta autorização poderá ser revogada mediante solicitação formal, respeitadas as utilizações já realizadas anteriormente.</label>
             </div>
 <div class="h-captcha" data-sitekey="6ff05470-b628-411e-8282-c09a1140054c"></div>
-            <button type="submit" class="submit-button">Cadastrar</button>
+            <button type="button" id="cadastrarAlunoBtn" class="submit-button">Cadastrar</button>
         </div>
     </form>
 </main>
@@ -1032,8 +1084,8 @@
             <input type="password" id="adminPassword">
         </div>
         <div id="adminPasswordError"></div>
-        <button id="adminPasswordConfirm" class="modal-button">Confirmar</button>
-        <button id="adminPasswordCancel" class="modal-button modal-button-secondary">Cancelar</button>
+        <button type="button" id="adminPasswordConfirm" class="modal-button">Confirmar</button>
+        <button type="button" id="adminPasswordCancel" class="modal-button modal-button-secondary">Cancelar</button>
     </div>
 </div>
 
@@ -1042,8 +1094,8 @@
         <div class="modal-icon">&#10004;</div>
         <h2 id="successModalTitle">Cadastro Realizado!</h2>
         <p>Seu cadastro foi enviado com sucesso. Bem-vindo à plataforma Kokoro!</p>
-        <button id="successModalClose" class="modal-button">Fechar</button>
-        <button onclick="window.location.href='/admin/cadastro/lista.html'" class="modal-button modal-button-secondary" style="margin-top:0.5rem;">&#8592; Voltar para Lista</button>
+        <button type="button" id="successModalClose" class="modal-button">Fechar</button>
+        <button type="button" onclick="window.location.href='/admin/cadastro/lista-v2.html'" class="modal-button modal-button-secondary" style="margin-top:0.5rem;">&#8592; Voltar para Lista</button>
     </div>
 </div>
 
@@ -1057,10 +1109,74 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const form = document.getElementById('registerForm');
+    document.addEventListener("DOMContentLoaded", async function() {
+        const form = document.getElementById('formCadastro') || document.getElementById('registerForm') || document.querySelector('form');
         const body = document.body;
         if (!form) return;
+
+// MODO CONVITE/ALUNO: token temporário + uso único
+const paramsConvite = new URLSearchParams(window.location.search);
+const tokenConvite = paramsConvite.get('token');
+
+function bloquearFormulario(titulo, mensagem){
+  form.innerHTML = `
+    <fieldset class="form-section">
+      <legend>${titulo}</legend>
+      <p style="font-size:16px;line-height:1.6;color:var(--text-secondary);">
+        ${mensagem}
+      </p>
+    </fieldset>
+  `;
+}
+
+if (tokenConvite) {
+  const header = document.querySelector('.form-main-header');
+
+  if (header) {
+    const title = header.querySelector('h1');
+    header.innerHTML = '';
+    if (title) header.appendChild(title);
+  }
+
+  document.querySelectorAll('a[href*="admin"], a[href*="Dashboard"], a[href*="lista"], #adminToggle, label[for="adminToggle"]').forEach(el => {
+    el.remove();
+  });
+
+  const adminBanner = document.getElementById('adminBanner');
+  if (adminBanner) adminBanner.classList.add('hidden-field');
+
+  document.body.classList.add('modo-convite-aluno');
+
+  try {
+    const r = await fetch('/api/validar-token-cadastro?token=' + encodeURIComponent(tokenConvite));
+    const data = await r.json();
+
+    if (!r.ok || !data.valid) {
+      if (data.reason === 'expirado') {
+        bloquearFormulario('Convite expirado', 'Este link de cadastro não está mais válido. Solicite um novo convite à administração da academia.');
+      } else if (data.reason === 'ja_usado') {
+        bloquearFormulario('Convite já utilizado', 'Este link já foi utilizado para concluir um cadastro. Caso precise atualizar seus dados, solicite novo atendimento à administração.');
+      } else {
+        bloquearFormulario('Convite inválido', 'Este link de cadastro é inválido ou não foi localizado.');
+      }
+      return;
+    }
+
+    // Vincula o convite ao registro pendente já criado no banco.
+    // Assim, ao concluir o cadastro, será feito UPDATE no mesmo aluno,
+    // evitando a criação de um segundo registro.
+    if (!data.aluno || !data.aluno.id) {
+      bloquearFormulario('Erro no convite', 'Não foi possível identificar o cadastro vinculado a este convite.');
+      return;
+    }
+
+    form.dataset.alunoId = data.aluno.id;
+
+  } catch (e) {
+    bloquearFormulario('Erro na validação do convite', 'Não foi possível validar este link no momento. Tente novamente mais tarde.');
+    return;
+  }
+}
 
         // === MODO EDICAO: le ?id= da URL e preenche o form ===
         (function(){
@@ -1102,7 +1218,99 @@
 
         // --- BANCO DE DADOS DAS GRADUAÇÕES ---
         const graduacoes = {
-            'jiu-jitsu': ['Faixa Branca', 'Faixa Cinza e Branca', 'Faixa Cinza', 'Faixa Cinza e Preta', 'Faixa Amarela e Branca', 'Faixa Amarela', 'Faixa Amarela e Preta', 'Faixa Laranja e Branca', 'Faixa Laranja', 'Faixa Laranja e Preta', 'Faixa Verde e Branca', 'Faixa Verde', 'Faixa Verde e Preta', 'Faixa Azul', 'Faixa Roxa', 'Faixa Marrom', 'Faixa Preta', 'Faixa Vermelha e Preta – 7º Grau', 'Faixa Vermelha e Branca – 8º Grau', 'Faixa Vermelha – 9º Grau', 'Faixa Vermelha – 10º Grau'],
+            'jiu-jitsu': [
+                'Faixa Branca',
+                'Faixa Branca (1º Grau)',
+                'Faixa Branca (2º Grau)',
+                'Faixa Branca (3º Grau)',
+                'Faixa Branca (4º Grau)',
+                'Faixa Cinza e Branca',
+                'Faixa Cinza e Branca (1º Grau)',
+                'Faixa Cinza e Branca (2º Grau)',
+                'Faixa Cinza e Branca (3º Grau)',
+                'Faixa Cinza e Branca (4º Grau)',
+                'Faixa Cinza',
+                'Faixa Cinza (1º Grau)',
+                'Faixa Cinza (2º Grau)',
+                'Faixa Cinza (3º Grau)',
+                'Faixa Cinza (4º Grau)',
+                'Faixa Cinza e Preta',
+                'Faixa Cinza e Preta (1º Grau)',
+                'Faixa Cinza e Preta (2º Grau)',
+                'Faixa Cinza e Preta (3º Grau)',
+                'Faixa Cinza e Preta (4º Grau)',
+                'Faixa Amarela e Branca',
+                'Faixa Amarela e Branca (1º Grau)',
+                'Faixa Amarela e Branca (2º Grau)',
+                'Faixa Amarela e Branca (3º Grau)',
+                'Faixa Amarela e Branca (4º Grau)',
+                'Faixa Amarela',
+                'Faixa Amarela (1º Grau)',
+                'Faixa Amarela (2º Grau)',
+                'Faixa Amarela (3º Grau)',
+                'Faixa Amarela (4º Grau)',
+                'Faixa Amarela e Preta',
+                'Faixa Amarela e Preta (1º Grau)',
+                'Faixa Amarela e Preta (2º Grau)',
+                'Faixa Amarela e Preta (3º Grau)',
+                'Faixa Amarela e Preta (4º Grau)',
+                'Faixa Laranja e Branca',
+                'Faixa Laranja e Branca (1º Grau)',
+                'Faixa Laranja e Branca (2º Grau)',
+                'Faixa Laranja e Branca (3º Grau)',
+                'Faixa Laranja e Branca (4º Grau)',
+                'Faixa Laranja',
+                'Faixa Laranja (1º Grau)',
+                'Faixa Laranja (2º Grau)',
+                'Faixa Laranja (3º Grau)',
+                'Faixa Laranja (4º Grau)',
+                'Faixa Laranja e Preta',
+                'Faixa Laranja e Preta (1º Grau)',
+                'Faixa Laranja e Preta (2º Grau)',
+                'Faixa Laranja e Preta (3º Grau)',
+                'Faixa Laranja e Preta (4º Grau)',
+                'Faixa Verde e Branca',
+                'Faixa Verde e Branca (1º Grau)',
+                'Faixa Verde e Branca (2º Grau)',
+                'Faixa Verde e Branca (3º Grau)',
+                'Faixa Verde e Branca (4º Grau)',
+                'Faixa Verde',
+                'Faixa Verde (1º Grau)',
+                'Faixa Verde (2º Grau)',
+                'Faixa Verde (3º Grau)',
+                'Faixa Verde (4º Grau)',
+                'Faixa Verde e Preta',
+                'Faixa Verde e Preta (1º Grau)',
+                'Faixa Verde e Preta (2º Grau)',
+                'Faixa Verde e Preta (3º Grau)',
+                'Faixa Verde e Preta (4º Grau)',
+                'Faixa Azul',
+                'Faixa Azul (1º Grau)',
+                'Faixa Azul (2º Grau)',
+                'Faixa Azul (3º Grau)',
+                'Faixa Azul (4º Grau)',
+                'Faixa Roxa',
+                'Faixa Roxa (1º Grau)',
+                'Faixa Roxa (2º Grau)',
+                'Faixa Roxa (3º Grau)',
+                'Faixa Roxa (4º Grau)',
+                'Faixa Marrom',
+                'Faixa Marrom (1º Grau)',
+                'Faixa Marrom (2º Grau)',
+                'Faixa Marrom (3º Grau)',
+                'Faixa Marrom (4º Grau)',
+                'Faixa Preta Lisa (Instrutor)',
+                'Faixa Preta (1º Grau) Instrutor',
+                'Faixa Preta (2º Grau) Professor',
+                'Faixa Preta (3º Grau) Professor',
+                'Faixa Preta (4º Grau) Professor',
+                'Faixa Preta (5º Grau) Professor',
+                'Faixa Preta (6º Grau) Professor',
+                'Faixa Vermelha e Preta (7º Grau) Mestre',
+                'Faixa Vermelha e Branca (8º Grau) Grande Mestre',
+                'Faixa Vermelha (9º Grau) Grão Mestre',
+                'Faixa Vermelha (10º Grau) Venerável Mestre'
+            ],
             'judo': ['Faixa Branca – 6º kyū', 'Faixa Cinza ou Azul-Clara – 5º kyū', 'Faixa Laranja – 4º kyū', 'Faixa Verde – 3º kyū', 'Faixa Azul – 2º kyū', 'Faixa Marrom – 1º kyū', 'Faixa Preta – 1º dan', 'Faixa Preta – 2º dan', 'Faixa Preta – 3º dan', 'Faixa Preta – 4º dan', 'Faixa Preta – 5º dan', 'Faixa Vermelha e Preta – 6º dan', 'Faixa Vermelha e Preta – 7º dan', 'Faixa Vermelha – 8º dan', 'Faixa Vermelha – 9º dan', 'Faixa Vermelha – 10º dan'],
             'karate': ['Faixa Branca – 9º kyū', 'Faixa Amarela – 8º kyū', 'Faixa Laranja – 7º kyū', 'Faixa Verde – 6º kyū', 'Faixa Azul – 5º kyū', 'Faixa Azul (escuro) – 4º kyū', 'Faixa Marrom (1º nível) – 3º kyū', 'Faixa Marrom (2º nível) – 2º kyū', 'Faixa Marrom (3º nível) – 1º kyū', 'Faixa Preta – 1º dan', 'Faixa Preta – 2º dan', 'Faixa Preta – 3º dan', 'Faixa Preta – 4º dan', 'Faixa Preta – 5º dan', 'Faixa Coral – 6º dan', 'Faixa Coral – 7º dan', 'Faixa Vermelha e Branca – 8º dan', 'Faixa Vermelha – 9º dan', 'Faixa Vermelha – 10º dan']
         };
@@ -1127,6 +1335,7 @@
         // --- VARIÁVEIS DE ESTADO ---
         let entidadeCounter = 0; // MELHORIA: Contador para IDs únicos nos blocos de entidade
         let stream = null;
+
         let currentPhoto = null;
 
         // ===================================================================
@@ -1177,7 +1386,7 @@
         const imcInfoModal = setupModal('imcInfoModal', 'imcInfoIcon', 'imcInfoClose');
 
         // ===================================================================
-        // MELHORIA: LÓGICA DE MODO ADMIN COM AVISOS DE SEGURANÇA
+        // BLOCO ANTIGO DE MODO ADMIN DESATIVADO PARA EVITAR CONFLITO
         // ===================================================================
         const adminToggle = document.getElementById('adminToggle');
         const adminBanner = document.getElementById('adminBanner');
@@ -1187,45 +1396,47 @@
         const adminPasswordCancelBtn = document.getElementById('adminPasswordCancel');
         const adminPasswordError = document.getElementById('adminPasswordError');
 
-        const closeAdminModal = () => {
-            adminPasswordModalEl.classList.add('hidden-field');
-            if (!body.classList.contains('admin-mode-active')) {
-                adminToggle.checked = false;
-            }
-            adminPasswordInput.value = '';
-            adminPasswordError.textContent = '';
+        if (adminToggle && adminBanner && adminPasswordModalEl && adminPasswordInput && adminPasswordConfirmBtn && adminPasswordCancelBtn && adminPasswordError) {
+            const closeAdminModal = () => {
+                adminPasswordModalEl.classList.add('hidden-field');
+                if (!body.classList.contains('admin-mode-active')) {
+                    adminToggle.checked = false;
+                }
+                adminPasswordInput.value = '';
+                adminPasswordError.textContent = '';
+            };
+
+            adminToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    adminPasswordModalEl.classList.remove('hidden-field');
+                    adminPasswordInput.focus();
+                } else {
+                    adminBanner.classList.add('hidden-field');
+                    body.classList.remove('admin-mode-active');
+                    allRequiredFields.forEach(field => field.setAttribute('required', 'required'));
+                }
+            });
+
+            adminPasswordConfirmBtn.addEventListener('click', function() {
+                if (adminPasswordInput.value === 'kokoroadmin') {
+                    try {
+                        localStorage.setItem('kokoro_admin_token', 'ok');
+                    } catch(e) {}
+                    adminBanner.classList.remove('hidden-field');
+                    body.classList.add('admin-mode-active');
+                    allRequiredFields.forEach(field => field.removeAttribute('required'));
+                    closeAdminModal();
+                } else {
+                    adminPasswordError.textContent = 'Senha incorreta.';
+                    adminPasswordInput.focus();
+                }
+            });
+
+            adminPasswordCancelBtn.addEventListener('click', closeAdminModal);
+            adminPasswordModalEl.addEventListener('click', (e) => {
+                if (e.target === adminPasswordModalEl) closeAdminModal();
+            });
         }
-
-        adminToggle.addEventListener('change', function() {
-            if (this.checked) {
-                adminPasswordModalEl.classList.remove('hidden-field');
-                adminPasswordInput.focus();
-            } else {
-                // Desativar modo admin
-                adminBanner.classList.add('hidden-field');
-                body.classList.remove('admin-mode-active');
-                allRequiredFields.forEach(field => field.setAttribute('required', 'required'));
-            }
-        });
-
-        adminPasswordConfirmBtn.addEventListener('click', function() {
-            // AVISO DE SEGURANÇA: Esta validação é insegura e apenas para fins de
-            // prototipagem. Em um ambiente de produção, a senha deve ser validada
-            // no servidor.
-            if (adminPasswordInput.value === 'kokoroadmin') {
-                adminBanner.classList.remove('hidden-field');
-                body.classList.add('admin-mode-active');
-                allRequiredFields.forEach(field => field.removeAttribute('required'));
-                closeAdminModal();
-            } else {
-                adminPasswordError.textContent = 'Senha incorreta.';
-                adminPasswordInput.focus();
-            }
-        });
-
-        adminPasswordCancelBtn.addEventListener('click', closeAdminModal);
-        adminPasswordModalEl.addEventListener('click', (e) => { if (e.target === adminPasswordModalEl) closeAdminModal(); });
-
 
         // ===================================================================
         // MELHORIA: MÁSCARAS DE INPUT PARA CPF, CEP E TELEFONE
@@ -1277,14 +1488,19 @@
 
 
         // --- LÓGICA DE SUBMISSÃO E VALIDAÇÃO ---
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function(e){ e.preventDefault();
             e.preventDefault();
 
-            let fieldsToCheck = allRequiredFields;
-            // Se o termo de menor estiver visível, validar seus campos obrigatórios também
-            if (!document.getElementById('termoMenorIdade').classList.contains('hidden-field')) {
-                const termoRequiredFields = document.querySelectorAll('#termoMenorIdade [required]');
-                fieldsToCheck = [...allRequiredFields, ...termoRequiredFields];
+            let fieldsToCheck = [];
+            const adminAtivo = document.body.classList.contains('admin-mode-active');
+
+            if (!adminAtivo) {
+                fieldsToCheck = allRequiredFields;
+                // Se o termo de menor estiver visível, validar seus campos obrigatórios também
+                if (!document.getElementById('termoMenorIdade').classList.contains('hidden-field')) {
+                    const termoRequiredFields = document.querySelectorAll('#termoMenorIdade [required]');
+                    fieldsToCheck = [...allRequiredFields, ...termoRequiredFields];
+                }
             }
 
             let firstInvalidField = null;
@@ -1316,7 +1532,7 @@
             fetch('/api/alunos/salvar',{method:_id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_payload)})
             .then(r=>r.json())
             .then(d=>{ if(d.error){alert('Erro: '+d.error);return;} successModal.openModal(); })
-            .catch(e=>{ console.error(e); successModal.openModal(); });
+            .catch(e=>{ console.error(e); alert('Erro ao salvar cadastro. Verifique a conexão e tente novamente.'); });
         });
 
         successModalClose.addEventListener('click', () => {
@@ -1555,26 +1771,23 @@
         }
 
         // pega o FORM e o campo CPF
-        const form = document.querySelector('form#formCadastro') || document.querySelector('form');
+        const form = document.getElementById('formCadastro') || document.getElementById('registerForm') || document.querySelector('form');
         const cpfEl = document.getElementById('cpf');
         const msgEl = document.getElementById('cpfErro'); // pode ser null se você não criou o <small>
 
         if(!form || !cpfEl) return;
 
-        // máscara enquanto digita (000.000.000-00)
-        cpfEl.addEventListener('input', () => {
-            const pos = cpfEl.selectionStart || 0;
-            cpfEl.value = String(cpfEl.value)
-                .replace(/\D/g,'')
-                .replace(/(\d{3})(\d)/, '$1.$2')
-                .replace(/(\d{3})(\d)/, '$1.$2')
-                .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-                .slice(0,14);
-            cpfEl.setSelectionRange(pos, pos);
-        });
-
         // valida na hora de enviar
         form.addEventListener('submit', function(e){
+            const adminAtivo = document.body.classList.contains('admin-mode-active');
+            if (adminAtivo) {
+                cpfEl.style.borderColor = '';
+                if (msgEl) {
+                    msgEl.textContent = '';
+                    msgEl.style.display = 'none';
+                }
+                return;
+            }
             const ok = validarCPF(cpfEl.value);
             if(!ok){
                 e.preventDefault();
@@ -1607,14 +1820,22 @@
         }
 
         function aplicarMascara(){
-            const pos = cpfEl.selectionStart || 0;
-            cpfEl.value = String(cpfEl.value)
-                .replace(/\D/g,'')
-                .replace(/(\d{3})(\d)/, '$1.$2')
-                .replace(/(\d{3})(\d)/, '$1.$2')
-                .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-                .slice(0,14);
-            cpfEl.setSelectionRange(pos, pos);
+            const numeros = String(cpfEl.value).replace(/\D/g,'').slice(0, 11);
+            let formatado = numeros;
+
+            if (numeros.length > 9) {
+                formatado = numeros.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+            } else if (numeros.length > 6) {
+                formatado = numeros.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            } else if (numeros.length > 3) {
+                formatado = numeros.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            }
+
+            cpfEl.value = formatado;
+
+            requestAnimationFrame(() => {
+                cpfEl.setSelectionRange(cpfEl.value.length, cpfEl.value.length);
+            });
         }
 
         function atualizarMensagem(){
@@ -1655,118 +1876,185 @@
 </script>
 <script src="../../shared/js/auth.js"></script>
 <script>
-    (() => {
-        const btn   = document.getElementById('cameraButton');
-        const video = document.getElementById('cameraPreview');
+(() => {
+    const form = document.getElementById('formCadastro') || document.getElementById('registerForm') || document.querySelector('form');
+    const fileInput = document.getElementById('fileInput');
+    const btnOpen = document.getElementById('cameraButton');
+    const btnShot = document.getElementById('captureButton');
+    const btnConfirm = document.getElementById('photoSubmitButton');
+    const btnRetake = document.getElementById('retakeButton');
+    const video = document.getElementById('cameraPreview');
+    const img = document.getElementById('previewImage');
 
-        if (!btn || !video) {
-            alert('IDs não encontrados: cameraButton / cameraPreview');
+    if (!form || !fileInput || !btnOpen || !btnShot || !btnConfirm || !video || !img) return;
+
+    let stream = null;
+    let cropper = null;
+    let lastDataUrl = null;
+
+    function garantirHidden() {
+        let hidden = document.getElementById('photoData');
+        if (!hidden) {
+            hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.id = 'photoData';
+            hidden.name = 'photoData';
+            form.appendChild(hidden);
+        }
+        return hidden;
+    }
+
+    function destruirCropper() {
+        if (cropper) {
+            try { cropper.destroy(); } catch (e) {}
+            cropper = null;
+        }
+    }
+
+    function pararCamera() {
+        if (stream) {
+            try { stream.getTracks().forEach(t => t.stop()); } catch (e) {}
+            stream = null;
+        }
+        video.srcObject = null;
+    }
+
+    function iniciarCropper(dataUrl) {
+        lastDataUrl = dataUrl;
+        video.style.display = 'none';
+        pararCamera();
+        destruirCropper();
+
+        img.style.display = 'block';
+        btnConfirm.style.display = 'inline-block';
+        if (btnRetake) btnRetake.style.display = 'inline-block';
+        img.src = dataUrl;
+
+        setTimeout(() => {
+            try {
+                if (typeof Cropper !== 'undefined') {
+                    destruirCropper();
+                    cropper = new Cropper(img, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 0.85,
+                        responsive: true,
+                        background: false
+                    });
+                } else {
+                    garantirHidden().value = dataUrl;
+                }
+            } catch (e) {
+                console.error('Erro ao iniciar Cropper:', e);
+                garantirHidden().value = dataUrl;
+            }
+        }, 300);
+    }
+
+    fileInput.addEventListener('change', function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            iniciarCropper(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    btnOpen.addEventListener('click', async () => {
+        try {
+            destruirCropper();
+            pararCamera();
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'user' },
+                audio: false
+            });
+            video.srcObject = stream;
+            video.style.display = 'block';
+            img.style.display = 'none';
+            btnShot.style.display = 'inline-block';
+            btnConfirm.style.display = 'none';
+            if (btnRetake) btnRetake.style.display = 'none';
+            video.setAttribute('playsinline', '');
+        } catch (err) {
+            console.error('Erro getUserMedia:', err);
+            alert('Falha ao abrir câmera: ' + err.message);
+        }
+    });
+
+    btnShot.addEventListener('click', () => {
+        if (!video.srcObject) {
+            alert('Abra a câmera primeiro.');
             return;
         }
 
-        let stream = null;
+        const w = video.videoWidth || 600;
+        const h = video.videoHeight || 600;
+        const lado = Math.min(w, h, 900);
 
-        btn.addEventListener('click', async () => {
-            try {
-                // encerra stream anterior, se houver
-                if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+        const canvas = document.createElement('canvas');
+        canvas.width = lado;
+        canvas.height = lado;
 
-                console.log('Solicitando getUserMedia...');
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user' },
-                    audio: false
-                });
+        const ctx = canvas.getContext('2d');
+        const sx = Math.max(0, (w - lado) / 2);
+        const sy = Math.max(0, (h - lado) / 2);
+        ctx.drawImage(video, sx, sy, lado, lado, 0, 0, lado, lado);
 
-                console.log('getUserMedia OK:', stream);
-                video.srcObject = stream;
-                video.style.display = 'block';
-                video.setAttribute('playsinline', '');  // iOS-friendly
-                btn.textContent = 'Câmera ligada';
-                alert('CÂMERA OK (permissões e hardware funcionando)');
-            } catch (err) {
-                console.error('Erro getUserMedia:', err.name, err.message);
-                alert('Falhou: ' + err.name + ' - ' + err.message);
-            }
-        });
-    })();
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form             = document.getElementById('formCadastro') || document.querySelector('form');
-        const video            = document.getElementById('cameraPreview');
-        const img              = document.getElementById('previewImage');
-        const btnOpen          = document.getElementById('cameraButton');
-        const btnShot          = document.getElementById('captureButton');
-        const btnConfirm       = document.getElementById('photoSubmitButton');
-
-        let stream = null;
-        let lastDataUrl = null;
-
-        // Quando clicar em "Abrir Câmera", garanta que o botão "Tirar Foto" apareça
-        btnOpen?.addEventListener('click', () => {
-            if (btnShot)      btnShot.style.display = 'inline-block';
-            if (btnConfirm)   btnConfirm.style.display = 'none';
-            if (img)          img.style.display = 'none';
-            if (video)        video.style.display = 'block';
-        });
-
-        // Tirar foto do vídeo
-        btnShot?.addEventListener('click', () => {
-            if (!video || !video.srcObject) {
-                alert('Abra a câmera primeiro.');
-                return;
-            }
-
-            const w = video.videoWidth || 800;
-            const h = video.videoHeight || 600;
-            const canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, w, h);
-
-            // Gera imagem (base64)
-            lastDataUrl = canvas.toDataURL('image/jpeg', 0.92);
-
-            // Mostra a prévia
-            if (img) {
-                img.src = lastDataUrl;
-                img.style.display = 'block';
-            }
-
-            // Alterna a UI
-            if (video) {
-                // libera a câmera
-                try { video.srcObject?.getTracks().forEach(t => t.stop()); } catch(e) {}
-                video.srcObject = null;
-                video.style.display = 'none';
-            }
-            if (btnShot)    btnShot.style.display = 'none';
-            if (btnConfirm) btnConfirm.style.display = 'inline-block';
-        });
-
-        // Confirmar foto: salva em um input hidden para ir junto do formulário
-        btnConfirm?.addEventListener('click', () => {
-            if (!lastDataUrl && img?.src) lastDataUrl = img.src;
-            if (!lastDataUrl) {
-                alert('Tire ou selecione uma foto antes de confirmar.');
-                return;
-            }
-            let hidden = document.getElementById('photoData');
-            if (!hidden) {
-                hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.id = 'photoData';
-                hidden.name = 'photoData';
-                form?.appendChild(hidden);
-            }
-            hidden.value = lastDataUrl; // base64 da imagem
-
-            // Feedback visual rápido
-            const old = btnConfirm.textContent;
-            btnConfirm.textContent = 'Foto confirmada ✓';
-            setTimeout(() => { btnConfirm.textContent = old; }, 1500);
-        });
+        iniciarCropper(canvas.toDataURL('image/jpeg', 0.7));
+        btnShot.style.display = 'none';
     });
+
+    btnConfirm.addEventListener('click', () => {
+        try {
+            let finalImg = lastDataUrl;
+
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 400,
+                    height: 400,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+                finalImg = canvas.toDataURL('image/jpeg', 0.7);
+            }
+
+            garantirHidden().value = finalImg || '';
+            img.src = finalImg || '';
+            img.style.display = 'block';
+            destruirCropper();
+            pararCamera();
+            btnConfirm.textContent = 'Foto confirmada ✓';
+            setTimeout(() => { btnConfirm.textContent = 'Confirmar Foto'; }, 1500);
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao confirmar foto.');
+        }
+    });
+
+    if (btnRetake) {
+        btnRetake.addEventListener('click', () => {
+            destruirCropper();
+            pararCamera();
+            lastDataUrl = null;
+
+            const hidden = document.getElementById('photoData');
+            if (hidden) hidden.value = '';
+
+            img.src = '';
+            img.style.display = 'none';
+            video.style.display = 'none';
+
+            btnConfirm.style.display = 'none';
+            btnShot.style.display = 'none';
+            btnRetake.style.display = 'none';
+
+            btnOpen.click();
+        });
+    }
+})();
 </script>
 <script id="BACK_LINK_ADMIN_FIX">
     (function(){
@@ -1788,82 +2076,333 @@
 
 
 
-<script>
-function salvarAlunoCompleto(){
 
-  const LS = "kokoro_alunos_dados";
 
-  const aluno = {
-    id: Date.now(),
-    nome: document.querySelector('[name="nome"]')?.value || "",
-    email: document.querySelector('[name="email"]')?.value || "",
-    faixa: "",
-    grau: "",
-    ultima: "-",
-    financeiro: "ok",
-    status: "ativo",
-    historico: [],
-    numeroCertificado: ""
-  };
 
-  let lista = [];
+<script id="ADMIN_HARD_FIX">
+(() => {
+  const body = document.body;
+  const banner = document.getElementById('adminBanner');
+  const modal = document.getElementById('adminPasswordModal');
+  const passwordInput = document.getElementById('adminPassword');
+  const confirmBtn = document.getElementById('adminPasswordConfirm');
+  const cancelBtn = document.getElementById('adminPasswordCancel');
+  const errorEl = document.getElementById('adminPasswordError');
 
-  try{
-    const raw = localStorage.getItem(LS);
-    if(raw){
-      lista = JSON.parse(raw);
-    }
-  }catch(e){}
+  const oldToggle = document.getElementById('adminToggle');
+  if (!body || !banner || !modal || !passwordInput || !confirmBtn || !cancelBtn || !errorEl || !oldToggle) return;
 
-  lista.push(aluno);
+  // troca o toggle por um clone para remover listeners antigos/conflitantes
+  const toggle = oldToggle.cloneNode(true);
+  oldToggle.parentNode.replaceChild(toggle, oldToggle);
 
-  localStorage.setItem(LS, JSON.stringify(lista));
+  // marca os campos originalmente obrigatórios
+  document.querySelectorAll('form [required]').forEach(el => {
+    el.setAttribute('data-admin-required', '1');
+  });
 
-  alert("Aluno cadastrado com sucesso!");
+  function showModal() {
+    modal.classList.remove('hidden-field');
+    errorEl.textContent = '';
+    passwordInput.value = '';
+    setTimeout(() => passwordInput.focus(), 0);
+  }
 
-  location.reload();
-}
+  function hideModal() {
+    modal.classList.add('hidden-field');
+    errorEl.textContent = '';
+    passwordInput.value = '';
+  }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector('button[type="submit"]');
-  if(btn){
-    btn.onclick = function(e){
-      e.preventDefault();
-      salvarAlunoCompleto();
+  function enableAdmin() {
+    hideModal();
+    modal.classList.add('hidden-field');
+    modal.style.display = 'none';
+    try { localStorage.setItem('kokoro_admin_token', 'ok'); } catch (e) {}
+    try {
+      banner.classList.remove('hidden-field');
+      body.classList.add('admin-mode-active');
+      if (typeof form !== 'undefined' && form) {
+        form.setAttribute('novalidate', 'novalidate');
+      }
+      document.querySelectorAll('form [data-admin-required="1"]').forEach(el => {
+        el.removeAttribute('required');
+      });
+      toggle.checked = true;
+    } catch (e) {
+      console.error('Erro ao ativar modo admin:', e);
     }
   }
-});
+
+  function disableAdmin() {
+    try { localStorage.removeItem('kokoro_admin_token'); } catch (e) {}
+    banner.classList.add('hidden-field');
+    body.classList.remove('admin-mode-active');
+    form.removeAttribute('novalidate');
+    document.querySelectorAll('form [data-admin-required="1"]').forEach(el => {
+      el.setAttribute('required', 'required');
+    });
+    toggle.checked = false;
+    hideModal();
+  }
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      showModal();
+    } else {
+      disableAdmin();
+    }
+  });
+
+  const oldConfirm = confirmBtn;
+  const newConfirm = oldConfirm.cloneNode(true);
+  oldConfirm.parentNode.replaceChild(newConfirm, oldConfirm);
+
+  const oldCancel = cancelBtn;
+  const newCancel = oldCancel.cloneNode(true);
+  oldCancel.parentNode.replaceChild(newCancel, oldCancel);
+
+  newConfirm.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (passwordInput.value === 'kokoroadmin') {
+      enableAdmin();
+      modal.classList.add('hidden-field');
+      modal.style.display = 'none';
+    } else {
+      errorEl.textContent = 'Senha incorreta.';
+      passwordInput.focus();
+      toggle.checked = false;
+    }
+  });
+
+  newCancel.addEventListener('click', () => {
+    toggle.checked = false;
+    hideModal();
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      toggle.checked = false;
+      hideModal();
+    }
+  });
+
+  passwordInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      newConfirm.click();
+    }
+  });
+
+
+})();
+</script>
+
+
+<script>
+(function(){
+  const btn = document.getElementById('cadastrarAlunoBtn');
+  const form = document.getElementById('formCadastro') || document.getElementById('registerForm') || document.querySelector('form');
+  if(!btn || !form) return;
+
+  btn.addEventListener('click', async function(e){
+    e.preventDefault();
+
+    const adminAtivo = document.body.classList.contains('admin-mode-active');
+
+    // O botao atual e type="button", portanto fazemos aqui a validacao
+    // sem disparar os listeners antigos de submit.
+    if (!adminAtivo) {
+      const obrigatorios = Array.from(form.querySelectorAll('[required]'))
+        .filter(el => !el.disabled)
+        .filter(el => {
+          // Elementos dentro de secoes ocultas nao devem bloquear o cadastro.
+          return !el.closest('.hidden-field');
+        });
+
+      let primeiroInvalido = null;
+
+      for (const campo of obrigatorios) {
+        if (!campo.checkValidity()) {
+          campo.style.borderColor = 'var(--color-alerta)';
+          if (!primeiroInvalido) primeiroInvalido = campo;
+        } else {
+          campo.style.borderColor = '';
+        }
+      }
+
+      if (primeiroInvalido) {
+        primeiroInvalido.focus();
+        primeiroInvalido.reportValidity();
+        alert('Por favor, preencha todos os campos obrigatorios marcados com *.');
+        return;
+      }
+
+      // Validacao efetiva do CPF antes de qualquer envio ao servidor.
+      const cpfEl = document.getElementById('cpf');
+      const cpf = String(cpfEl?.value || '').replace(/\D/g, '');
+
+      const validarCPFLocal = (num) => {
+        if (num.length !== 11) return false;
+        if (/^(\d)\1{10}$/.test(num)) return false;
+
+        const calc = (base) => {
+          let soma = 0;
+          for (let i = 0; i < base; i++) {
+            soma += parseInt(num[i], 10) * (base + 1 - i);
+          }
+          const resto = (soma * 10) % 11;
+          return resto === 10 ? 0 : resto;
+        };
+
+        return (
+          calc(9) === parseInt(num[9], 10) &&
+          calc(10) === parseInt(num[10], 10)
+        );
+      };
+
+      if (!validarCPFLocal(cpf)) {
+        if (cpfEl) {
+          cpfEl.style.borderColor = 'var(--color-alerta)';
+          cpfEl.focus();
+        }
+        alert('CPF invalido. Verifique e tente novamente.');
+        return;
+      }
+    }
+
+    // Somente depois das validacoes montamos o payload e salvamos.
+
+    const nome = document.getElementById('nomeCompleto')?.value?.trim() || '';
+    if (!nome) {
+      alert('Informe ao menos o nome do aluno.');
+      const el = document.getElementById('nomeCompleto');
+      if (el) el.focus();
+      return;
+    }
+
+    const radioValue = (name) =>
+      document.querySelector(`input[name="${name}"]:checked`)?.value || null;
+
+    const parqBoolean = (name) => {
+      const v = radioValue(name);
+      if (v === 'sim') return true;
+      if (v === 'nao') return false;
+      return null;
+    };
+
+    const payload = {
+      nome,
+
+      // Identificacao
+      sexo: radioValue('sexo'),
+      nomeMae: document.getElementById('nomeMae')?.value?.trim() || null,
+      nomePai: document.getElementById('nomePai')?.value?.trim() || null,
+      rg: document.getElementById('rg')?.value?.trim() || null,
+      cpf: document.getElementById('cpf')?.value?.trim() || null,
+      dataNascimento: document.getElementById('dataNascimento')?.value || null,
+      idade: document.getElementById('idade')?.value || null,
+
+      // Contato e endereco
+      email: document.getElementById('email')?.value?.trim() || null,
+      telefone: document.getElementById('telefone')?.value?.trim() || null,
+      whatsapp: document.getElementById('whatsapp')?.value?.trim() || null,
+      endereco: document.getElementById('endereco')?.value?.trim() || null,
+      complemento: document.getElementById('complemento')?.value?.trim() || null,
+      bairro: document.getElementById('bairro')?.value?.trim() || null,
+      cep: document.getElementById('cep')?.value?.trim() || null,
+      referencia: document.getElementById('referencia')?.value?.trim() || null,
+
+      // Dados esportivos
+      esporte: document.getElementById('arteMarcial')?.value || null,
+      faixa: document.getElementById('corFaixa')?.value || 'branca',
+      grau: document.getElementById('grau')?.value || '0º Grau',
+
+      // Dados fisicos
+      pesoKg: document.getElementById('peso')?.value || null,
+      alturaM: (() => {
+        const valor = document.getElementById('altura')?.value?.trim();
+        if (!valor) return null;
+        const n = Number(valor.replace(',', '.'));
+        if (!Number.isFinite(n)) return null;
+        return n > 3 ? n / 100 : n;
+      })(),
+      imc: document.getElementById('imc')?.value || null,
+
+      // Contato de emergencia
+      contatoEmergNome: document.getElementById('contato1_nome')?.value?.trim() || null,
+      contatoEmergParentesco: document.getElementById('contato1_parentesco')?.value?.trim() || null,
+      contatoEmergEndereco: document.getElementById('contato1_endereco')?.value?.trim() || null,
+      contatoEmergTelefone: document.getElementById('contato1_telefone')?.value?.trim() || null,
+
+      // PAR-Q
+      parq1: parqBoolean('parq1'),
+      parq2: parqBoolean('parq2'),
+      parq3: parqBoolean('parq3'),
+      parq4: parqBoolean('parq4'),
+      parq5: parqBoolean('parq5'),
+      parq6: parqBoolean('parq6'),
+      parq7: parqBoolean('parq7'),
+      parq8: parqBoolean('medicamento'),
+      medicamentos: document.getElementById('medicamentoDescricao')?.value?.trim() || null,
+
+      // Termos
+      termosAceitos: !!document.getElementById('aceitoTermos')?.checked,
+
+      numeroCertificado: '',
+      status: 'ativo',
+      foto: document.getElementById('photoData')?.value || null
+    };
+
+    const id = form.dataset.alunoId;
+    if (id) payload.id = id;
+
+    try {
+      const r = await fetch('/api/alunos/salvar', {
+        method: id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const d = await r.json();
+
+      if (!r.ok || d.error) {
+        alert('Erro: ' + (d.error || ('HTTP ' + r.status)));
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+
+      if (token) {
+        const tokenResponse = await fetch('/api/usar-token-cadastro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+
+        const tokenData = await tokenResponse.json().catch(() => ({}));
+
+        if (!tokenResponse.ok || !tokenData.ok) {
+          console.error('Falha ao consumir token:', tokenData);
+          alert(
+            'Os dados do cadastro foram salvos, mas houve um problema ao finalizar o convite. ' +
+            'Não tente cadastrar novamente. Entre em contato com a administração.'
+          );
+          return;
+        }
+      }
+
+      const modal = document.getElementById('successModal');
+      if (modal) modal.classList.remove('hidden-field');
+      else alert('Cadastro realizado com sucesso.');
+
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar cadastro. Verifique a conexão e tente novamente.');
+    }
+  });
+})();
 </script>
 
 </body>
-<script>
-(function () {
-  const form = document.getElementById('registerForm');
-  if (!form) return;
-
-  form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      alert('Captcha ainda está carregando. Aguarde alguns segundos e tente novamente.');
-      return;
-    }
-
-    if (!token) {
-      e.preventDefault();
-      alert('Por favor, complete o captcha para continuar.');
-      return;
-    }
-
-    // Adiciona o token como campo oculto
-    let input = form.querySelector('input[name="h-captcha-response"]');
-    if (!input) {
-      input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'h-captcha-response';
-      form.appendChild(input);
-    }
-    input.value = token;
-  }, true); // true = capture (roda antes dos outros listeners)
-})();
-</script>
-</html>
-
