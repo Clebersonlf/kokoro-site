@@ -383,6 +383,11 @@
                 <span>Relatórios Financeiro</span>
             </a>
 
+            <a href="/admin/certificados.html" class="nav-item">
+                <i class="fas fa-certificate"></i>
+                <span>Certificados</span>
+            </a>
+
             <!-- ORGANIZAÇÃO -->
             <a href="#arquivo" class="nav-item">
                 <i class="fas fa-folder"></i>
@@ -450,6 +455,7 @@
                 <a href="/admin/mensagens.html">📬 Mensagens</a>
                 <a href="javascript:void(0)" onclick="alert('⚠️ Tarefas em desenvolvimento')">✅ Tarefas</a>
                 <a href="javascript:void(0)" onclick="alert('⚠️ Projetos em desenvolvimento')">📁 Projetos</a>
+                <a href="#" id="btnLogoutAdmin">🚪 Sair</a>
             </div>
         </div>
 
@@ -464,9 +470,12 @@
                     <span style="font-size:14px; color:#a093b0; font-weight:600;">Total de Alunos:</span>
                     <span id="cardTotalAlunos" style="font-size:20px; font-weight:700; color:#4ade80;">--</span>
                 </div>
-                <a href="/admin/cadastro/lista-v2.html?v=1" class="btn">Ver Alunos</a>
-                <a href="/cadastro/formulario-completo.html" class="btn" style="margin-top:6px;">Cadastrar Aluno</a>
-                <a href="/admin/invite.html" class="btn" style="margin-top:6px;">Enviar Convite</a>
+                <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px;">
+                    <a href="/admin/cadastro/lista-v2.html?v=1" class="btn" style="justify-content:center; text-align:center;">Ver Alunos</a>
+                    <a href="/cadastro/formulario-completo.html" class="btn" style="justify-content:center; text-align:center;">Cadastrar Alunos</a>
+                    <a href="/admin/invite.html" class="btn" style="justify-content:center; text-align:center;">Enviar Convite</a>
+                    <button type="button" class="btn" id="btnExportarDados" style="justify-content:center; text-align:center; font-family:inherit; font-size:inherit;">Exportar Dados</button>
+                </div>
             </div>
             
             <div class="card">
@@ -587,7 +596,183 @@
         }
 
         carregarDados();
+
+        // ===== EXPORTAÇÃO DE DADOS DOS ALUNOS =====
+        const btnExportarDados = document.getElementById('btnExportarDados');
+
+        if (btnExportarDados) {
+            btnExportarDados.addEventListener('click', () => {
+                document.getElementById('modalExportarDados').style.display = 'flex';
+            });
+        }
+
+        function fecharModalExportacao() {
+            document.getElementById('modalExportarDados').style.display = 'none';
+        }
+
+        function baixarArquivo(conteudo, tipo, nome) {
+            const blob = new Blob([conteudo], { type: tipo });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nome;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        async function buscarDadosExportacao() {
+            const resposta = await fetch('/api/alunos/exportar');
+            const dados = await resposta.json();
+
+            if (!resposta.ok || !dados.ok || !Array.isArray(dados.alunos)) {
+                throw new Error(dados.error || 'Não foi possível obter os dados.');
+            }
+
+            return dados.alunos;
+        }
+
+        function exportarAlunosPDF() {
+            window.location.href = '/api/exportacao/alunos-pdf';
+            fecharModalExportacao();
+        }
+
+        function exportarAlunosExcel() {
+            window.location.href = '/api/exportacao/alunos-excel';
+            fecharModalExportacao();
+        }
+
+        async function exportarAlunosJSON() {
+            try {
+                const alunos = await buscarDadosExportacao();
+
+                baixarArquivo(
+                    JSON.stringify(alunos, null, 2),
+                    'application/json;charset=utf-8',
+                    'kokoro_alunos.json'
+                );
+
+                fecharModalExportacao();
+            } catch (erro) {
+                alert('Erro ao exportar JSON: ' + erro.message);
+            }
+        }
+
+        async function exportarAlunosCSV() {
+            try {
+                const alunos = await buscarDadosExportacao();
+
+                if (!alunos.length) {
+                    alert('Nenhum aluno encontrado para exportação.');
+                    return;
+                }
+
+                const colunas = Object.keys(alunos[0]);
+
+                const escapar = (valor) => {
+                    if (valor === null || valor === undefined) return '';
+                    const texto = String(valor).replace(/"/g, '""');
+                    return '"' + texto + '"';
+                };
+
+                const linhas = [
+                    colunas.map(escapar).join(';'),
+                    ...alunos.map(aluno =>
+                        colunas.map(coluna => escapar(aluno[coluna])).join(';')
+                    )
+                ];
+
+                const csv = '\uFEFF' + linhas.join('\r\n');
+
+                baixarArquivo(
+                    csv,
+                    'text/csv;charset=utf-8',
+                    'kokoro_alunos.csv'
+                );
+
+                fecharModalExportacao();
+            } catch (erro) {
+                alert('Erro ao exportar CSV: ' + erro.message);
+            }
+        }
     </script>
+
+    <!-- MODAL EXPORTAR DADOS -->
+    <div id="modalExportarDados"
+         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.65);
+                z-index:9999; align-items:center; justify-content:center; padding:20px;">
+
+        <div style="background:#1f2937; color:white; width:100%; max-width:480px;
+                    border-radius:14px; padding:24px;
+                    box-shadow:0 20px 60px rgba(0,0,0,.45);">
+
+            <div style="font-size:21px; font-weight:700; margin-bottom:8px;">
+                📤 Exportar Dados dos Alunos
+            </div>
+
+            <div style="font-size:14px; color:#cbd5e1; margin-bottom:20px;">
+                Escolha o formato desejado para exportação.
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+
+                <button type="button" class="btn"
+                        onclick="exportarAlunosExcel()"
+                        style="justify-content:center; font-family:inherit; font-size:inherit;">
+                    📊 Excel (.xlsx)
+                </button>
+
+                <button type="button" class="btn"
+                        onclick="exportarAlunosPDF()"
+                        style="justify-content:center; font-family:inherit; font-size:inherit;">
+                    📄 PDF (.pdf)
+                </button>
+
+                <button type="button" class="btn"
+                        onclick="exportarAlunosCSV()"
+                        style="justify-content:center; font-family:inherit; font-size:inherit;">
+                    📑 CSV (.csv)
+                </button>
+
+                <button type="button" class="btn"
+                        onclick="exportarAlunosJSON()"
+                        style="justify-content:center; font-family:inherit; font-size:inherit;">
+                    🗂️ JSON (.json)
+                </button>
+
+            </div>
+
+            <button type="button"
+                    onclick="fecharModalExportacao()"
+                    style="width:100%; margin-top:16px; padding:11px;
+                           border-radius:8px; border:1px solid #64748b;
+                           background:transparent; color:white; cursor:pointer;
+                           font-family:inherit; font-size:14px;">
+                Cancelar
+            </button>
+
+        </div>
+    </div>
 
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const btn = document.getElementById('btnLogoutAdmin');
+  if (!btn) return;
+
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    try {
+      localStorage.removeItem('kokoro_user');
+      localStorage.removeItem('adminSecret');
+      localStorage.removeItem('kokoro_admin_token');
+      sessionStorage.clear();
+    } catch(e) {}
+
+    window.location.href = '/login.html';
+  });
+});
+</script>
