@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validação Oficial de Certificados</title>
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#0f0f0f;
+color:#fff;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+.card{
+max-width:760px;
+width:100%;
+background:#1b1b1b;
+padding:40px;
+border-radius:20px;
+box-shadow:0 0 35px rgba(0,0,0,.55);
+text-align:center;
+border:1px solid #333;
+}
+.logo{font-size:34px;margin-bottom:10px}
+.nav-admin{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin:18px 0 20px;
+}
+
+.btn-dashboard{
+  display:inline-block;
+  padding:12px 18px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:bold;
+  background:#3ba7f5;
+  color:#fff;
+  border:1px solid #2b8ed4;
+}
+
+.btn-certificados{
+  display:inline-block;
+  padding:12px 18px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:bold;
+  background:#d4af37;
+  color:#000;
+  border:1px solid #b8941f;
+}
+
+.btn-dashboard:hover,
+.btn-certificados:hover{
+  filter:brightness(1.08);
+}
+h1{margin:0 0 15px 0;font-size:30px}
+p{color:#cfcfcf;line-height:1.6}
+input,textarea{
+width:100%;
+padding:15px;
+border-radius:12px;
+border:1px solid #555;
+background:#111;
+color:#fff;
+font-size:16px;
+box-sizing:border-box;
+margin-top:12px;
+}
+textarea{min-height:90px;resize:vertical}
+.btn{
+display:block;
+width:100%;
+padding:17px;
+margin-top:16px;
+border-radius:14px;
+text-decoration:none;
+font-size:16px;
+font-weight:bold;
+box-sizing:border-box;
+transition:.2s;
+cursor:pointer;
+border:none;
+}
+.btn:hover{transform:scale(1.01)}
+.kokoro{background:#d4af37;color:#000}
+.email{background:#2a2a2a;color:#fff;border:1px solid #555}
+.manual{background:#1f3b57;color:#fff;border:1px solid #4779a8}
+.resultado{
+margin-top:24px;
+padding:20px;
+border-radius:14px;
+display:none;
+text-align:left;
+line-height:1.8;
+}
+.ok{background:#14351d;border:1px solid #2f8f46}
+.erro{background:#3a1515;border:1px solid #b33}
+.info{background:#15263a;border:1px solid #356aa0}
+.box{
+margin-top:28px;
+padding:22px;
+border-radius:16px;
+background:#141414;
+border:1px solid #333;
+text-align:left;
+}
+.box h2{
+font-size:20px;
+margin:0 0 12px 0;
+text-align:center;
+}
+small{
+display:block;
+margin-top:28px;
+color:#8f8f8f;
+font-size:13px;
+line-height:1.5;
+}
+hr{
+border:0;
+border-top:1px solid #333;
+margin:28px 0;
+}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="logo">🔐</div>
+<h1>Validação Oficial de Certificados</h1>
+<div class="nav-admin" id="navAdmin">  
+<a class="btn-dashboard" href="/admin_Dashboard.html">← Voltar para Dashboard</a>
+  <a class="btn-certificados" href="/admin/certificados.html">← Administração de Certificados</a>
+</div>
+<p>
+Certificados emitidos pela <strong>Luiz Guinder Team</strong> e plataforma <strong>Kokoro</strong>.
+</p>
+
+<div class="box">
+<h2>✅ Validação automática</h2>
+<p>Digite o número do certificado para consulta no sistema.</p>
+
+<input type="text" id="codigo" placeholder="Ex.: 0043-FP-2017-01">
+
+<button class="btn kokoro" onclick="validarCertificado()">
+✅ Validar certificado
+</button>
+
+<div id="resultado" class="resultado"></div>
+</div>
+
+<div class="box">
+<h2>📝 Solicitação manual de validação</h2>
+<p>
+Caso a validação automática não esteja disponível ou o certificado não seja localizado, envie uma solicitação manual.
+</p>
+
+<input type="text" id="nomeSolicitante" placeholder="Nome do solicitante">
+<input type="email" id="emailSolicitante" placeholder="E-mail para retorno">
+<input type="text" id="codigoManual" placeholder="Número do certificado">
+<textarea id="observacoes" placeholder="Observações opcionais"></textarea>
+
+<button class="btn manual" onclick="enviarSolicitacaoManual()">
+📨 Enviar solicitação de validação
+</button>
+
+<div id="manualResultado" class="resultado"></div>
+</div>
+
+<hr>
+
+<a class="btn email" href="mailto:luizguinderteam@gmail.com">
+📧 E-mail alternativo: luizguinderteam@gmail.com
+</a>
+
+<small>
+Esta página é o canal oficial de validação de certificados da Luiz Guinder Team / Kokoro.
+Não informe CPF, RG ou dados sensíveis. Para retorno manual, informe apenas nome, e-mail e número do certificado.
+</small>
+
+</div>
+
+<script>
+function formatarData(data){
+  if(!data) return '-';
+  const d = String(data).split('T')[0];
+  const partes = d.split('-');
+  if(partes.length !== 3) return d;
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+async function validarCertificado(){
+  const codigo = document.getElementById('codigo').value.trim();
+  const resultado = document.getElementById('resultado');
+
+  if(!codigo){
+    resultado.className = 'resultado erro';
+    resultado.style.display = 'block';
+    resultado.innerHTML = '❌ Informe o número do certificado.';
+    return;
+  }
+
+  document.getElementById('codigoManual').value = codigo;
+
+  resultado.className = 'resultado info';
+  resultado.style.display = 'block';
+  resultado.innerHTML = '🔎 Consultando certificado...';
+
+  try{
+    const r = await fetch('/api/certificados/validar?codigo=' + encodeURIComponent(codigo));
+    const data = await r.json();
+
+    if(!r.ok || !data.ok || !data.localizado){
+      resultado.className = 'resultado erro';
+      resultado.style.display = 'block';
+      resultado.innerHTML = `
+        <strong>❌ CERTIFICADO NÃO LOCALIZADO</strong><br><br>
+        O código informado não foi localizado nos registros institucionais.<br>
+        Verifique se o número foi digitado corretamente ou envie uma solicitação manual de validação.
+      `;
+      return;
+    }
+
+    const c = data.certificado;
+
+    if(c.status && c.status !== 'valido'){
+      resultado.className = 'resultado erro';
+      resultado.style.display = 'block';
+      resultado.innerHTML = `
+        <strong>⚠️ CERTIFICADO ${String(c.status).toUpperCase()}</strong><br><br>
+        O certificado foi localizado, porém consta com status administrativo: <strong>${String(c.status).toUpperCase()}</strong>.<br><br>
+        Titular: ${c.titular}<br>
+        Graduação: ${c.graduacao}<br>
+        Data de emissão: ${formatarData(c.data_emissao)}<br>
+        Número do certificado: ${c.numero_certificado}<br>
+        Instituição emissora: ${c.instituicao || 'Luiz Guinder Team'}
+      `;
+      return;
+    }
+
+    resultado.className = 'resultado ok';
+    resultado.style.display = 'block';
+    resultado.innerHTML = `
+      <strong>✅ CERTIFICADO AUTÊNTICO</strong><br><br>
+      O certificado informado consta nos registros institucionais da Luiz Guinder Team / Kokoro.<br><br>
+      Titular: ${c.titular}<br>
+      Graduação: ${c.graduacao}<br>
+      Data de emissão: ${formatarData(c.data_emissao)}<br>
+      Número do certificado: ${c.numero_certificado}<br>
+      Instituição emissora: ${c.instituicao || 'Luiz Guinder Team'}<br><br>
+      Status: Válido e autêntico.
+    `;
+
+  }catch(e){
+    console.error(e);
+    resultado.className = 'resultado erro';
+    resultado.style.display = 'block';
+    resultado.innerHTML = `
+      <strong>❌ ERRO NA CONSULTA</strong><br><br>
+      Não foi possível consultar o sistema neste momento.<br>
+      Utilize a solicitação manual de validação.
+    `;
+  }
+}
+
+function enviarSolicitacaoManual(){
+  const nome = document.getElementById('nomeSolicitante').value.trim();
+  const email = document.getElementById('emailSolicitante').value.trim();
+  const codigo = document.getElementById('codigoManual').value.trim() || document.getElementById('codigo').value.trim();
+  const obs = document.getElementById('observacoes').value.trim();
+  const box = document.getElementById('manualResultado');
+
+  if(!nome || !email || !codigo){
+    box.className = 'resultado erro';
+    box.style.display = 'block';
+    box.innerHTML = '❌ Preencha nome, e-mail para retorno e número do certificado.';
+    return;
+  }
+
+  const assunto = encodeURIComponent('Solicitação de Validação de Certificado');
+  const corpo = encodeURIComponent(
+`Olá, desejo solicitar a validação manual de um certificado emitido pela Luiz Guinder Team / Kokoro.
+
+Nome do solicitante: ${nome}
+E-mail para retorno: ${email}
+Número do certificado: ${codigo}
+
+Observações:
+${obs || 'Sem observações.'}`
+  );
+
+  window.location.href = `mailto:luizguinderteam@gmail.com?subject=${assunto}&body=${corpo}`;
+
+  box.className = 'resultado info';
+  box.style.display = 'block';
+  box.innerHTML = `
+    <strong>📨 Solicitação preparada.</strong><br><br>
+    Seu aplicativo de e-mail será aberto para envio da solicitação.<br>
+    Caso ele não abra automaticamente, envie manualmente para:<br>
+    <strong>luizguinderteam@gmail.com</strong>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  const params = new URLSearchParams(window.location.search);
+  const codigo = params.get('codigo');
+if(codigo){
+  document.getElementById('navAdmin').style.display = 'none';
+}
+
+  if(codigo){
+    document.getElementById('codigo').value = codigo;
+    document.getElementById('codigoManual').value = codigo;
+    validarCertificado();
+  }
+});
+</script>
+</body>
+</html>
