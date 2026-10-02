@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Certificados | Kokoro</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#fff;padding:24px}
+.container{max-width:1100px;margin:auto}
+.table-wrap{width:100%;overflow-x:auto;border-radius:12px}
+.header{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:24px;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold;border:none;cursor:pointer}
+.btn-gold{
+  background:#d4af37 !important;
+  color:#000 !important;
+  border:1px solid #b8941f !important;
+}
+.btn-voltar{
+  background:#3ba7f5;
+  color:#fff;
+  border:1px solid #2b8ed4;
+}
+.btn-validar{background:#16a34a;color:#fff;border:1px solid #15803d}
+.btn-editar{background:#f59e0b;color:#fff;border:1px solid #d97706}
+.btn-excluir{background:#dc2626;color:#fff;border:1px solid #b91c1c}
+.btn-copiar{background:#06b6d4;color:#fff;border:1px solid #0891b2}
+.btn-validar:hover{filter:brightness(1.08)}
+.btn-editar:hover{filter:brightness(1.08)}
+.btn-excluir:hover{filter:brightness(1.08)}
+.btn-copiar:hover{filter:brightness(1.08)}
+.btn-qrpng{
+  background:#6a0dad;
+  color:#fff;
+  border:1px solid #5b0b95;
+}
+
+.btn-qrsvg{
+  background:#7a1f5c;
+  color:#fff;
+  border:1px solid #64184b;
+}
+
+.btn-qrpng:hover{
+  filter:brightness(1.08);
+}
+
+.btn-qrsvg:hover{
+  filter:brightness(1.08);
+}
+.card{background:#111827;border:1px solid #334155;border-radius:18px;padding:24px;margin-bottom:22px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+label{font-size:14px;color:#cbd5e1}
+input,select,textarea{width:100%;padding:13px;border-radius:10px;border:1px solid #475569;background:#020617;color:#fff;box-sizing:border-box;margin-top:6px}
+textarea{min-height:80px;resize:vertical}
+.full{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;margin-top:14px}
+th,td{border-bottom:1px solid #334155;padding:8px;text-align:left;font-size:13px;vertical-align:top;word-break:break-word}
+th{color:#d4af37}
+.status-valido{color:#4ade80;font-weight:bold}
+.status-cancelado{color:#f87171;font-weight:bold}
+.status-suspenso{color:#facc15;font-weight:bold}
+.small{font-size:13px;color:#94a3b8}
+.actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:nowrap;
+  align-items:center;
+  white-space:nowrap;
+}
+
+td{
+  white-space:nowrap;
+}
+
+.actions{display:flex;flex-wrap:nowrap;gap:6px;align-items:center}.actions .btn{
+  padding:6px 10px;
+  font-size:12px;
+  border-radius:8px;
+}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div>
+    <h1>🔐 Administração de Certificados</h1>
+    <p class="small">Cadastro e controle inicial de certificados Luiz Guinder Team / Kokoro.</p>
+  </div>
+  <div class="actions">
+    <a class="btn btn-voltar" href="/admin_Dashboard.html">← Voltar para Dashboard</a>
+    <a class="btn btn-gold" href="/validar-certificado.html" target="_blank">Abrir Validação Pública</a>
+  </div>
+</div>
+
+<div class="card">
+  <h2>➕ Cadastrar Certificado</h2>
+
+  <form id="formCertificado">
+    <div class="grid">
+      <div>
+        <label>Número do certificado</label>
+        <input id="numero" required placeholder="Ex.: 0043-FP-2017-01">
+      </div>
+
+      <div>
+        <label>Nome do titular</label>
+        <input id="titular" required placeholder="Ex.: Ivan Luiz Neto">
+      </div>
+
+      <div>
+        <label>Graduação</label>
+        <input id="graduacao" required placeholder="Ex.: Faixa Preta">
+      </div>
+
+      <div>
+        <label>Data de emissão</label>
+        <input id="dataEmissao" type="date" required>
+      </div>
+
+      <div>
+        <label>Instituição emissora</label>
+        <input id="instituicao" value="Luiz Guinder Team">
+      </div>
+
+      <div>
+        <label>Status</label>
+        <select id="status">
+          <option value="valido">Válido</option>
+          <option value="cancelado">Cancelado</option>
+          <option value="suspenso">Suspenso</option>
+        </select>
+      </div>
+
+      <div class="full">
+        <label>Observações</label>
+        <textarea id="observacoes" placeholder="Informações internas, se necessário."></textarea>
+      </div>
+    </div>
+
+    <br>
+    <button class="btn btn-gold" type="submit">Salvar Certificado</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>📋 Certificados Cadastrados</h2>
+  <p class="small">Certificados oficiais registrados no banco institucional Kokoro.</p>
+
+  <div style="margin:14px 0;">
+    <input id="buscaCertificados" type="text" placeholder="Buscar por número, titular, graduação, status ou instituição..."
+      style="width:100%;padding:12px;border-radius:10px;border:1px solid #444;background:#111;color:#fff;">
+  </div>
+
+  <div class='table-wrap'><table>
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Titular</th>
+        <th>Graduação</th>
+        <th>Emissão</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="listaCertificados"></tbody>
+  </table></div>
+</div>
+
+</div>
+<script>
+let editandoId = null;
+let certificadosCache = [];
+
+function formatarData(data){
+  if(!data) return '-';
+  const d = String(data).split('T')[0];
+  const partes = d.split('-');
+  if(partes.length !== 3) return d;
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+async function carregarCertificados(){
+  try{
+    const r = await fetch('/api/certificados/listar');
+    const data = await r.json();
+
+    if(!r.ok || !data.ok){
+      throw new Error(data.error || 'Erro ao listar certificados');
+    }
+
+    certificadosCache = data.certificados || [];
+    renderizar(certificadosCache);
+
+  }catch(e){
+    console.error(e);
+    document.getElementById('listaCertificados').innerHTML =
+      '<tr><td colspan="6">Erro ao carregar certificados.</td></tr>';
+  }
+}
+
+function filtrarCertificados(){
+  const termo = (document.getElementById('buscaCertificados')?.value || '').toLowerCase().trim();
+
+  if(!termo){
+    renderizar(certificadosCache);
+    return;
+  }
+
+  const filtrados = certificadosCache.filter(c => {
+    return [
+      c.numero_certificado,
+      c.titular,
+      c.graduacao,
+      c.status,
+      c.instituicao,
+      c.observacoes
+    ].some(v => String(v || '').toLowerCase().includes(termo));
+  });
+
+  renderizar(filtrados);
+}
+
+function renderizar(lista){
+  const tbody = document.getElementById('listaCertificados');
+
+  if(!lista.length){
+    tbody.innerHTML =
+      '<tr><td colspan="6" class="small">Nenhum certificado cadastrado ainda.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = lista.map((c) => {
+    const statusClass = 'status-' + c.status;
+    const linkValidacao =
+      '/validar-certificado.html?codigo=' + encodeURIComponent(c.numero_certificado);
+
+    return `
+      <tr>
+        <td>${c.numero_certificado}</td>
+        <td>${c.titular}</td>
+        <td>${c.graduacao}</td>
+        <td>${formatarData(c.data_emissao)}</td>
+        <td><span class="${statusClass}">${String(c.status).toUpperCase()}</span></td>
+        <td>
+          <div class="actions">
+            <a class="btn btn-validar" href="${linkValidacao}" target="_blank">Validar</a>
+            <button class="btn btn-editar" onclick="editarCertificado('${c.id}')">Editar</button>
+            <button class="btn btn-excluir" onclick="excluirCertificado('${c.id}')">Excluir</button>
+            <button class="btn btn-copiar" onclick="copiarLink('${linkValidacao}')">Copiar link</button>
+<a class="btn btn-qrpng" href="/api/certificados/qr?formato=png&codigo=${encodeURIComponent(c.numero_certificado)}" target="_blank">QR PNG</a>
+<a class="btn btn-qrsvg" href="/api/certificados/qr?formato=svg&codigo=${encodeURIComponent(c.numero_certificado)}" target="_blank">QR SVG</a>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function copiarLink(link){
+  const url = window.location.origin + link;
+
+  navigator.clipboard.writeText(url)
+    .then(() => alert('Link copiado: ' + url))
+    .catch(() => prompt('Copie o link:', url));
+}
+
+async function editarCertificado(id){
+  try{
+    const r = await fetch('/api/certificados/listar');
+    const data = await r.json();
+
+    if(!r.ok || !data.ok){
+      throw new Error(data.error || 'Erro ao localizar certificado');
+    }
+
+    const cert = (data.certificados || []).find(c => c.id === id);
+
+    if(!cert){
+      alert('Certificado não encontrado.');
+      return;
+    }
+
+    editandoId = cert.id;
+
+    document.getElementById('numero').value = cert.numero_certificado || '';
+    document.getElementById('titular').value = cert.titular || '';
+    document.getElementById('graduacao').value = cert.graduacao || '';
+    document.getElementById('dataEmissao').value = String(cert.data_emissao || '').split('T')[0];
+    document.getElementById('instituicao').value = cert.instituicao || 'Luiz Guinder Team';
+    document.getElementById('status').value = cert.status || 'valido';
+    document.getElementById('observacoes').value = cert.observacoes || '';
+
+    const btn = document.querySelector('#formCertificado button[type="submit"]');
+    if(btn) btn.textContent = 'Atualizar Certificado';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  }catch(e){
+    console.error(e);
+    alert('Erro ao editar: ' + e.message);
+  }
+}
+
+async function excluirCertificado(id){
+  if(!confirm('Deseja realmente excluir este certificado do banco?')) return;
+
+  try{
+    const r = await fetch('/api/certificados/excluir', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id })
+    });
+
+    const data = await r.json();
+
+    if(!r.ok || data.error){
+      throw new Error(data.error || 'Erro ao excluir');
+    }
+
+    await carregarCertificados();
+
+    alert('Certificado excluído com sucesso.');
+
+  }catch(e){
+    console.error(e);
+    alert('Erro ao excluir: ' + e.message);
+  }
+}
+
+document.getElementById('formCertificado').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const payload = {
+    numero_certificado: document.getElementById('numero').value.trim(),
+    titular: document.getElementById('titular').value.trim(),
+    graduacao: document.getElementById('graduacao').value.trim(),
+    data_emissao: document.getElementById('dataEmissao').value,
+    instituicao: document.getElementById('instituicao').value.trim() || 'Luiz Guinder Team',
+    status: document.getElementById('status').value,
+    observacoes: document.getElementById('observacoes').value.trim()
+  };
+
+  if(editandoId){
+    payload.id = editandoId;
+  }
+
+  if(
+    !payload.numero_certificado ||
+    !payload.titular ||
+    !payload.graduacao ||
+    !payload.data_emissao
+  ){
+    alert('Preencha os campos obrigatórios.');
+    return;
+  }
+
+  try{
+    const r = await fetch('/api/certificados/salvar', {
+      method: editandoId ? 'PUT' : 'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    const data = await r.json();
+
+    if(!r.ok || data.error){
+      throw new Error(data.error || 'Erro ao salvar');
+    }
+
+    this.reset();
+    document.getElementById('instituicao').value = 'Luiz Guinder Team';
+
+    editandoId = null;
+    const btn = document.querySelector('#formCertificado button[type="submit"]');
+    if(btn) btn.textContent = 'Salvar Certificado';
+
+    await carregarCertificados();
+
+    alert('Certificado salvo no banco com sucesso.');
+
+  }catch(e){
+    console.error(e);
+    alert('Erro: ' + e.message);
+  }
+});
+
+carregarCertificados();
+
+const buscaCertificadosInput = document.getElementById('buscaCertificados');
+if (buscaCertificadosInput) {
+  buscaCertificadosInput.addEventListener('input', filtrarCertificados);
+}
+</script>
+
+</body>
+</html>
