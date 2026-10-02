@@ -25,6 +25,34 @@ function valor(v) {
   return String(v);
 }
 
+function formatarData(v, comHora = false) {
+  if (!v) return '-';
+
+  const d = new Date(v);
+
+  if (Number.isNaN(d.getTime())) {
+    return valor(v);
+  }
+
+  if (comHora) {
+    return new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(d);
+  }
+
+  return new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(d);
+}
+
 export async function GET() {
   try {
     const sql = getSql();
@@ -129,7 +157,7 @@ export async function GET() {
       linha('Telefone', a.telefone);
       linha('WhatsApp', a.whatsapp);
       linha('Sexo', a.sexo);
-      linha('Data de nascimento', a.data_nascimento);
+      linha('Data de nascimento', formatarData(a.data_nascimento));
       linha('Idade', a.idade);
       linha('CPF', a.cpf);
       linha('RG', a.rg);
@@ -196,8 +224,8 @@ export async function GET() {
       linha('Número certificado', a.numero_certificado);
       linha('Financeiro', a.financeiro);
       linha('Observações', a.observacoes);
-      linha('Criado em', a.created_at);
-      linha('Atualizado em', a.updated_at);
+      linha('Criado em', formatarData(a.created_at, true));
+      linha('Atualizado em', formatarData(a.updated_at, true));
     });
 
     doc.end();
