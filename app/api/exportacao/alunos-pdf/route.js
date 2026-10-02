@@ -46,7 +46,7 @@ function formatarData(v, comHora = false) {
   }
 
   return new Intl.DateTimeFormat('pt-BR', {
-    timeZone: 'America/Sao_Paulo',
+    timeZone: 'UTC',
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
