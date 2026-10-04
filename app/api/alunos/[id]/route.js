@@ -4,6 +4,7 @@ function serializeAluno(aluno) {
   if (!aluno) return null;
   
   return {
+    ...aluno,
     id: String(aluno.id || ''),
     nome: String(aluno.nome || ''),
     email: String(aluno.email || ''),
