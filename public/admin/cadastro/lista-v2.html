@@ -117,10 +117,10 @@
 
     /* Badges e Status */
     .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-    .st-ativo { background: rgba(46,204,113,.15); color: var(--green); border: 1px solid rgba(46,204,113,.3); }
-    .st-inativo { background: rgba(169,178,195,.15); color: var(--muted); border: 1px solid var(--border); }
-    .st-suspenso { background: rgba(243,156,18,.15); color: var(--orange); border: 1px solid rgba(243,156,18,.3); }
-    .st-excluido { background: rgba(231,76,60,.15); color: var(--red); border: 1px solid rgba(231,76,60,.3); }
+    .st-ativo { background: #16a34a; color: #ffffff; border: 1px solid #16a34a; }
+    .st-inativo { background: #f1c40f; color: #111827; border: 1px solid #f1c40f; }
+    .st-suspenso { background: #f39c12; color: #111827; border: 1px solid #f39c12; }
+    .st-excluido { background: #e74c3c; color: #ffffff; border: 1px solid #e74c3c; }
 
     .fin-ok { color: var(--green); font-weight: 800; }
     .fin-pendente { color: var(--red); font-weight: 800; }
@@ -167,7 +167,35 @@
     .modal-footer button[onclick="salvarStatus()"]{background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;}
     .modal-footer .btn-salvar{background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;}
 
-  </style>
+  
+.btn-back{
+    display:inline-block;
+    background:#3498db;
+    color:#fff;
+    padding:10px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:800;
+    border:1px solid transparent;
+    transition:.15s ease;
+}
+.btn-back:hover{filter:brightness(1.06)}
+
+
+    .acoes{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex-wrap:nowrap;
+      white-space:nowrap;
+    }
+    .acoes button{
+      padding:8px 10px !important;
+      font-size:12px !important;
+      line-height:1 !important;
+    }
+
+</style>
 
 
 
@@ -179,6 +207,20 @@ table td small{
   color: #ffffff !important;  /* branco direto */
   font-weight: 900 !important;
 }
+
+.btn-back{
+    display:inline-block;
+    background:#3498db;
+    color:#fff;
+    padding:10px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:800;
+    border:1px solid transparent;
+    transition:.15s ease;
+}
+.btn-back:hover{filter:brightness(1.06)}
+
 </style>
 
 
@@ -188,8 +230,8 @@ table td small{
     <div class="header-lista">
       <h1>Gestão de Alunos</h1>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a href="/admin/cadastro/excluidos-definitivos.html" class="btn-local" style="text-decoration:none;color:#111827"><span style="color:#ffffff;font-weight:700;">Memória (Exclusões)</span></a>
-        <a href="/admin.html#alunos" class="btn-local btn-local-dark" style="text-decoration:none;color:#fff">← Voltar para Dashboard</a>
+        <a href="/admin/cadastro/excluidos-definitivos.html" class="btn-back" >Memória (Exclusões)</a>
+        <a href="/admin.html#alunos" class="btn-back" >← Voltar para Dashboard</a>
       </div>
     </div>
 
@@ -236,7 +278,7 @@ table td small{
     <div class="modal">
       <div class="modal-header">
         <h3 id="modalNomeAluno" style="margin:0;font-size:14px">Situação</h3>
-        <button class="btn-local" type="button" onclick="fecharModal()" style="color:#111827">FECHAR</button>
+        <button class="btn-back" type="button" onclick="fecharModal()" style="color:#111827">FECHAR</button>
       </div>
       <div class="modal-body">
         <div class="field">
@@ -257,9 +299,9 @@ table td small{
 </div>
 <div class="field" style="margin-top:12px">
 
-          <label>Nº do Certificado (vitalício)</label>
+          <label>Número vitalício Luiz Guinder Team</label>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-            <input id="numeroCertificado" type="text" readonly style="flex:1;min-width:140px;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none;background:var(--row);font-weight:1000" placeholder="(sem número)" />
+            <input id="numeroCertificado" type="text" style="flex:1;min-width:140px;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none;background:var(--row);font-weight:1000" placeholder="(sem número)" />
             <button id="btnAtribuirNumero" type="button" onclick="atribuirProximoNumero()" style="background:#111827 !important;color:#ffffff !important;border:1px solid #111827 !important;border-radius:8px;padding:8px 12px;font-weight:1000;font-size:12px;opacity:1 !important;cursor:pointer;">ATRIBUIR PRÓXIMO Nº</button>
           </div>
           <div class="muted" style="margin-top:6px">Use quando o aluno fizer a primeira graduação com você (ou a próxima, se veio de outra equipe).</div>
@@ -271,9 +313,72 @@ table td small{
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-local" type="button" onclick="fecharModal()" style="color:#111827">CANCELAR</button>
+        <button class="btn-back" type="button" onclick="fecharModal()" style="color:#111827">CANCELAR</button>
         <button class="btn-local btn-local-danger" type="button" onclick="excluirDefinitivoModal()">EXCLUIR DEFINITIVO</button>
         <button class="btn-local btn-salvar" type="button" onclick="salvarStatus()" style="background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;">SALVAR ALTERAÇÃO</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalMensalidade">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalMensalidadeNome" style="margin:0;font-size:14px">Lançar Mensalidade</h3>
+        <button class="btn-back" type="button" onclick="fecharModalMensalidade()" style="color:#111827">FECHAR</button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="mensalidadeAlunoId" />
+
+        <div class="field">
+          <label for="mensalidadeReferencia">Referência</label>
+          <input id="mensalidadeReferencia" type="month" style="width:100%;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none" />
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="mensalidadeDescricao">Descrição</label>
+          <input id="mensalidadeDescricao" type="text" value="Mensalidade" style="width:100%;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none" />
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="mensalidadeValor">Valor</label>
+          <input id="mensalidadeValor" type="number" step="0.01" value="150" style="width:100%;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none" />
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="mensalidadeVencimento">Vencimento</label>
+          <input id="mensalidadeVencimento" type="date" style="width:100%;border:1px solid #e1e6ee;border-radius:10px;padding:10px 12px;outline:none" />
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="mensalidadeStatus">Status</label>
+          <select id="mensalidadeStatus">
+            <option value="pendente">Pendente</option>
+            <option value="pago">Pago</option>
+            <option value="vencido">Vencido</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="mensalidadeForma">Forma de pagamento</label>
+          <select id="mensalidadeForma">
+            <option value="">Não informado</option>
+            <option value="Pix">Pix</option>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Cartão">Cartão</option>
+            <option value="Transferência">Transferência</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="mensalidadeObs">Observações</label>
+          <textarea id="mensalidadeObs" placeholder="Observações opcionais..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-back" type="button" onclick="fecharModalMensalidade()" style="color:#111827">CANCELAR</button>
+        <button class="btn-local btn-salvar" type="button" onclick="salvarMensalidadeAluno()" style="background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;">SALVAR MENSALIDADE</button>
       </div>
     </div>
   </div>
@@ -660,6 +765,7 @@ table td small{
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           status: novo,
+          numeroCertificado: (document.getElementById("numeroCertificado").value || "").trim(),
           historico: [novoRegistro, ...historicoAtual]
         })
       });
@@ -916,7 +1022,8 @@ function renderizarTabela(){
 ${escapeHtml(aluno.nome)}
 </strong><br>
             <small style="color:#6b7280">${escapeHtml(emailTxt)}</small><br>
-            <small style="color:#111827;font-weight:900">Nº: ${escapeHtml(aluno.numeroCertificado || "-")}</small>
+            <small style="color:#374151;font-weight:900">ID interno: ${escapeHtml(aluno.codigoInterno || "-")}</small><br>
+            <small style="color:#111827;font-weight:900">Nº vitalício: ${escapeHtml(aluno.numeroCertificado || "-")}</small>
           </div>
         </div>
       </td>
@@ -931,8 +1038,9 @@ ${escapeHtml(aluno.nome)}
       <td>${badgeStatus(aluno.status)}</td>
       <td>
         <div class="acoes">
-          <button class="btn-local btn-local-dark" type="button" onclick="editarAluno('${aluno.id}')">EDITAR</button>
+          <button class="btn-back" type="button" onclick="editarAluno('${aluno.id}')">EDITAR</button>
           <button type="button" onclick="abrirModalStatus('${aluno.id}')" class="btn">STATUS</button>
+          <button type="button" onclick="abrirModalMensalidade('${aluno.id}')" class="btn">FINANCEIRO</button>
           <button class="btn-local btn-local-danger" type="button" onclick="excluirDaLista('${aluno.id}')">EXCLUIR</button>
         </div>
       </td>
@@ -948,6 +1056,45 @@ ${escapeHtml(aluno.nome)}
 
   function editarAluno(id){
     window.location.href = `/cadastro/formulario-completo.html?id=${id}`;
+  }
+
+  function abrirModalMensalidade(id){
+    document.getElementById('mensalidadeAlunoId').value = id;
+    document.getElementById('modalMensalidade').style.display = 'flex';
+  }
+
+  function fecharModalMensalidade(){
+    document.getElementById('modalMensalidade').style.display = 'none';
+  }
+
+  async function salvarMensalidadeAluno(){
+    const aluno_id = document.getElementById('mensalidadeAlunoId').value;
+
+    const payload = {
+      aluno_id,
+      referencia: document.getElementById('mensalidadeReferencia').value,
+      descricao: document.getElementById('mensalidadeDescricao').value,
+      valor: Number(document.getElementById('mensalidadeValor').value),
+      vencimento: document.getElementById('mensalidadeVencimento').value,
+      status: document.getElementById('mensalidadeStatus').value,
+      forma_pagamento: document.getElementById('mensalidadeForma').value,
+      observacoes: document.getElementById('mensalidadeObs').value
+    };
+
+    const r = await fetch('/api/financeiro/salvar_mensalidade_aluno', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const j = await r.json();
+
+    if (j.ok) {
+      alert('Mensalidade salva com sucesso.');
+      fecharModalMensalidade();
+    } else {
+      alert('Erro: ' + (j.error || 'Falha ao salvar'));
+    }
   }
 
   // "Excluir" (mantém a lógica de existir, mas aqui é remoção simples da lista de teste)
