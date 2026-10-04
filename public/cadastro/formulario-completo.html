@@ -255,6 +255,13 @@
             transition: all 0.2s ease-in-out;
         }
 
+        /* Melhora a legibilidade das opcoes dos menus suspensos */
+        .form-group select option {
+            font-size: 13px;
+            background-color: #100e13;
+            color: var(--text-primary);
+        }
+
         input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(0.8);
             cursor: pointer;
@@ -2207,7 +2214,7 @@ if (tokenConvite) {
         atualizarMensagem();
     })();
 </script>
-<script src="../../shared/js/auth.js"></script>
+<script src="/shared/js/auth.js"></script>
 <script>
 (() => {
     const form = document.getElementById('formCadastro') || document.getElementById('registerForm') || document.querySelector('form');
