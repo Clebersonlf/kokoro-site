@@ -43,6 +43,39 @@ export default async function handler(req, res) {
   const esporte = vazioParaNull(b.esporte);
   const faixa = vazioParaNull(b.faixa) || 'branca';
   const grau = vazioParaNull(b.grau) || '0º Grau';
+  const anoGraduacao = vazioParaNull(b.anoGraduacao);
+  const nomeEquipe = vazioParaNull(b.nomeEquipe);
+  const nomeProfessor = vazioParaNull(b.nomeProfessor);
+  const graduacaoProfessor = vazioParaNull(b.graduacaoProfessor);
+
+  // Nivel complementar somente se a graduacao for realmente faixa branca
+  const nivelFaixaBranca =
+    /faixa branca|^branca$/i.test(String(faixa).trim())
+      ? vazioParaNull(b.nivelFaixaBranca)
+      : null;
+  const dadosVerdadeiros = b.dadosVerdadeiros ?? false;
+  const autorizoImagem = b.autorizoImagem ?? false;
+
+  const entidades = Array.isArray(b.entidades) ? b.entidades : [];
+
+  const responsavelNome = vazioParaNull(b.responsavelNome);
+  const responsavelRg = vazioParaNull(b.responsavelRg);
+  const responsavelCpf = vazioParaNull(b.responsavelCpf);
+  const responsavelParentesco = vazioParaNull(b.responsavelParentesco);
+  const responsavelParentescoOutro = vazioParaNull(b.responsavelParentescoOutro);
+
+  const menorNomeCompleto = vazioParaNull(b.menorNomeCompleto);
+  const menorSubstanciasCiente = b.menorSubstanciasCiente ?? null;
+  const menorMedicamentosCiente = b.menorMedicamentosCiente ?? null;
+  const menorMedicamentoNome = vazioParaNull(b.menorMedicamentoNome);
+  const menorMedicamentoMotivo = vazioParaNull(b.menorMedicamentoMotivo);
+  const menorMedicamentoContinuo = vazioParaNull(b.menorMedicamentoContinuo);
+
+  const responsavelCidade = vazioParaNull(b.responsavelCidade);
+  const responsavelData = vazioParaNull(b.responsavelData);
+  const responsavelTelefone = vazioParaNull(b.responsavelTelefone);
+  const responsavelEmail = vazioParaNull(b.responsavelEmail);
+  const responsavelAssinatura = b.responsavelAssinatura ?? false;
 
   const pesoKg = numeroParaNull(b.pesoKg);
   const alturaM = numeroParaNull(b.alturaM);
@@ -99,6 +132,30 @@ export default async function handler(req, res) {
           esporte = ${esporte},
           faixa = ${faixa},
           grau = ${grau},
+          ano_graduacao = ${anoGraduacao},
+          nome_equipe = ${nomeEquipe},
+          nome_professor = ${nomeProfessor},
+          graduacao_professor = ${graduacaoProfessor},
+          nivel_faixa_branca = ${nivelFaixaBranca},
+          dados_verdadeiros = ${dadosVerdadeiros},
+          autorizo_imagem = ${autorizoImagem},
+          entidades = ${JSON.stringify(entidades)}::jsonb,
+          responsavel_nome = ${responsavelNome},
+          responsavel_rg = ${responsavelRg},
+          responsavel_cpf = ${responsavelCpf},
+          responsavel_parentesco = ${responsavelParentesco},
+          responsavel_parentesco_outro = ${responsavelParentescoOutro},
+          menor_nome_completo = ${menorNomeCompleto},
+          menor_substancias_ciente = ${menorSubstanciasCiente},
+          menor_medicamentos_ciente = ${menorMedicamentosCiente},
+          menor_medicamento_nome = ${menorMedicamentoNome},
+          menor_medicamento_motivo = ${menorMedicamentoMotivo},
+          menor_medicamento_continuo = ${menorMedicamentoContinuo},
+          responsavel_cidade = ${responsavelCidade},
+          responsavel_data = ${responsavelData},
+          responsavel_telefone = ${responsavelTelefone},
+          responsavel_email = ${responsavelEmail},
+          responsavel_assinatura = ${responsavelAssinatura},
           peso_kg = ${pesoKg},
           altura_m = ${alturaM},
           imc = ${imc},
@@ -152,6 +209,30 @@ export default async function handler(req, res) {
         esporte,
         faixa,
         grau,
+        ano_graduacao,
+        nome_equipe,
+        nome_professor,
+        graduacao_professor,
+        nivel_faixa_branca,
+        dados_verdadeiros,
+        autorizo_imagem,
+        entidades,
+        responsavel_nome,
+        responsavel_rg,
+        responsavel_cpf,
+        responsavel_parentesco,
+        responsavel_parentesco_outro,
+        menor_nome_completo,
+        menor_substancias_ciente,
+        menor_medicamentos_ciente,
+        menor_medicamento_nome,
+        menor_medicamento_motivo,
+        menor_medicamento_continuo,
+        responsavel_cidade,
+        responsavel_data,
+        responsavel_telefone,
+        responsavel_email,
+        responsavel_assinatura,
         peso_kg,
         altura_m,
         imc,
@@ -193,6 +274,30 @@ export default async function handler(req, res) {
         ${esporte},
         ${faixa},
         ${grau},
+        ${anoGraduacao},
+        ${nomeEquipe},
+        ${nomeProfessor},
+        ${graduacaoProfessor},
+        ${nivelFaixaBranca},
+        ${dadosVerdadeiros},
+        ${autorizoImagem},
+        ${JSON.stringify(entidades)}::jsonb,
+        ${responsavelNome},
+        ${responsavelRg},
+        ${responsavelCpf},
+        ${responsavelParentesco},
+        ${responsavelParentescoOutro},
+        ${menorNomeCompleto},
+        ${menorSubstanciasCiente},
+        ${menorMedicamentosCiente},
+        ${menorMedicamentoNome},
+        ${menorMedicamentoMotivo},
+        ${menorMedicamentoContinuo},
+        ${responsavelCidade},
+        ${responsavelData},
+        ${responsavelTelefone},
+        ${responsavelEmail},
+        ${responsavelAssinatura},
         ${pesoKg},
         ${alturaM},
         ${imc},

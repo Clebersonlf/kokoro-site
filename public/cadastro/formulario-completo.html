@@ -1178,41 +1178,418 @@ if (tokenConvite) {
   }
 }
 
-        // === MODO EDICAO: le ?id= da URL e preenche o form ===
+        // === MODO EDICAO COMPLETO: le ?id= da URL e preenche o form ===
         (function(){
-          const _p=new URLSearchParams(window.location.search);
-          const _id=_p.get('id');
-          if(!_id) return;
-          form.dataset.alunoId=_id;
-          document.title='Editar Aluno - Kokoro';
-          fetch('/api/alunos/buscar?id='+_id)
-            .then(function(r){return r.ok?r.json():null;})
+          const params = new URLSearchParams(window.location.search);
+          const alunoId = params.get('id');
+
+          if(!alunoId) return;
+
+          form.dataset.alunoId = alunoId;
+          document.title = 'Editar Aluno - Kokoro';
+
+          function setValor(id, valor){
+            const el = document.getElementById(id);
+            if(!el) return;
+
+            if(valor !== null && valor !== undefined){
+              el.value = valor;
+            }
+          }
+
+          function marcarRadio(name, valor){
+            if(valor === null || valor === undefined) return;
+
+            const normalizado = String(valor).toLowerCase().trim();
+
+            const radios = document.querySelectorAll(
+              'input[type="radio"][name="' + name + '"]'
+            );
+
+            radios.forEach(function(radio){
+              const rv = String(radio.value).toLowerCase().trim();
+
+              radio.checked =
+                rv === normalizado ||
+                (valor === true && rv === 'sim') ||
+                (valor === false && rv === 'nao');
+            });
+          }
+
+          fetch('/api/alunos/' + encodeURIComponent(alunoId))
+            .then(function(r){
+              if(!r.ok) throw new Error('HTTP ' + r.status);
+              return r.json();
+            })
             .then(function(a){
               if(!a) return;
-              var s=function(id,v){var e=document.getElementById(id);if(e&&v)e.value=v;};
-              s('nomeCompleto',a.nome); s('email',a.email);
-              var am=document.getElementById('arteMarcial');
-              if(am&&!am.value){am.value='jiu-jitsu';am.dispatchEvent(new Event('change'));}
-              setTimeout(function(){
-                var cf=document.getElementById('corFaixa');
-                if(cf&&a.faixa){
-                  for(var i=0;i<cf.options.length;i++){
-                    if(cf.options[i].value.toLowerCase().indexOf(a.faixa.toLowerCase())>=0){
-                      cf.value=cf.options[i].value;
-                      cf.dispatchEvent(new Event('change'));break;}
+
+              // IDENTIFICACAO
+              setValor('nomeCompleto', a.nome);
+              marcarRadio('sexo', a.sexo);
+
+              setValor('nomeMae', a.nome_mae || a.mae);
+              setValor('nomePai', a.nome_pai || a.pai);
+              setValor('rg', a.rg);
+              setValor('cpf', a.cpf);
+
+              const nascimento =
+                a.data_nascimento ||
+                a.nascimento ||
+                '';
+
+              if(nascimento){
+                setValor(
+                  'dataNascimento',
+                  String(nascimento).substring(0,10)
+                );
+              }
+
+              setValor('idade', a.idade);
+
+              // ENDERECO E CONTATO
+              setValor('endereco', a.endereco);
+              setValor('complemento', a.complemento);
+              setValor('bairro', a.bairro);
+              setValor('cep', a.cep);
+              setValor('referencia', a.referencia);
+              setValor('telefone', a.telefone);
+              setValor('whatsapp', a.whatsapp);
+              setValor('email', a.email);
+
+              // DADOS FISICOS
+              setValor('peso', a.peso_kg);
+              setValor('altura', a.altura_m);
+              setValor('imc', a.imc);
+
+              // CONTATO DE EMERGENCIA
+              setValor('contato1_nome', a.contato_emerg_nome);
+              setValor('contato1_parentesco', a.contato_emerg_parentesco);
+              setValor('contato1_endereco', a.contato_emerg_endereco);
+              setValor('contato1_telefone', a.contato_emerg_telefone);
+
+              // PAR-Q
+              marcarRadio('parq1', a.parq_q1);
+              marcarRadio('parq2', a.parq_q2);
+              marcarRadio('parq3', a.parq_q3);
+              marcarRadio('parq4', a.parq_q4);
+              marcarRadio('parq5', a.parq_q5);
+              marcarRadio('parq6', a.parq_q6);
+              marcarRadio('parq7', a.parq_q7);
+              marcarRadio('medicamento', a.parq_q8);
+
+              setValor('medicamentoDescricao', a.medicamentos);
+
+              // TERMOS
+              const termos = document.getElementById('aceitoTermos');
+              if(termos){
+                termos.checked = a.termos_aceitos === true;
+              }
+
+              // DADOS COMPLEMENTARES DA GRADUACAO
+              setValor('anoGraduacao', a.ano_graduacao);
+              setValor('nomeEquipe', a.nome_equipe);
+              setValor('nomeProfessor', a.nome_professor);
+              setValor('graduacaoProfessor', a.graduacao_professor);
+
+              // Nivel complementar da faixa branca
+              setValor('nivelFaixaBranca', a.nivel_faixa_branca);
+
+              // RESPONSAVEL LEGAL / CADASTRO DE MENOR
+              setValor('responsavel_nome', a.responsavel_nome);
+              setValor('responsavel_rg', a.responsavel_rg);
+              setValor('responsavel_cpf', a.responsavel_cpf);
+
+              marcarRadio(
+                'grau_parentesco',
+                a.responsavel_parentesco
+              );
+
+              setValor(
+                'outro_parentesco_texto',
+                a.responsavel_parentesco_outro
+              );
+
+              const menorNome = document.querySelector(
+                '[name="menor_nome_completo"]'
+              );
+              if(menorNome && a.menor_nome_completo != null){
+                menorNome.value = a.menor_nome_completo;
+              }
+
+              const substanciasNao =
+                document.getElementById('substancias_nao');
+
+              if(substanciasNao){
+                substanciasNao.checked =
+                  a.menor_substancias_ciente === true;
+              }
+
+              const medicamentosNao =
+                document.getElementById('medicamentos_nao');
+
+              if(medicamentosNao){
+                medicamentosNao.checked =
+                  a.menor_medicamentos_ciente === true;
+              }
+
+              const menorMedicamentoNome = document.querySelector(
+                '[name="medicamento_nome_menor"]'
+              );
+              if(
+                menorMedicamentoNome &&
+                a.menor_medicamento_nome != null
+              ){
+                menorMedicamentoNome.value =
+                  a.menor_medicamento_nome;
+              }
+
+              const menorMedicamentoMotivo = document.querySelector(
+                '[name="medicamento_motivo_menor"]'
+              );
+              if(
+                menorMedicamentoMotivo &&
+                a.menor_medicamento_motivo != null
+              ){
+                menorMedicamentoMotivo.value =
+                  a.menor_medicamento_motivo;
+              }
+
+              marcarRadio(
+                'medicamento_continuo_menor',
+                a.menor_medicamento_continuo
+              );
+
+              setValor('responsavel_cidade', a.responsavel_cidade);
+
+              if(a.responsavel_data){
+                setValor(
+                  'responsavel_data',
+                  String(a.responsavel_data).substring(0,10)
+                );
+              }
+
+              setValor(
+                'responsavel_telefone',
+                a.responsavel_telefone
+              );
+              setValor(
+                'responsavel_email',
+                a.responsavel_email
+              );
+
+              const assinaturaResponsavel =
+                document.getElementById(
+                  'responsavel_assinatura_check'
+                );
+
+              if(assinaturaResponsavel){
+                assinaturaResponsavel.checked =
+                  a.responsavel_assinatura === true;
+              }
+
+              // DECLARACOES / TERMOS
+              const dadosVerdadeiros =
+                document.getElementById('dadosVerdadeiros');
+
+              if(dadosVerdadeiros){
+                dadosVerdadeiros.checked =
+                  a.dados_verdadeiros === true;
+              }
+
+              const autorizoImagem =
+                document.getElementById('autorizoImagem');
+
+              if(autorizoImagem){
+                autorizoImagem.checked =
+                  a.autorizo_imagem === true;
+              }
+
+              // REGISTROS EM ENTIDADES - MODO EDICAO
+              if(Array.isArray(a.entidades) && a.entidades.length){
+                registrosContainer.innerHTML = '';
+                entidadeCounter = 0;
+
+                a.entidades.forEach(function(entidade){
+                  // Reaproveita a rotina normal do formulario para
+                  // criar corretamente IDs, labels e grupos de radios.
+                  addEntidadeBtn.click();
+
+                  const blocos = registrosContainer.querySelectorAll(
+                    '.entidade-registro-block'
+                  );
+
+                  const bloco = blocos[blocos.length - 1];
+                  if(!bloco) return;
+
+                  const preencher = function(name, valor){
+                    const campo = bloco.querySelector(
+                      '[name="' + name + '"]'
+                    );
+
+                    if(campo && valor !== null && valor !== undefined){
+                      campo.value = valor;
+                    }
+                  };
+
+                  preencher('entidadeNome[]', entidade.nome);
+                  preencher('entidadeSigla[]', entidade.sigla);
+                  preencher('entidadeRegistro[]', entidade.registro);
+                  preencher('entidadeEstado[]', entidade.estado);
+                  preencher('entidadePais[]', entidade.pais);
+                  preencher('entidadeSite[]', entidade.site);
+                  preencher('entidadeTelefone[]', entidade.telefone);
+                  preencher('entidadeEmail[]', entidade.email);
+
+                  if(
+                    entidade.ativo !== null &&
+                    entidade.ativo !== undefined
+                  ){
+                    const ativoNormalizado =
+                      String(entidade.ativo).toLowerCase().trim();
+
+                    const radios = bloco.querySelectorAll(
+                      'input[type="radio"][name^="entidadeAtivo_"]'
+                    );
+
+                    radios.forEach(function(radio){
+                      radio.checked =
+                        String(radio.value).toLowerCase().trim() ===
+                        ativoNormalizado;
+                    });
+                  }
+                });
+              }
+
+              // MODALIDADE
+              const arte = document.getElementById('arteMarcial');
+
+              if(arte && a.esporte){
+                const procurado = String(a.esporte).toLowerCase().trim();
+
+                for(const opt of arte.options){
+                  if(
+                    String(opt.value).toLowerCase().trim() === procurado ||
+                    String(opt.textContent).toLowerCase().trim() === procurado
+                  ){
+                    arte.value = opt.value;
+                    break;
                   }
                 }
+
+                arte.dispatchEvent(new Event('change', { bubbles:true }));
+              }
+
+              // FAIXA / GRADUACAO NO MODO EDICAO
+              // O campo corFaixa ja possui a graduacao completa.
+              // Ex.: "Faixa Preta (6º Grau) Professor".
+              // Selecionamos exatamente o valor salvo no banco,
+              // sem alterar ou reduzir a lista de graduacoes.
+              setTimeout(function(){
+                const faixa = document.getElementById('corFaixa');
+
+                if(faixa && a.faixa){
+                  const procurada = String(a.faixa).trim().toLowerCase();
+
+                  let encontrada = false;
+
+                  for(const opt of faixa.options){
+                    const valor = String(opt.value).trim().toLowerCase();
+                    const texto = String(opt.textContent).trim().toLowerCase();
+
+                    if(valor === procurada || texto === procurada){
+                      faixa.value = opt.value;
+                      encontrada = true;
+                      break;
+                    }
+                  }
+
+                  if(encontrada){
+                    faixa.dispatchEvent(
+                      new Event('change', { bubbles:true })
+                    );
+                  } else {
+                    console.warn(
+                      'KOKORO: graduacao salva nao encontrada na lista:',
+                      a.faixa
+                    );
+                  }
+                }
+
+                // O campo Grau continua sendo preenchido apenas para
+                // compatibilidade com a estrutura atual do cadastro.
                 setTimeout(function(){
-                  var gr=document.getElementById('grau');
-                  if(gr&&a.grau){for(var j=0;j<gr.options.length;j++){if(gr.options[j].value===a.grau){gr.value=a.grau;break;}}}
-                },250);
-              },250);
-              var bn=document.getElementById('adminBanner');
-              if(bn){bn.classList.remove('hidden-field');
-                var bp=bn.querySelector('p');
-                if(bp) bp.textContent='Modo Edicao: '+a.nome+' (Nr '+( a.numeroCertificado||a.numero_certificado||'')+')';}
+                  const grau = document.getElementById('grau');
+                  if(!grau) return;
+
+                  let grauSalvo = a.grau;
+
+                  const faixaCompleta = String(a.faixa || '');
+                  const match = faixaCompleta.match(/\((\d+º Grau)\)/i);
+
+                  if(match){
+                    grauSalvo = match[1];
+                  } else if(/preta lisa/i.test(faixaCompleta)){
+                    grauSalvo = 'Lisa';
+                  }
+
+                  if(grauSalvo){
+                    const procurado = String(grauSalvo).trim().toLowerCase();
+
+                    for(const opt of grau.options){
+                      if(
+                        String(opt.value).trim().toLowerCase() === procurado ||
+                        String(opt.textContent).trim().toLowerCase() === procurado
+                      ){
+                        grau.value = opt.value;
+                        break;
+                      }
+                    }
+                  }
+                }, 100);
+
+              }, 100);
+
+              // FOTO
+              const fotoExistente =
+                a.foto ||
+                a.foto_url ||
+                a.selfie_url ||
+                '';
+
+              if(fotoExistente){
+                const photoData =
+                  document.getElementById('photoData');
+
+                if(photoData){
+                  photoData.value = fotoExistente;
+                }
+              }
+
+              // BANNER ADMINISTRATIVO
+              const banner = document.getElementById('adminBanner');
+
+              if(banner){
+                banner.classList.remove('hidden-field');
+
+                const p = banner.querySelector('p');
+
+                if(p){
+                  p.textContent =
+                    'Modo Edição: ' +
+                    (a.nome || 'Aluno');
+                }
+              }
+
+              console.log(
+                'KOKORO: cadastro carregado para edição:',
+                alunoId
+              );
             })
-            .catch(function(e){console.warn('Erro ao buscar aluno:',e);});
+            .catch(function(e){
+              console.error('Erro ao carregar aluno para edição:', e);
+              alert('Não foi possível carregar todos os dados do aluno.');
+            });
         })();
 
 
@@ -1487,53 +1864,9 @@ if (tokenConvite) {
         });
 
 
-        // --- LÓGICA DE SUBMISSÃO E VALIDAÇÃO ---
-        form.addEventListener('submit', function(e){ e.preventDefault();
-            e.preventDefault();
-
-            let fieldsToCheck = [];
-            const adminAtivo = document.body.classList.contains('admin-mode-active');
-
-            if (!adminAtivo) {
-                fieldsToCheck = allRequiredFields;
-                // Se o termo de menor estiver visível, validar seus campos obrigatórios também
-                if (!document.getElementById('termoMenorIdade').classList.contains('hidden-field')) {
-                    const termoRequiredFields = document.querySelectorAll('#termoMenorIdade [required]');
-                    fieldsToCheck = [...allRequiredFields, ...termoRequiredFields];
-                }
-            }
-
-            let firstInvalidField = null;
-            for (const field of fieldsToCheck) {
-                if (!field.checkValidity()) {
-                    if (!firstInvalidField) firstInvalidField = field;
-                    field.style.borderColor = 'var(--color-alerta)';
-                } else {
-                    field.style.borderColor = '';
-                }
-            }
-
-            if (firstInvalidField) {
-                firstInvalidField.focus();
-                alert('Por favor, preencha todos os campos obrigatórios marcados com *.');
-                return;
-            }
-
-            const _id=form.dataset.alunoId;
-            const _payload={
-              nome:document.getElementById('nomeCompleto')?.value||'',
-              email:document.getElementById('email')?.value||'',
-              faixa:(document.getElementById('corFaixa')?.value||'branca').toLowerCase().split(' ').pop(),
-              grau:document.getElementById('grau')?.value||'0º Grau',
-              numeroCertificado:'',status:'ativo',
-              foto: document.getElementById('photoData')?.value || null
-            };
-            if(_id) _payload.id=_id;
-            fetch('/api/alunos/salvar',{method:_id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_payload)})
-            .then(r=>r.json())
-            .then(d=>{ if(d.error){alert('Erro: '+d.error);return;} successModal.openModal(); })
-            .catch(e=>{ console.error(e); alert('Erro ao salvar cadastro. Verifique a conexão e tente novamente.'); });
-        });
+        // --- SALVAMENTO ANTIGO DESATIVADO ---
+        // O formulário passa a utilizar exclusivamente a rotina moderna
+        // de salvamento completo existente no final deste arquivo.
 
         successModalClose.addEventListener('click', () => {
             form.reset();
@@ -2292,6 +2625,21 @@ if (tokenConvite) {
       return null;
     };
 
+    // Coleta todos os registros de entidades existentes no formulario
+    const entidades = Array.from(
+      document.querySelectorAll('#registrosContainer .entidade-registro-block')
+    ).map(bloco => ({
+      nome: bloco.querySelector('[name="entidadeNome[]"]')?.value?.trim() || null,
+      sigla: bloco.querySelector('[name="entidadeSigla[]"]')?.value?.trim() || null,
+      registro: bloco.querySelector('[name="entidadeRegistro[]"]')?.value?.trim() || null,
+      estado: bloco.querySelector('[name="entidadeEstado[]"]')?.value?.trim() || null,
+      pais: bloco.querySelector('[name="entidadePais[]"]')?.value?.trim() || null,
+      site: bloco.querySelector('[name="entidadeSite[]"]')?.value?.trim() || null,
+      telefone: bloco.querySelector('[name="entidadeTelefone[]"]')?.value?.trim() || null,
+      email: bloco.querySelector('[name="entidadeEmail[]"]')?.value?.trim() || null,
+      ativo: bloco.querySelector('input[type="radio"][name^="entidadeAtivo_"]:checked')?.value || null
+    }));
+
     const payload = {
       nome,
 
@@ -2318,6 +2666,34 @@ if (tokenConvite) {
       esporte: document.getElementById('arteMarcial')?.value || null,
       faixa: document.getElementById('corFaixa')?.value || 'branca',
       grau: document.getElementById('grau')?.value || '0º Grau',
+      anoGraduacao: document.getElementById('anoGraduacao')?.value || null,
+      nomeEquipe: document.getElementById('nomeEquipe')?.value?.trim() || null,
+      nomeProfessor: document.getElementById('nomeProfessor')?.value?.trim() || null,
+      graduacaoProfessor: document.getElementById('graduacaoProfessor')?.value?.trim() || null,
+      nivelFaixaBranca: document.getElementById('nivelFaixaBranca')?.value || null,
+
+      // Registros em entidades
+      entidades,
+
+      // Dados do responsavel / cadastro de menor
+      responsavelNome: document.getElementById('responsavel_nome')?.value?.trim() || null,
+      responsavelRg: document.getElementById('responsavel_rg')?.value?.trim() || null,
+      responsavelCpf: document.getElementById('responsavel_cpf')?.value?.trim() || null,
+      responsavelParentesco: radioValue('grau_parentesco'),
+      responsavelParentescoOutro: document.getElementById('outro_parentesco_texto')?.value?.trim() || null,
+
+      menorNomeCompleto: document.querySelector('[name="menor_nome_completo"]')?.value?.trim() || null,
+      menorSubstanciasCiente: !!document.getElementById('substancias_nao')?.checked,
+      menorMedicamentosCiente: !!document.getElementById('medicamentos_nao')?.checked,
+      menorMedicamentoNome: document.querySelector('[name="medicamento_nome_menor"]')?.value?.trim() || null,
+      menorMedicamentoMotivo: document.querySelector('[name="medicamento_motivo_menor"]')?.value?.trim() || null,
+      menorMedicamentoContinuo: radioValue('medicamento_continuo_menor'),
+
+      responsavelCidade: document.getElementById('responsavel_cidade')?.value?.trim() || null,
+      responsavelData: document.getElementById('responsavel_data')?.value || null,
+      responsavelTelefone: document.getElementById('responsavel_telefone')?.value?.trim() || null,
+      responsavelEmail: document.getElementById('responsavel_email')?.value?.trim() || null,
+      responsavelAssinatura: !!document.getElementById('responsavel_assinatura_check')?.checked,
 
       // Dados fisicos
       pesoKg: document.getElementById('peso')?.value || null,
@@ -2348,7 +2724,9 @@ if (tokenConvite) {
       medicamentos: document.getElementById('medicamentoDescricao')?.value?.trim() || null,
 
       // Termos
+      dadosVerdadeiros: !!document.getElementById('dadosVerdadeiros')?.checked,
       termosAceitos: !!document.getElementById('aceitoTermos')?.checked,
+      autorizoImagem: !!document.getElementById('autorizoImagem')?.checked,
 
       numeroCertificado: '',
       status: 'ativo',
