@@ -92,12 +92,60 @@
     .bar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
     .bar > span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--blue))}
 
-    .profile-side{border-radius:var(--radius-xl);padding:22px;display:grid;gap:16px;align-content:start}
-    .profile-title{font-size:20px;font-weight:800}
-    .info-grid{display:grid;gap:12px}
-    .info-box{padding:14px 15px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
-    .info-box .label{color:var(--muted);font-size:12px;margin-bottom:6px}
-    .info-box .value{font-size:15px;font-weight:700;word-break:break-word}
+    .profile-side{
+      border-radius:var(--radius-xl);
+      padding:22px;
+      display:grid;
+      gap:16px;
+      align-content:start;
+    }
+
+    .profile-title{
+      font-size:20px;
+      font-weight:800;
+    }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .info-box{
+      min-width:0;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .info-box .label{
+      color:var(--muted);
+      font-size:11px;
+      margin-bottom:5px;
+    }
+
+    .info-box .value{
+      font-size:14px;
+      font-weight:700;
+      line-height:1.35;
+      overflow-wrap:anywhere;
+    }
+
+    /* Campos que precisam de toda a largura da ficha */
+    #infoNome,
+    #infoEmail,
+    #infoEmergenciaEndereco,
+    #infoObservacoes{
+      display:block;
+    }
+
+    .info-box:has(#infoNome),
+    .info-box:has(#infoEmail),
+    .info-box:has(#infoEmergenciaEndereco),
+    .info-box:has(#infoObservacoes){
+      grid-column:1 / -1;
+    }
 
     .cta-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .cta{height:50px;border-radius:16px;border:1px solid var(--line);background:rgba(96,165,250,.08);color:var(--text);font-weight:700;display:flex;align-items:center;justify-content:center;text-decoration:none}
@@ -114,6 +162,7 @@
       .hero-meta{grid-template-columns:1fr}
     }
     @media (max-width: 640px){
+      .info-grid{grid-template-columns:1fr}
       body{padding:12px}
       .topbar{padding:14px 16px}
       .top-actions{gap:8px}
@@ -231,6 +280,323 @@
 .faixa-dropdown option{
   color:#000;
 }
+
+/* =========================================================
+   KOKORO - REDESIGN DO PAINEL SUPERIOR DO ATLETA
+   ========================================================= */
+
+.hero-atleta{
+  grid-template-columns:120px minmax(0,1fr) minmax(190px,230px);
+  align-items:start;
+  gap:22px;
+  padding:24px;
+  min-height:0;
+}
+
+.hero-atleta .avatar-wrap{
+  margin-top:4px;
+}
+
+.hero-atleta .avatar{
+  width:110px;
+  height:110px;
+  border-radius:28px;
+}
+
+.hero-atleta .hero-info{
+  width:100%;
+}
+
+.hero-atleta .eyebrow{
+  margin-bottom:7px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--cyan);
+}
+
+.hero-title-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:9px;
+}
+
+.hero-atleta .hero-name{
+  margin:0;
+  font-size:clamp(24px,2.2vw,32px);
+  line-height:1.08;
+}
+
+.hero-atleta .hero-sub{
+  margin:0 0 10px;
+}
+
+.hero-atleta .faixa-pill{
+  padding:8px 12px;
+  background:rgba(96,165,250,.08);
+  border-color:rgba(96,165,250,.20);
+}
+
+.hero-atleta #statusAluno{
+  padding:7px 11px;
+  font-size:11px;
+}
+
+.hero-atleta .admin-edit-link{
+  margin:4px 0 18px;
+}
+
+.hero-atleta .admin-edit-link a{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:#93c5fd;
+  font-size:13px;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.hero-atleta .admin-edit-link a:hover{
+  color:#dbeafe;
+}
+
+.hero-section-label{
+  margin:15px 0 8px;
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.hero-atleta .hero-meta{
+  margin-top:0;
+}
+
+.hero-meta-esportivo{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.hero-meta-contato{
+  grid-template-columns:minmax(0,1.35fr) minmax(150px,.65fr);
+}
+
+.hero-meta-emergencia{
+  grid-template-columns:minmax(190px,.8fr) minmax(0,1.2fr);
+}
+
+.hero-atleta .meta-box{
+  padding:11px 13px;
+  border-radius:14px;
+  background:rgba(255,255,255,.025);
+}
+
+.hero-atleta .meta-label{
+  margin-bottom:5px;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.hero-atleta .meta-value{
+  font-size:13px;
+  line-height:1.4;
+}
+
+.hero-atleta .hero-side{
+  min-width:0;
+  width:100%;
+  gap:10px;
+  align-self:start;
+}
+
+.hero-atleta .quick-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  min-height:76px;
+  border-radius:16px;
+}
+
+.quick-icon{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:rgba(96,165,250,.10);
+  border:1px solid rgba(96,165,250,.14);
+  font-size:17px;
+}
+
+.hero-atleta .quick-label{
+  margin-bottom:4px;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.hero-atleta .quick-value{
+  font-size:18px;
+  line-height:1.1;
+}
+
+@media (max-width:1180px){
+  .hero-atleta{
+    grid-template-columns:110px minmax(0,1fr) 210px;
+  }
+}
+
+@media (max-width:860px){
+  .hero-atleta{
+    grid-template-columns:100px minmax(0,1fr);
+  }
+
+  .hero-atleta .hero-side{
+    grid-column:1 / -1;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hero-meta-esportivo,
+  .hero-meta-contato,
+  .hero-meta-emergencia{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media (max-width:640px){
+  .hero-atleta{
+    grid-template-columns:1fr;
+    padding:16px;
+  }
+
+  .hero-atleta .avatar{
+    width:92px;
+    height:92px;
+  }
+
+  .hero-atleta .hero-side{
+    grid-column:auto;
+    grid-template-columns:1fr;
+  }
+
+  .hero-meta-esportivo,
+  .hero-meta-contato,
+  .hero-meta-emergencia{
+    grid-template-columns:1fr;
+  }
+
+  .hero-title-row{
+    align-items:flex-start;
+  }
+}
+
+
+/* =========================================================
+   KOKORO - REFINO VISUAL DO PERFIL DO ATLETA
+   ========================================================= */
+
+.hero-atleta{
+  grid-template-columns:110px minmax(0,1fr) 210px;
+  gap:18px;
+  padding:20px;
+}
+
+.hero-atleta .hero-info{
+  min-width:0;
+}
+
+.hero-atleta .hero-name{
+  font-size:28px;
+  line-height:1.05;
+}
+
+.hero-atleta .eyebrow{
+  font-size:11px;
+}
+
+.hero-atleta .hero-section-label,
+.hero-atleta .hero-section-label{
+  font-size:11px;
+  margin-top:13px;
+  margin-bottom:7px;
+  padding-bottom:5px;
+}
+
+.hero-atleta .hero-meta{
+  gap:8px;
+}
+
+.hero-atleta .meta-box{
+  padding:10px 12px;
+  min-height:54px;
+}
+
+.hero-atleta .meta-label{
+  font-size:10px;
+}
+
+.hero-atleta .meta-value{
+  font-size:13px;
+  line-height:1.3;
+}
+
+.hero-meta-esportivo{
+  grid-template-columns:1fr 1fr 1.25fr;
+}
+
+.hero-meta-contato{
+  grid-template-columns:minmax(0,1.45fr) minmax(145px,.75fr);
+}
+
+.hero-meta-emergencia{
+  grid-template-columns:minmax(190px,.9fr) minmax(0,1.35fr);
+}
+
+.hero-atleta .contato-box,
+.hero-atleta .endereco-box{
+  width:auto;
+}
+
+.hero-atleta .quick-card{
+  min-height:68px;
+  padding:12px;
+}
+
+.hero-atleta .quick-value{
+  font-size:17px;
+}
+
+.hero-atleta .quick-icon{
+  width:34px;
+  height:34px;
+  flex-basis:34px;
+}
+
+@media (max-width:860px){
+  .hero-meta-esportivo,
+  .hero-meta-contato,
+  .hero-meta-emergencia{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media (max-width:640px){
+  .hero-meta-esportivo,
+  .hero-meta-contato,
+  .hero-meta-emergencia{
+    grid-template-columns:1fr;
+  }
+}
+
 </style>
 
 
@@ -256,124 +622,64 @@
 
     <div class="main-grid">
       <div style="display:grid;gap:18px;">
-        <section class="hero">
+        <section class="hero hero-atleta">
+
           <div class="avatar-wrap">
-            <img id="fotoAluno" class="avatar" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect width=%22100%25%22 height=%22100%25%22 rx=%2232%22 fill=%22%230b1526%22/><text x=%2250%25%22 y=%2256%25%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-family=%22Arial%22>👤</text></svg>" alt="Foto do aluno" />
+            <img
+              id="fotoAluno"
+              class="avatar"
+              src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect width=%22100%25%22 height=%22100%25%22 rx=%2232%22 fill=%22%230b1526%22/><text x=%2250%25%22 y=%2256%25%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-family=%22Arial%22>👤</text></svg>"
+              alt="Foto do aluno"
+            />
             <div class="avatar-ring"></div>
           </div>
-          <div class="hero-info">
-            <div class="eyebrow">Painel do aluno</div>
-            <div class="hero-name" id="nomeAluno">Aluno não identificado</div>
-            <div class="hero-sub">
-              
-<select id="faixaAluno" class="faixa-dropdown">
-<option value="">Selecione a faixa</option>
-<option>Faixa Branca</option>
-<option>Faixa Branca (1º Grau)</option>
-<option>Faixa Branca (2º Grau)</option>
-<option>Faixa Branca (3º Grau)</option>
-<option>Faixa Branca (4º Grau)</option>
-<option>Faixa Cinza e Branca</option>
-<option>Faixa Cinza e Branca (1º Grau)</option>
-<option>Faixa Cinza e Branca (2º Grau)</option>
-<option>Faixa Cinza e Branca (3º Grau)</option>
-<option>Faixa Cinza e Branca (4º Grau)</option>
-<option>Faixa Cinza</option>
-<option>Faixa Cinza (1º Grau)</option>
-<option>Faixa Cinza (2º Grau)</option>
-<option>Faixa Cinza (3º Grau)</option>
-<option>Faixa Cinza (4º Grau)</option>
-<option>Faixa Cinza e Preta</option>
-<option>Faixa Cinza e Preta (1º Grau)</option>
-<option>Faixa Cinza e Preta (2º Grau)</option>
-<option>Faixa Cinza e Preta (3º Grau)</option>
-<option>Faixa Cinza e Preta (4º Grau)</option>
-<option>Faixa Amarela</option>
-<option>Faixa Amarela (1º Grau)</option>
-<option>Faixa Amarela (2º Grau)</option>
-<option>Faixa Amarela (3º Grau)</option>
-<option>Faixa Amarela (4º Grau)</option>
-<option>Faixa Amarela e Preta</option>
-<option>Faixa Amarela e Preta (1º Grau)</option>
-<option>Faixa Amarela e Preta (2º Grau)</option>
-<option>Faixa Amarela e Preta (3º Grau)</option>
-<option>Faixa Amarela e Preta (4º Grau)</option>
-<option>Laranja</option>
-<option>Laranja (1º Grau)</option>
-<option>Laranja (2º Grau)</option>
-<option>Laranja (3º Grau)</option>
-<option>Laranja (4º Grau)</option>
-<option>Laranja e Preta</option>
-<option>Laranja e Preta (1º Grau)</option>
-<option>Laranja e Preta (2º Grau)</option>
-<option>Laranja e Preta (3º Grau)</option>
-<option>Laranja e Preta (4º Grau)</option>
-<option>Verde</option>
-<option>Verde (1º Grau)</option>
-<option>Verde (2º Grau)</option>
-<option>Verde (3º Grau)</option>
-<option>Verde (4º Grau)</option>
-<option>Verde e Preta</option>
-<option>Verde e Preta (1º Grau)</option>
-<option>Verde e Preta (2º Grau)</option>
-<option>Verde e Preta (3º Grau)</option>
-<option>Verde e Preta (4º Grau)</option>
-<option>Faixa Azul</option>
-<option>Faixa Azul (1º Grau)</option>
-<option>Faixa Azul (2º Grau)</option>
-<option>Faixa Azul (3º Grau)</option>
-<option>Faixa Azul (4º Grau)</option>
-<option>Faixa Roxa</option>
-<option>Faixa Roxa (1º Grau)</option>
-<option>Faixa Roxa (2º Grau)</option>
-<option>Faixa Roxa (3º Grau)</option>
-<option>Faixa Roxa (4º Grau)</option>
-<option>Faixa Marrom</option>
-<option>Faixa Marrom (1º Grau)</option>
-<option>Faixa Marrom (2º Grau)</option>
-<option>Faixa Marrom (3º Grau)</option>
-<option>Faixa Marrom (4º Grau)</option>
-<option>Faixa Preta</option>
-<option>Faixa Preta (1º Grau)</option>
-<option>Faixa Preta (2º Grau)</option>
-<option>Faixa Preta (3º Grau)</option>
-<option>Faixa Preta (4º Grau)</option>
-<option>Faixa Preta (5º Grau)</option>
-<option>Faixa Preta (6º Grau)</option>
-<option>Faixa Vermelha e Preta (7º Grau)</option>
-<option>Faixa Vermelha e Branca (8º Grau)</option>
-<option>Faixa Vermelha (9º Grau)</option>
-<option>Faixa Vermelha (10º Grau)</option>
-</select>
 
+          <div class="hero-info">
+
+            <div class="eyebrow">PERFIL DO ATLETA</div>
+
+            <div class="hero-title-row">
+              <div class="hero-name" id="nomeAluno">Aluno não identificado</div>
               <span class="pill green" id="statusAluno">Status indisponível</span>
             </div>
-            <div id="adminEditLink" class="admin-edit-link">
-              <a href="/editar_aluno.html">✏️ Editar dados</a>
+
+            <div class="hero-sub hero-graduacao">
+              <span id="faixaAluno" class="pill faixa-pill">
+                Faixa não informada
+              </span>
             </div>
-            <div class="hero-meta">
+
+            <div id="adminEditLink" class="admin-edit-link">
+              <a id="linkEditarCadastro" href="#">✏️ Editar cadastro</a>
+            </div>
+
+            <div class="hero-section-label">Dados esportivos</div>
+
+            <div class="hero-meta hero-meta-esportivo">
+
               <div class="meta-box">
                 <div class="meta-label">Arte / Modalidade</div>
-                
-<select id="modalidadeAluno" class="modalidade-dropdown">
-  <option value="">Selecione</option>
-  <option>Jiu-jitsu</option>
-  <option>Judô</option>
-  <option>Karatê</option>
-</select>
-
-<div id="modalidadeSelect" class="modalidade-select">
-<div>Jiu-jitsu</div>
-<div>Judô</div>
-<div>Karatê</div>
-</div>
+                <div class="meta-value modalidade-valor" id="modalidadeAluno">—</div>
               </div>
+
               <div class="meta-box">
-                <div class="meta-label">Matrícula</div>
+                <div class="meta-label">ID Interno</div>
                 <div class="meta-value" id="matriculaAluno">—</div>
               </div>
+
+              <div class="meta-box">
+                <div class="meta-label">Nº Vitalício Luiz Guinder Team</div>
+                <div class="meta-value" id="vitalicioAluno">—</div>
+              </div>
+
+            </div>
+
+            <div class="hero-section-label">Contato</div>
+
+            <div class="hero-meta hero-meta-contato">
+
               <div class="meta-box contato-box">
-                <div class="meta-label">Contato</div>
+                <div class="meta-label">E-mail</div>
                 <div class="meta-value" id="emailAluno">—</div>
               </div>
 
@@ -381,6 +687,12 @@
                 <div class="meta-label">WhatsApp</div>
                 <div class="meta-value" id="whatsappAluno">—</div>
               </div>
+
+            </div>
+
+            <div class="hero-section-label">Emergência</div>
+
+            <div class="hero-meta hero-meta-emergencia">
 
               <div class="meta-box">
                 <div class="meta-label">Contato de Emergência</div>
@@ -391,60 +703,71 @@
                 <div class="meta-label">Endereço de Emergência</div>
                 <div class="meta-value" id="enderecoEmergenciaAluno">—</div>
               </div>
+
             </div>
+
           </div>
+
           <div class="hero-side">
+
             <div class="quick-card">
-              <div class="quick-label">Situação Financeira</div>
-              <div class="quick-value ok" id="financeiroAluno">EM DIA</div>
+              <div class="quick-icon">💳</div>
+              <div>
+                <div class="quick-label">Situação Financeira</div>
+                <div class="quick-value ok" id="financeiroAluno">EM DIA</div>
+              </div>
             </div>
+
             <div class="quick-card">
-              <div class="quick-label">Situação do Cadastro</div>
-              <div class="quick-value" id="cadastroAluno" class="status-ok">ATIVO</div>
+              <div class="quick-icon">✓</div>
+              <div>
+                <div class="quick-label">Situação do Cadastro</div>
+                <div class="quick-value" id="cadastroAluno">ATIVO</div>
+              </div>
             </div>
+
           </div>
+
         </section>
 
         <section class="stats">
           <div class="card stat-card">
-            <div class="kpi" id="kpiAulas">12</div>
+            <div class="kpi" id="kpiAulas">0</div>
             <div class="caption">📚 Aulas concluídas</div>
           </div>
           <div class="card stat-card">
-            <div class="kpi" id="kpiFrequencia">85%</div>
+            <div class="kpi" id="kpiFrequencia">0%</div>
             <div class="caption">🏆 Frequência</div>
           </div>
           <div class="card stat-card">
-            <div class="kpi" id="kpiAvaliacao">4.8</div>
+            <div class="kpi" id="kpiAvaliacao">0.0</div>
             <div class="caption">⭐ Avaliação</div>
           </div>
         </section>
 
         <section class="lower-grid">
           <div class="card">
-            <div class="section-title">📅 Próximas Aulas</div>
-            <div class="list">
-              <div class="list-item"><strong>Aula principal</strong><span>Segunda • 19:00 às 20:30</span></div>
-              <div class="list-item"><strong>Treino técnico</strong><span>Quarta • 19:00 às 20:30</span></div>
+            <div class="section-title">🏆 Histórico de Certificados</div>
+            <div class="list" id="historicoCertificados">
+              <div class="list-item"><strong>Carregando...</strong><span>Aguarde</span></div>
             </div>
           </div>
           <div class="card">
             <div class="section-title">💰 Mensalidades</div>
-            <div class="list">
-              <div class="list-item"><strong>Janeiro/2026</strong><span>✅ Pago</span></div>
-              <div class="list-item"><strong>Fevereiro/2026</strong><span>⏳ Vence em 5 dias</span></div>
+            <div class="list" id="mensalidadesAluno">
+              <div class="list-item"><strong>Carregando...</strong><span>Aguarde</span></div>
             </div>
           </div>
           <div class="card">
             <div class="section-title">📈 Meu Progresso</div>
             <div class="progress-row">
               <div class="progress-block">
-                <div class="progress-top"><span>Técnicas básicas</span><span>90%</span></div>
-                <div class="bar"><span style="width:90%"></span></div>
+                <div class="progress-top"><span>Técnicas básicas</span><span>0%</span></div>
+                <div class="bar"><span style="width:0%"></span></div>
               </div>
               <div class="progress-block">
-                <div class="progress-top"><span>Condicionamento</span><span>75%</span></div>
-                <div class="bar"><span style="width:75%"></span></div>
+                <div class="progress-top"><span>Condicionamento</span><span>0%</span></div>
+                <div class="bar"><span style="width:0%"></span></div>
               </div>
             </div>
           </div>
@@ -452,33 +775,97 @@
       </div>
 
       <aside class="profile-side">
-        <div class="profile-title">Ficha do Aluno</div>
+        <div class="profile-title">Ficha Cadastral</div>
+
         <div class="info-grid">
+
           <div class="info-box">
             <div class="label">Nome completo</div>
             <div class="value" id="infoNome">—</div>
           </div>
+
+          <div class="info-box">
+            <div class="label">Data de nascimento</div>
+            <div class="value" id="infoNascimento">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Idade</div>
+            <div class="value" id="infoIdade">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Sexo</div>
+            <div class="value" id="infoSexo">—</div>
+          </div>
+
           <div class="info-box">
             <div class="label">E-mail</div>
             <div class="value" id="infoEmail">—</div>
           </div>
+
+          <div class="info-box">
+            <div class="label">WhatsApp</div>
+            <div class="value" id="infoWhatsapp">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Arte / Modalidade</div>
+            <div class="value" id="infoModalidade">—</div>
+          </div>
+
           <div class="info-box">
             <div class="label">Faixa / Grau</div>
             <div class="value" id="infoFaixa">—</div>
           </div>
+
           <div class="info-box">
-            <div class="label">Número do certificado</div>
-            <div class="value" id="infoCertificado">—</div>
+            <div class="label">ID Interno</div>
+            <div class="value" id="infoIdInterno">—</div>
           </div>
+
+          <div class="info-box">
+            <div class="label">Nº Vitalício Luiz Guinder Team</div>
+            <div class="value" id="infoVitalicio">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Contato de emergência</div>
+            <div class="value" id="infoEmergenciaNome">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Parentesco</div>
+            <div class="value" id="infoEmergenciaParentesco">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Telefone de emergência</div>
+            <div class="value" id="infoEmergenciaTelefone">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Endereço de emergência</div>
+            <div class="value" id="infoEmergenciaEndereco">—</div>
+          </div>
+
           <div class="info-box">
             <div class="label">Situação financeira</div>
             <div class="value" id="infoFinanceiro">—</div>
           </div>
+
+          <div class="info-box">
+            <div class="label">Situação do cadastro</div>
+            <div class="value" id="infoStatusCadastro">—</div>
+          </div>
+
           <div class="info-box">
             <div class="label">Observações</div>
             <div class="value" id="infoObservacoes">Sem observações</div>
           </div>
+
         </div>
+
         <div class="cta-row">
           <a class="cta" href="/chat.html?voltar=/dashboard_aluno.html">Abrir chat</a>
           <a class="cta" href="/consultoria_alunos.html">Saúde esportiva</a>
@@ -543,17 +930,22 @@ function isAdmin(){
   return localStorage.getItem("admin") === "true";
 }
 
-function aplicarPermissoes(){
-  const campos = [
-    document.getElementById("modalidadeAluno"),
-    document.getElementById("faixaAluno")
-  ];
+function configurarLinkEdicaoCadastro(){
+  const link = document.getElementById("linkEditarCadastro");
+  if(!link) return;
 
-  campos.forEach(c => {
-    if(!c) return;
-    c.disabled = !isAdmin();
-    c.style.opacity = isAdmin() ? "1" : "0.6";
-  });
+  const params = new URLSearchParams(window.location.search);
+  const alunoId = params.get("id");
+
+  if(alunoId){
+    link.href = "/cadastro/formulario-completo.html?id=" + encodeURIComponent(alunoId);
+  } else {
+    link.href = "#";
+  }
+}
+
+function aplicarPermissoes(){
+  configurarLinkEdicaoCadastro();
 
   const btn = document.getElementById("adminEditLink");
   if(btn){
@@ -584,29 +976,24 @@ function aplicarCoresStatus(){
 
 // 🚀 INIT
 document.addEventListener("DOMContentLoaded", () => {
-
   aplicarPermissoes();
   aplicarCoresStatus();
-
-  // Modalidade
-  const mod = document.getElementById("modalidadeAluno");
-  if(mod){
-    const salvo = localStorage.getItem("modalidade");
-    if(salvo) mod.value = salvo;
-
-    mod.addEventListener("change", () => salvar("modalidade", mod.value));
-  }
-
-  // Faixa
-  const faixa = document.getElementById("faixaAluno");
-  if(faixa){
-    const salvo = localStorage.getItem("faixa");
-    if(salvo) faixa.value = salvo;
-
-    faixa.addEventListener("change", () => salvar("faixa", faixa.value));
-  }
-
 });
+
+// ===== FOTO DO ATLETA =====
+try{
+    const aluno = JSON.parse(localStorage.getItem('aluno') || 'null');
+
+    if(aluno && aluno.foto){
+        const avatar = document.querySelector('.avatar');
+        if(avatar){
+            avatar.src = aluno.foto;
+        }
+    }
+}catch(e){
+    console.warn('Erro ao carregar foto:', e);
+}
+
 </script>
 
 
@@ -621,9 +1008,14 @@ async function carregarAluno(){
   const id = q("id");
   if (id){
     try{
-      const r = await fetch('/api/alunos/get?id=' + encodeURIComponent(id), { cache: 'no-store' });
+      const r = await fetch('/api/alunos/' + encodeURIComponent(id), { cache: 'no-store' });
+
+      if (!r.ok) {
+        throw new Error('Falha ao carregar aluno: HTTP ' + r.status);
+      }
+
       const j = await r.json();
-      if (j && j.ok && j.aluno) aluno = j.aluno;
+      if (j && j.id) aluno = j;
     }catch(e){
       console.error("Erro ao buscar aluno pela API:", e);
     }
@@ -649,12 +1041,28 @@ async function carregarAluno(){
     aluno.email ||
     "—";
 
-  const faixaValor =
+  const faixaBase =
     aluno.faixa ||
     aluno.graduacao ||
     "—";
 
+  const grauBase =
+    aluno.grau ||
+    "";
+
+  const faixaValor =
+    grauBase && grauBase !== "0º Grau"
+      ? `${faixaBase} / ${grauBase}`
+      : faixaBase;
+
+  const codigoInternoValor =
+    aluno.codigo_interno ||
+    aluno.codigoInterno ||
+    aluno.matricula ||
+    "—";
+
   const certificadoValor =
+    aluno.numero_certificado ||
     aluno.certificado ||
     aluno.numeroCertificado ||
     aluno.certificadoNumero ||
@@ -676,17 +1084,51 @@ async function carregarAluno(){
     "—";
 
   const emergenciaValor =
-    aluno.contatoEmergencia ||
-    aluno.emergencia ||
-    "—";
+    aluno.contato_emerg_nome
+      ? `${aluno.contato_emerg_nome}${aluno.contato_emerg_parentesco ? ' (' + aluno.contato_emerg_parentesco + ')' : ''}${aluno.contato_emerg_telefone ? ' - ' + aluno.contato_emerg_telefone : ''}`
+      : (aluno.contatoEmergencia || aluno.emergencia || "—");
 
-  const enderecoEmergenciaValor =
-    aluno.enderecoEmergencia ||
-    "—";
+  const enderecoEmergenciaValor = [
+    aluno.contato_emerg_endereco || aluno.enderecoEmergencia,
+    aluno.contato_emerg_endereco && aluno.complemento ? aluno.complemento : null,
+    aluno.contato_emerg_endereco && aluno.bairro ? aluno.bairro : null,
+    aluno.contato_emerg_endereco && aluno.cep ? 'CEP ' + aluno.cep : null
+  ].filter(Boolean).join(', ') || "—";
 
   const statusValor =
     aluno.status ||
     "ATIVO";
+
+  const modalidadeValor =
+    aluno.esporte ||
+    aluno.modalidade ||
+    "";
+
+  const modalidadeAluno = document.getElementById("modalidadeAluno");
+  if (modalidadeAluno) {
+    const nomesModalidade = {
+      "jiu-jitsu": "Jiu-Jitsu",
+      "jiu jitsu": "Jiu-Jitsu",
+      "judô": "Judô",
+      "judo": "Judô",
+      "karatê": "Karatê",
+      "karate": "Karatê"
+    };
+
+    const chaveModalidade = String(modalidadeValor || "").toLowerCase().trim();
+    modalidadeAluno.innerText =
+      nomesModalidade[chaveModalidade] ||
+      modalidadeValor ||
+      "Não informada";
+  }
+
+  const faixaAluno = document.getElementById("faixaAluno");
+  if (faixaAluno) {
+    faixaAluno.innerText =
+      faixaBase && faixaBase !== "—"
+        ? faixaBase
+        : "Faixa não informada";
+  }
 
   const nome = document.getElementById("nomeAluno");
   if(nome) nome.innerText = nomeCompleto;
@@ -703,6 +1145,17 @@ async function carregarAluno(){
   const enderecoEmergencia = document.getElementById("enderecoEmergenciaAluno");
   if(enderecoEmergencia) enderecoEmergencia.innerText = enderecoEmergenciaValor;
 
+  const matriculaAluno = document.getElementById("matriculaAluno");
+  if(matriculaAluno) matriculaAluno.innerText = codigoInternoValor;
+
+  const vitalicioAluno = document.getElementById("vitalicioAluno");
+  if(vitalicioAluno) {
+    vitalicioAluno.innerText =
+      aluno.numero_vitalicio ||
+      aluno.numeroVitalicio ||
+      "—";
+  }
+
   const cadastroAluno = document.getElementById("cadastroAluno");
   if(cadastroAluno) cadastroAluno.innerText = String(statusValor).toUpperCase();
 
@@ -715,17 +1168,225 @@ async function carregarAluno(){
   const infoEmail = document.getElementById("infoEmail");
   if(infoEmail) infoEmail.innerText = emailValor;
 
+  const formatarDataBR = (valor) => {
+    if (!valor) return "—";
+    const data = new Date(valor);
+    if (Number.isNaN(data.getTime())) return "—";
+    return new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(data);
+  };
+
+  const infoNascimento = document.getElementById("infoNascimento");
+  if(infoNascimento) {
+    infoNascimento.innerText = formatarDataBR(
+      aluno.data_nascimento || aluno.nascimento
+    );
+  }
+
+  const infoIdade = document.getElementById("infoIdade");
+  if(infoIdade) {
+    infoIdade.innerText =
+      aluno.idade !== null &&
+      aluno.idade !== undefined &&
+      aluno.idade !== ""
+        ? `${aluno.idade} anos`
+        : "—";
+  }
+
+  const infoSexo = document.getElementById("infoSexo");
+  if(infoSexo) {
+    const sexo = String(aluno.sexo || "").toLowerCase().trim();
+
+    const nomesSexo = {
+      "masculino": "Masculino",
+      "feminino": "Feminino",
+      "m": "Masculino",
+      "f": "Feminino"
+    };
+
+    infoSexo.innerText =
+      nomesSexo[sexo] ||
+      aluno.sexo ||
+      "—";
+  }
+
+  const infoWhatsapp = document.getElementById("infoWhatsapp");
+  if(infoWhatsapp) infoWhatsapp.innerText = whatsappValor;
+
+  const infoModalidade = document.getElementById("infoModalidade");
+  if(infoModalidade) {
+    infoModalidade.innerText =
+      modalidadeAluno?.innerText ||
+      modalidadeValor ||
+      "—";
+  }
+
+  const infoIdInterno = document.getElementById("infoIdInterno");
+  if(infoIdInterno) infoIdInterno.innerText = codigoInternoValor;
+
+  const infoVitalicio = document.getElementById("infoVitalicio");
+  if(infoVitalicio) {
+    infoVitalicio.innerText =
+      aluno.numero_vitalicio ||
+      aluno.numeroVitalicio ||
+      "—";
+  }
+
+  const infoEmergenciaNome = document.getElementById("infoEmergenciaNome");
+  if(infoEmergenciaNome) {
+    infoEmergenciaNome.innerText =
+      aluno.contato_emerg_nome ||
+      "—";
+  }
+
+  const infoEmergenciaParentesco = document.getElementById("infoEmergenciaParentesco");
+  if(infoEmergenciaParentesco) {
+    infoEmergenciaParentesco.innerText =
+      aluno.contato_emerg_parentesco ||
+      "—";
+  }
+
+  const infoEmergenciaTelefone = document.getElementById("infoEmergenciaTelefone");
+  if(infoEmergenciaTelefone) {
+    infoEmergenciaTelefone.innerText =
+      aluno.contato_emerg_telefone ||
+      "—";
+  }
+
+  const infoEmergenciaEndereco = document.getElementById("infoEmergenciaEndereco");
+  if(infoEmergenciaEndereco) {
+    infoEmergenciaEndereco.innerText = enderecoEmergenciaValor;
+  }
+
+  const infoStatusCadastro = document.getElementById("infoStatusCadastro");
+  if(infoStatusCadastro) {
+    infoStatusCadastro.innerText =
+      String(statusValor || "—").toUpperCase();
+  }
+
   const infoFaixa = document.getElementById("infoFaixa");
   if(infoFaixa) infoFaixa.innerText = faixaValor;
 
-  const infoCertificado = document.getElementById("infoCertificado");
-  if(infoCertificado) infoCertificado.innerText = certificadoValor;
-
   const infoFinanceiro = document.getElementById("infoFinanceiro");
-  if(infoFinanceiro) infoFinanceiro.innerText = financeiroValor;
+  const financeiroAluno = document.getElementById("financeiroAluno");
+
+  function atualizarStatusFinanceiro(texto, classe = "ok") {
+    if (infoFinanceiro) {
+      infoFinanceiro.innerText = texto;
+    }
+
+    if (financeiroAluno) {
+      financeiroAluno.innerText = texto;
+      financeiroAluno.classList.remove("ok", "warn");
+      financeiroAluno.classList.add(classe);
+    }
+  }
 
   const infoObservacoes = document.getElementById("infoObservacoes");
   if(infoObservacoes) infoObservacoes.innerText = observacoesValor;
+
+  const mensalidadesBox = document.getElementById("mensalidadesAluno");
+  if (mensalidadesBox && aluno.id) {
+    try {
+      const rm = await fetch('/api/financeiro/mensalidades_aluno?aluno_id=' + encodeURIComponent(aluno.id));
+      const jm = await rm.json();
+
+      if (jm.ok && Array.isArray(jm.mensalidades) && jm.mensalidades.length) {
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
+        let possuiAtraso = false;
+
+        mensalidadesBox.innerHTML = jm.mensalidades.map(m => {
+          const status = String(m.status || '').toLowerCase().trim();
+          let statusExibicao = status.toUpperCase() || 'PENDENTE';
+          let icone = '⏳';
+
+          if (status === 'pago') {
+            icone = '✅';
+            statusExibicao = 'PAGO';
+          } else if (m.vencimento) {
+            const vencimento = new Date(m.vencimento);
+            vencimento.setHours(0, 0, 0, 0);
+
+            if (!Number.isNaN(vencimento.getTime()) && vencimento < hoje) {
+              possuiAtraso = true;
+              icone = '⚠️';
+              statusExibicao = 'EM ATRASO';
+            }
+          }
+
+          const valor = Number(m.valor || 0).toLocaleString(
+            'pt-BR',
+            { style:'currency', currency:'BRL' }
+          );
+
+          return `
+            <div class="list-item">
+              <strong>${m.descricao || m.referencia}</strong>
+              <span>${icone} ${statusExibicao} • ${valor}</span>
+            </div>
+          `;
+        }).join('');
+
+        if (possuiAtraso) {
+          atualizarStatusFinanceiro("EM ATRASO", "warn");
+        } else {
+          atualizarStatusFinanceiro("EM DIA", "ok");
+        }
+
+      } else {
+        mensalidadesBox.innerHTML = '<div class="list-item"><strong>Nenhuma mensalidade</strong><span>Sem registros</span></div>';
+        atualizarStatusFinanceiro("EM DIA", "ok");
+      }
+
+    } catch (e) {
+      mensalidadesBox.innerHTML = '<div class="list-item"><strong>Erro</strong><span>Falha ao carregar</span></div>';
+
+      const financeiroNormalizado =
+        String(financeiroValor || "").toLowerCase().trim();
+
+      const nomesFinanceiro = {
+        "ok": "EM DIA",
+        "pago": "EM DIA",
+        "em dia": "EM DIA",
+        "pendente": "PENDENTE",
+        "atrasado": "EM ATRASO",
+        "inadimplente": "INADIMPLENTE"
+      };
+
+      atualizarStatusFinanceiro(
+        nomesFinanceiro[financeiroNormalizado] ||
+        String(financeiroValor || "—").toUpperCase(),
+        financeiroNormalizado === "atrasado" ||
+        financeiroNormalizado === "inadimplente"
+          ? "warn"
+          : "ok"
+      );
+    }
+  }
+
+  const historicoBox = document.getElementById("historicoCertificados");
+  if (historicoBox && (!certificadoValor || certificadoValor === "—")) {
+    historicoBox.innerHTML = '<div class="list-item"><strong>Nenhum certificado</strong><span>Sem registros</span></div>';
+  } else if (historicoBox) {
+    try {
+      const rc = await fetch('/api/certificados/por-numero-base?base=' + encodeURIComponent(certificadoValor));
+      const jc = await rc.json();
+
+      if (jc.ok && Array.isArray(jc.certificados) && jc.certificados.length) {
+        historicoBox.innerHTML = jc.certificados.map(c => `
+          <a class="list-item" href="/validar-certificado.html?codigo=${encodeURIComponent(c.numero_certificado)}" target="_blank" style="text-decoration:none;color:inherit;">
+            <strong>${c.numero_certificado}</strong>
+            <span>${c.graduacao}</span>
+          </a>
+        `).join('');
+      } else {
+        historicoBox.innerHTML = '<div class="list-item"><strong>Nenhum certificado</strong><span>Sem registros</span></div>';
+      }
+    } catch (e) {
+      historicoBox.innerHTML = '<div class="list-item"><strong>Erro</strong><span>Falha ao carregar</span></div>';
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", carregarAluno);

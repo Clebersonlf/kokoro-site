@@ -320,6 +320,28 @@ table td small{
     </div>
   </div>
 
+
+<style>
+#modalMensalidade input,
+#modalMensalidade select,
+#modalMensalidade textarea{
+  width:100%;
+  font-size:14px !important;
+  line-height:1.4;
+}
+
+#modalMensalidade select option{
+  font-size:32px !important;
+  line-height:1.6 !important;
+  padding:8px 12px !important;
+}
+
+#modalMensalidade label{
+  font-size:13px;
+  font-weight:700;
+}
+</style>
+
   <div class="modal-overlay" id="modalMensalidade">
     <div class="modal">
       <div class="modal-header">
@@ -329,6 +351,13 @@ table td small{
 
       <div class="modal-body">
         <input type="hidden" id="mensalidadeAlunoId" />
+        <input type="hidden" id="mensalidadeId" />
+
+        <div id="listaMensalidadesAdmin"
+             style="margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid #e1e6ee">
+          <div style="font-weight:900;margin-bottom:8px">Mensalidades cadastradas</div>
+          <div id="mensalidadesAdminConteudo" class="muted">Carregando...</div>
+        </div>
 
         <div class="field">
           <label for="mensalidadeReferencia">Referência</label>
@@ -378,7 +407,7 @@ table td small{
 
       <div class="modal-footer">
         <button class="btn-back" type="button" onclick="fecharModalMensalidade()" style="color:#111827">CANCELAR</button>
-        <button class="btn-local btn-salvar" type="button" onclick="salvarMensalidadeAluno()" style="background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;">SALVAR MENSALIDADE</button>
+        <button id="btnSalvarMensalidade" class="btn-local btn-salvar" type="button" onclick="salvarMensalidadeAluno()" style="background:#16a34a !important;color:#ffffff !important;border:1px solid #16a34a !important;">SALVAR MENSALIDADE</button>
       </div>
     </div>
   </div>
@@ -1058,42 +1087,304 @@ ${escapeHtml(aluno.nome)}
     window.location.href = `/cadastro/formulario-completo.html?id=${id}`;
   }
 
-  function abrirModalMensalidade(id){
+  let mensalidadesAlunoAtual = [];
+
+  function limparFormularioMensalidade(){
+    document.getElementById('mensalidadeId').value = '';
+    document.getElementById('mensalidadeReferencia').value = '';
+    document.getElementById('mensalidadeDescricao').value = 'Mensalidade';
+    document.getElementById('mensalidadeValor').value = '150';
+    document.getElementById('mensalidadeVencimento').value = '';
+    document.getElementById('mensalidadeStatus').value = 'pendente';
+    document.getElementById('mensalidadeForma').value = '';
+    document.getElementById('mensalidadeObs').value = '';
+
+    document.getElementById('modalMensalidadeNome').textContent =
+      'Lançar Mensalidade';
+
+    const btn = document.getElementById('btnSalvarMensalidade');
+    if (btn) btn.textContent = 'SALVAR MENSALIDADE';
+  }
+
+  async function abrirModalMensalidade(id){
     document.getElementById('mensalidadeAlunoId').value = id;
+    limparFormularioMensalidade();
+
     document.getElementById('modalMensalidade').style.display = 'flex';
+
+    await carregarMensalidadesAlunoAdmin();
   }
 
   function fecharModalMensalidade(){
     document.getElementById('modalMensalidade').style.display = 'none';
+    mensalidadesAlunoAtual = [];
+  }
+
+  async function carregarMensalidadesAlunoAdmin(){
+    const aluno_id =
+      document.getElementById('mensalidadeAlunoId').value;
+
+    const box =
+      document.getElementById('mensalidadesAdminConteudo');
+
+    box.innerHTML = 'Carregando...';
+
+    try {
+      const r = await fetch(
+        '/api/financeiro/mensalidades_aluno?aluno_id=' +
+        encodeURIComponent(aluno_id) +
+        '&t=' + Date.now()
+      );
+
+      const j = await r.json();
+
+      if (!r.ok || !j.ok) {
+        throw new Error(j.error || ('HTTP ' + r.status));
+      }
+
+      mensalidadesAlunoAtual =
+        Array.isArray(j.mensalidades) ? j.mensalidades : [];
+
+      if (!mensalidadesAlunoAtual.length) {
+        box.innerHTML =
+          '<div class="muted">Nenhuma mensalidade cadastrada.</div>';
+        return;
+      }
+
+      const hoje = new Date();
+      hoje.setHours(0,0,0,0);
+
+      box.innerHTML = mensalidadesAlunoAtual.map(m => {
+        const statusBanco =
+          String(m.status || 'pendente').toLowerCase();
+
+        let statusExibicao = statusBanco.toUpperCase();
+
+        if (statusBanco !== 'pago' && m.vencimento) {
+          const vencimento = new Date(m.vencimento);
+          vencimento.setHours(0,0,0,0);
+
+          if (
+            !Number.isNaN(vencimento.getTime()) &&
+            vencimento < hoje
+          ) {
+            statusExibicao = 'EM ATRASO';
+          }
+        }
+
+        const valor = Number(m.valor || 0).toLocaleString(
+          'pt-BR',
+          { style:'currency', currency:'BRL' }
+        );
+
+        const vencimento =
+          m.vencimento
+            ? String(m.vencimento).slice(0,10).split('-').reverse().join('/')
+            : '—';
+
+        return `
+          <div style="
+            border:1px solid #e1e6ee;
+            border-radius:10px;
+            padding:10px;
+            margin-bottom:8px;
+            background:var(--row);
+          ">
+            <div style="font-weight:900">
+              ${escapeHtml(m.descricao || m.referencia || 'Mensalidade')}
+            </div>
+
+            <div class="muted" style="margin-top:4px">
+              ${escapeHtml(String(m.referencia || ''))}
+              • ${valor}
+              • venc. ${vencimento}
+              • ${escapeHtml(statusExibicao)}
+            </div>
+
+            <div style="
+              display:flex;
+              gap:8px;
+              flex-wrap:wrap;
+              margin-top:8px;
+            ">
+              <button
+                type="button"
+                class="btn"
+                onclick="editarMensalidadeAluno('${m.id}')">
+                EDITAR
+              </button>
+
+              <button
+                type="button"
+                class="btn-local btn-local-danger"
+                onclick="excluirMensalidadeAluno('${m.id}')">
+                EXCLUIR
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+    } catch (e) {
+      box.innerHTML =
+        '<div style="color:#dc2626">Erro ao carregar mensalidades: ' +
+        escapeHtml(e.message) +
+        '</div>';
+    }
+  }
+
+  function editarMensalidadeAluno(id){
+    const m =
+      mensalidadesAlunoAtual.find(x => String(x.id) === String(id));
+
+    if (!m) {
+      alert('Mensalidade não encontrada.');
+      return;
+    }
+
+    document.getElementById('mensalidadeId').value = m.id || '';
+    document.getElementById('mensalidadeReferencia').value =
+      m.referencia || '';
+
+    document.getElementById('mensalidadeDescricao').value =
+      m.descricao || 'Mensalidade';
+
+    document.getElementById('mensalidadeValor').value =
+      m.valor || '';
+
+    document.getElementById('mensalidadeVencimento').value =
+      m.vencimento
+        ? String(m.vencimento).slice(0,10)
+        : '';
+
+    document.getElementById('mensalidadeStatus').value =
+      m.status || 'pendente';
+
+    document.getElementById('mensalidadeForma').value =
+      m.forma_pagamento || '';
+
+    document.getElementById('mensalidadeObs').value =
+      m.observacoes || '';
+
+    document.getElementById('modalMensalidadeNome').textContent =
+      'Editar Mensalidade';
+
+    const btn = document.getElementById('btnSalvarMensalidade');
+    if (btn) btn.textContent = 'SALVAR ALTERAÇÃO';
   }
 
   async function salvarMensalidadeAluno(){
-    const aluno_id = document.getElementById('mensalidadeAlunoId').value;
+    const aluno_id =
+      document.getElementById('mensalidadeAlunoId').value;
+
+    const mensalidade_id =
+      document.getElementById('mensalidadeId').value;
 
     const payload = {
       aluno_id,
-      referencia: document.getElementById('mensalidadeReferencia').value,
-      descricao: document.getElementById('mensalidadeDescricao').value,
-      valor: Number(document.getElementById('mensalidadeValor').value),
-      vencimento: document.getElementById('mensalidadeVencimento').value,
-      status: document.getElementById('mensalidadeStatus').value,
-      forma_pagamento: document.getElementById('mensalidadeForma').value,
-      observacoes: document.getElementById('mensalidadeObs').value
+      referencia:
+        document.getElementById('mensalidadeReferencia').value,
+      descricao:
+        document.getElementById('mensalidadeDescricao').value,
+      valor:
+        Number(document.getElementById('mensalidadeValor').value),
+      vencimento:
+        document.getElementById('mensalidadeVencimento').value,
+      status:
+        document.getElementById('mensalidadeStatus').value,
+      forma_pagamento:
+        document.getElementById('mensalidadeForma').value,
+      observacoes:
+        document.getElementById('mensalidadeObs').value
     };
 
-    const r = await fetch('/api/financeiro/salvar_mensalidade_aluno', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    if (!payload.referencia) {
+      alert('Informe a referência da mensalidade.');
+      return;
+    }
 
-    const j = await r.json();
+    if (!Number.isFinite(payload.valor)) {
+      alert('Informe um valor válido.');
+      return;
+    }
 
-    if (j.ok) {
-      alert('Mensalidade salva com sucesso.');
-      fecharModalMensalidade();
-    } else {
-      alert('Erro: ' + (j.error || 'Falha ao salvar'));
+    let url = '/api/financeiro/salvar_mensalidade_aluno';
+    let method = 'POST';
+
+    if (mensalidade_id) {
+      payload.id = mensalidade_id;
+
+      const mensalidadeExistente =
+        mensalidadesAlunoAtual.find(
+          x => String(x.id) === String(mensalidade_id)
+        );
+
+      payload.data_pagamento =
+        mensalidadeExistente && mensalidadeExistente.data_pagamento
+          ? String(mensalidadeExistente.data_pagamento).slice(0,10)
+          : null;
+
+      url = '/api/financeiro/gerenciar_mensalidade_aluno';
+      method = 'PUT';
+    }
+
+    try {
+      const r = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const j = await r.json();
+
+      if (!r.ok || !j.ok) {
+        throw new Error(j.error || ('HTTP ' + r.status));
+      }
+
+      alert(
+        mensalidade_id
+          ? 'Mensalidade alterada com sucesso.'
+          : 'Mensalidade salva com sucesso.'
+      );
+
+      limparFormularioMensalidade();
+      await carregarMensalidadesAlunoAdmin();
+
+    } catch (e) {
+      alert('Erro: ' + e.message);
+    }
+  }
+
+  async function excluirMensalidadeAluno(id){
+    const ok = confirm(
+      'Deseja excluir esta mensalidade definitivamente?'
+    );
+
+    if (!ok) return;
+
+    try {
+      const r = await fetch(
+        '/api/financeiro/gerenciar_mensalidade_aluno',
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        }
+      );
+
+      const j = await r.json();
+
+      if (!r.ok || !j.ok) {
+        throw new Error(j.error || ('HTTP ' + r.status));
+      }
+
+      alert('Mensalidade excluída com sucesso.');
+
+      limparFormularioMensalidade();
+      await carregarMensalidadesAlunoAdmin();
+
+    } catch (e) {
+      alert('Erro: ' + e.message);
     }
   }
 
