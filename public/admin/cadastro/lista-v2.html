@@ -224,6 +224,123 @@ table td small{
 </style>
 
 
+
+
+
+
+<style id="kokoro-financeiro-final-unico">
+
+/* =========================================================
+   KOKORO - MODAL FINANCEIRO
+   ÚNICO CSS ATIVO
+   ========================================================= */
+
+#modalMensalidade{
+  position:fixed !important;
+  inset:0 !important;
+
+  box-sizing:border-box !important;
+
+  width:100vw !important;
+  height:100vh !important;
+
+  display:none;
+
+  align-items:flex-start !important;
+  justify-content:center !important;
+
+  padding:20px 12px 60px !important;
+
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+
+  overscroll-behavior:auto !important;
+}
+
+/* Quando o JS abre o modal com display:flex */
+#modalMensalidade[style*="display: flex"],
+#modalMensalidade[style*="display:flex"]{
+  display:flex !important;
+}
+
+/* A janela não cria outra rolagem */
+#modalMensalidade .modal{
+  position:relative !important;
+
+  width:min(560px, calc(100vw - 24px)) !important;
+
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+
+  margin:0 auto !important;
+
+  display:block !important;
+
+  overflow:visible !important;
+
+  resize:none !important;
+}
+
+/* Corpo sem rolagem própria */
+#modalMensalidade .modal-body{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+
+  overflow:visible !important;
+}
+
+/* Cabeçalho normal */
+#modalMensalidade .modal-header{
+  cursor:default !important;
+  user-select:auto !important;
+}
+
+/* Rodapé normal */
+#modalMensalidade .modal-footer{
+  position:static !important;
+}
+
+/* Campos */
+#modalMensalidade input,
+#modalMensalidade select,
+#modalMensalidade textarea{
+  box-sizing:border-box !important;
+
+  width:100% !important;
+
+  font-size:13px !important;
+  line-height:1.35 !important;
+}
+
+/* Opções do select */
+#modalMensalidade select option{
+  font-size:12px !important;
+  line-height:normal !important;
+  padding:2px 4px !important;
+}
+
+/* Labels */
+#modalMensalidade label{
+  font-size:13px !important;
+  font-weight:700 !important;
+}
+
+/* Mobile */
+@media(max-width:640px){
+
+  #modalMensalidade{
+    padding:10px 6px 50px !important;
+  }
+
+  #modalMensalidade .modal{
+    width:calc(100vw - 12px) !important;
+  }
+}
+
+</style>
+
 </head>
 <body>
   <div class="lista-container">
@@ -321,26 +438,7 @@ table td small{
   </div>
 
 
-<style>
-#modalMensalidade input,
-#modalMensalidade select,
-#modalMensalidade textarea{
-  width:100%;
-  font-size:14px !important;
-  line-height:1.4;
-}
 
-#modalMensalidade select option{
-  font-size:32px !important;
-  line-height:1.6 !important;
-  padding:8px 12px !important;
-}
-
-#modalMensalidade label{
-  font-size:13px;
-  font-weight:700;
-}
-</style>
 
   <div class="modal-overlay" id="modalMensalidade">
     <div class="modal">
@@ -1418,6 +1516,15 @@ function abrirDashboard(id){
   window.location.href = `/dashboard_aluno.html?id=${id}`;
 }
 </script>
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>
