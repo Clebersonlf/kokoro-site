@@ -242,6 +242,22 @@
 
         /* ===== RESPONSIVE - MOBILE ===== */
         @media (max-width: 768px) {
+            body {
+                min-width: 0;
+            }
+
+            .mobile-menu-btn {
+                position: sticky;
+                top: 0.75rem;
+                left: 0.75rem;
+                z-index: 50;
+            }
+
+            .header {
+                margin-top: 0.75rem;
+                border-radius: 0.75rem;
+            }
+
             /* Mostrar botão hambúrguer */
             .mobile-menu-btn {
                 display: flex;
@@ -301,7 +317,7 @@
         }
 
         /* ===== RESPONSIVE - TABLET ===== */
-        @media (min-width: 768px) and (max-width: 1024px) {
+        @media (min-width: 769px) and (max-width: 1024px) {
             .sidebar {
                 width: 200px;
             }
