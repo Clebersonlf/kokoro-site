@@ -1,0 +1,92 @@
+/* =========================================================
+   KOKORO - PADRÃO GLOBAL DE CONTRASTE MOBILE
+   Aplicação opt-in: adicionar classe kokoro-mobile-contrast
+   ao body da página.
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  body.kokoro-mobile-contrast {
+    --kkr-mobile-bg: #070a0f;
+    --kkr-mobile-surface: #1f2937;
+    --kkr-mobile-surface-soft: #111827;
+
+    --kkr-mobile-border: #cbd5e1;
+    --kkr-mobile-divider: #94a3b8;
+    --kkr-mobile-input-border: #9ca3af;
+
+    --kkr-mobile-text: #f8fafc;
+    --kkr-mobile-muted: #cbd5e1;
+
+    background: var(--kkr-mobile-bg) !important;
+    color: var(--kkr-mobile-text);
+  }
+
+  /* Cards e superfícies que receberem estas classes */
+  body.kokoro-mobile-contrast .kkr-mobile-card {
+    background: var(--kkr-mobile-surface) !important;
+    border: 2px solid var(--kkr-mobile-border) !important;
+    box-shadow: 0 10px 24px rgba(0,0,0,.42);
+  }
+
+  body.kokoro-mobile-contrast .kkr-mobile-divider {
+    border-color: var(--kkr-mobile-divider) !important;
+  }
+
+  body.kokoro-mobile-contrast .kkr-mobile-input {
+    background: var(--kkr-mobile-surface-soft) !important;
+    border: 2px solid var(--kkr-mobile-input-border) !important;
+    color: var(--kkr-mobile-text) !important;
+  }
+
+  body.kokoro-mobile-contrast .kkr-mobile-muted {
+    color: var(--kkr-mobile-muted) !important;
+  }
+
+  body.kokoro-mobile-contrast input:focus,
+  body.kokoro-mobile-contrast select:focus,
+  body.kokoro-mobile-contrast textarea:focus {
+    border-color: #dbeafe !important;
+    outline: none;
+  }
+}
+
+
+/* KOKORO ADMIN DASHBOARD - MOBILE CONTRAST */
+@media (max-width: 768px) {
+
+  body.kokoro-mobile-contrast .card {
+    background: var(--kkr-mobile-surface) !important;
+    border: 2px solid var(--kkr-mobile-border) !important;
+    box-shadow: 0 10px 24px rgba(0,0,0,.42);
+  }
+
+  body.kokoro-mobile-contrast .card-title {
+    color: var(--kkr-mobile-muted) !important;
+  }
+
+  body.kokoro-mobile-contrast .card-value {
+    color: var(--kkr-mobile-text) !important;
+  }
+
+  body.kokoro-mobile-contrast .header {
+    background: var(--kkr-mobile-surface) !important;
+    border-bottom: 2px solid var(--kkr-mobile-divider) !important;
+  }
+
+  body.kokoro-mobile-contrast .sidebar {
+    border-right: 2px solid var(--kkr-mobile-divider) !important;
+  }
+
+  body.kokoro-mobile-contrast .nav-item {
+    border: 1px solid var(--kkr-mobile-divider);
+  }
+
+}
+
+/* KOKORO ADMIN - ESPAÇAMENTO ENTRE HEADER E CARDS */
+@media (max-width: 768px) {
+  body.kokoro-mobile-contrast .header {
+    margin-bottom: 16px !important;
+  }
+}
