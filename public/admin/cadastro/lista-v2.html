@@ -341,6 +341,209 @@ table td small{
 
 </style>
 
+
+<style id="kokoro-lista-mobile-cards-v1">
+/* =========================================================
+   KOKORO - GESTÃO DE ALUNOS
+   Desktop = tabela
+   Mobile = cards
+   ========================================================= */
+
+@media (max-width: 700px){
+
+  html,
+  body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  .lista-container{
+    width:100%;
+    max-width:none;
+    margin:0;
+    padding:16px 12px;
+    box-sizing:border-box;
+  }
+
+  .header-lista{
+    flex-direction:column;
+    align-items:stretch;
+    gap:12px;
+    margin-bottom:18px;
+  }
+
+  .header-lista h1{
+    font-size:22px;
+    line-height:1.2;
+  }
+
+  .header-lista > div{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+    gap:8px !important;
+  }
+
+  .header-lista .btn-back{
+    width:100%;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:10px 8px;
+    box-sizing:border-box;
+  }
+
+  .controles{
+    width:100%;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:16px;
+  }
+
+  .busca-input,
+  .filtro-select{
+    width:100%;
+    min-width:0;
+    min-height:46px;
+    box-sizing:border-box;
+    font-size:16px;
+  }
+
+  .tabela-wrapper{
+    width:100%;
+    background:transparent;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    overflow:visible;
+  }
+
+  #contadorAlunos{
+    padding:10px 2px 14px 2px !important;
+    margin:0 !important;
+  }
+
+  table,
+  tbody{
+    display:block;
+    width:100%;
+  }
+
+  thead{
+    display:none;
+  }
+
+  tbody tr{
+    display:block;
+    width:100%;
+    margin:0 0 14px 0;
+    background:linear-gradient(180deg, var(--card), var(--card2));
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 22px rgba(0,0,0,.28);
+  }
+
+  tbody tr:hover{
+    background:linear-gradient(180deg, var(--card), var(--card2));
+  }
+
+  tbody td{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    font-size:14px;
+    overflow-wrap:anywhere;
+  }
+
+  tbody td:nth-child(1){
+    display:none;
+  }
+
+  tbody td:nth-child(2){
+    padding-top:16px;
+    padding-bottom:16px;
+  }
+
+  tbody td:nth-child(2) > div{
+    align-items:flex-start !important;
+  }
+
+  tbody td:nth-child(3)::before,
+  tbody td:nth-child(4)::before,
+  tbody td:nth-child(5)::before,
+  tbody td:nth-child(6)::before,
+  tbody td:nth-child(7)::before{
+    display:block;
+    margin-bottom:6px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.35px;
+  }
+
+  tbody td:nth-child(3)::before{
+    content:"Graduação";
+  }
+
+  tbody td:nth-child(4)::before{
+    content:"Última graduação";
+  }
+
+  tbody td:nth-child(5)::before{
+    content:"Financeiro";
+  }
+
+  tbody td:nth-child(6)::before{
+    content:"Situação";
+  }
+
+  tbody td:nth-child(7)::before{
+    content:"Ações";
+  }
+
+  tbody td:last-child{
+    border-bottom:0;
+  }
+
+  .acoes{
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:8px;
+    white-space:normal;
+  }
+
+  .acoes button{
+    width:100%;
+    min-width:0;
+    min-height:44px;
+    box-sizing:border-box;
+    margin:0 !important;
+    padding:10px 6px !important;
+    font-size:12px !important;
+    line-height:1.15 !important;
+  }
+}
+
+@media (max-width: 350px){
+
+  .header-lista > div{
+    grid-template-columns:1fr;
+  }
+
+  .acoes{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
 </head>
 <body>
   <div class="lista-container">
@@ -381,10 +584,6 @@ table td small{
             <th>Situação</th>
             <th>Ações</th>
           </tr>
-        </thead>
-        <tbody id="tabelaBody"></tbody>
-      </table>
-    </div>
         </thead>
         <tbody id="tabelaBody"></tbody>
       </table>

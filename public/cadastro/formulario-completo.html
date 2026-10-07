@@ -549,6 +549,149 @@ html.modo-convite-aluno-html label[for="adminToggle"] {
 }
 </style>
 
+
+<style id="kokoro-formulario-mobile-v1">
+/* =========================================================
+   KOKORO - FORMULÁRIO COMPLETO
+   Ajustes de responsividade para celular
+   ========================================================= */
+
+*, *::before, *::after{
+  box-sizing:border-box;
+}
+
+.form-group,
+.grid-container,
+.sub-section,
+fieldset{
+  min-width:0;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group input[type="number"],
+.form-group input[type="password"],
+.form-group select,
+.form-group textarea{
+  box-sizing:border-box;
+  max-width:100%;
+}
+
+@media (max-width:768px){
+
+  html,
+  body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  body{
+    padding:12px;
+    align-items:flex-start;
+  }
+
+  body.admin-mode-active{
+    padding-top:6rem;
+  }
+
+  .form-wrapper{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    margin:0 auto;
+  }
+
+  form{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    padding:12px !important;
+  }
+
+  fieldset.form-section{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    margin-left:0;
+    margin-right:0;
+    padding-left:0;
+    padding-right:0;
+  }
+
+  .grid-container{
+    width:100%;
+    min-width:0;
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:1rem;
+  }
+
+  .form-group,
+  .form-group.span-2,
+  .sub-section{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    grid-column:1 / -1;
+  }
+
+  .sub-section{
+    padding:1rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+
+  .form-main-header{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  .header-controls{
+    width:100%;
+    gap:0.75rem;
+    flex-wrap:wrap;
+  }
+
+  .responsible-person-notice,
+  .terms-box,
+  .entidade-registro-block,
+  .photo-container,
+  .preview-area{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+  }
+
+  .radio-group{
+    flex-wrap:wrap;
+  }
+}
+
+@media (max-width:360px){
+
+  body{
+    padding:8px;
+  }
+
+  form{
+    padding:10px !important;
+  }
+
+  .sub-section{
+    padding:0.75rem;
+  }
+}
+</style>
+
 </head>
 <body class="form-body">
 
@@ -1194,6 +1337,11 @@ if (tokenConvite) {
 
           form.dataset.alunoId = alunoId;
           document.title = 'Editar Aluno - Kokoro';
+
+          const botaoSalvarEdicao = document.getElementById('cadastrarAlunoBtn');
+          if (botaoSalvarEdicao) {
+            botaoSalvarEdicao.textContent = 'Salvar alterações';
+          }
 
           function setValor(id, valor){
             const el = document.getElementById(id);
