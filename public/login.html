@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login • Kokoro</title>
   <style>
-    body{font-family:system-ui,Inter,Segoe UI,Roboto,Arial,sans-serif;background:#0f1115;color:#eaeaea;display:grid;place-items:center;min-height:100vh;margin:0}
-    .card{width:100%;max-width:380px;background:#131721;border:1px solid #2a2f3a;border-radius:16px;padding:24px}
-    input,button{width:100%;padding:12px;border-radius:10px;border:1px solid #2a2f3a;background:#0f1115;color:#eaeaea;margin-top:10px}
+    body{font-family:system-ui,Inter,Segoe UI,Roboto,Arial,sans-serif;background:#0f1115;color:#eaeaea;display:grid;place-items:center;min-height:100vh;margin:0;padding:16px;box-sizing:border-box;overflow-x:hidden}
+    .card{width:100%;max-width:380px;background:#131721;border:1px solid #2a2f3a;border-radius:16px;padding:24px;box-sizing:border-box}
+    input,button{width:100%;padding:12px;border-radius:10px;border:1px solid #2a2f3a;background:#0f1115;color:#eaeaea;margin-top:10px;box-sizing:border-box}
     button{cursor:pointer;font-weight:600}
     button:hover{background:#1a1f2e}
     .err{color:#ff7b7b;min-height:20px;margin-top:8px;font-size:14px}
@@ -15,6 +15,26 @@
     .back{text-align:center;margin-top:16px}
     .back a{color:#94a3b8;text-decoration:none;font-size:13px}
     .back a:hover{color:#eaeaea}
+  
+    @media (max-width:480px){
+      body{
+        padding:12px;
+        min-height:100dvh;
+        align-items:center;
+      }
+
+      .card{
+        max-width:100%;
+        padding:20px 16px;
+        border-radius:14px;
+      }
+
+      input,button{
+        min-height:46px;
+        font-size:16px;
+      }
+    }
+
   </style>
 </head>
 <body>
