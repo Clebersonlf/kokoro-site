@@ -55,30 +55,30 @@
 /* KOKORO ADMIN DASHBOARD - MOBILE CONTRAST */
 @media (max-width: 768px) {
 
-  body.kokoro-mobile-contrast .card {
+  body.kokoro-mobile-contrast.kokoro-admin-dashboard .card {
     background: var(--kkr-mobile-surface) !important;
     border: 2px solid var(--kkr-mobile-border) !important;
     box-shadow: 0 10px 24px rgba(0,0,0,.42);
   }
 
-  body.kokoro-mobile-contrast .card-title {
+  body.kokoro-mobile-contrast.kokoro-admin-dashboard .card-title {
     color: var(--kkr-mobile-muted) !important;
   }
 
-  body.kokoro-mobile-contrast .card-value {
+  body.kokoro-mobile-contrast.kokoro-admin-dashboard .card-value {
     color: var(--kkr-mobile-text) !important;
   }
 
-  body.kokoro-mobile-contrast .header {
+  body.kokoro-mobile-contrast.kokoro-admin-dashboard .header {
     background: var(--kkr-mobile-surface) !important;
     border-bottom: 2px solid var(--kkr-mobile-divider) !important;
   }
 
-  body.kokoro-mobile-contrast .sidebar {
+  body.kokoro-mobile-contrast.kokoro-admin-dashboard .sidebar {
     border-right: 2px solid var(--kkr-mobile-divider) !important;
   }
 
-  body.kokoro-mobile-contrast .nav-item {
+  body.kokoro-mobile-contrast.kokoro-admin-dashboard .nav-item {
     border: 1px solid var(--kkr-mobile-divider);
   }
 
@@ -86,7 +86,52 @@
 
 /* KOKORO ADMIN - ESPAÇAMENTO ENTRE HEADER E CARDS */
 @media (max-width: 768px) {
-  body.kokoro-mobile-contrast .header {
+  body.kokoro-mobile-contrast.kokoro-admin-dashboard .header {
     margin-bottom: 16px !important;
   }
+}
+
+
+/* KOKORO ATHLETE DASHBOARD - MOBILE CONTRAST */
+@media (max-width: 768px) {
+
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .topbar,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .hero,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .card,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .profile-side,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .quick-card {
+    background: var(--kkr-mobile-surface) !important;
+    border: 2px solid var(--kkr-mobile-border) !important;
+    box-shadow: 0 10px 24px rgba(0,0,0,.42);
+  }
+
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .meta-box,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .info-box,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .list-item,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .progress-block {
+    background: var(--kkr-mobile-surface-soft) !important;
+    border: 1px solid var(--kkr-mobile-divider) !important;
+  }
+
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .pill,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .icon-btn,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .admin-btn,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .cta {
+    border-color: var(--kkr-mobile-divider) !important;
+  }
+
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .meta-label,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .label,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .caption,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .quick-label,
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .list-item span {
+    color: var(--kkr-mobile-muted) !important;
+  }
+
+  body.kokoro-mobile-contrast.kokoro-athlete-dashboard .edit-input {
+    background: var(--kkr-mobile-surface-soft) !important;
+    border: 2px solid var(--kkr-mobile-input-border) !important;
+    color: var(--kkr-mobile-text) !important;
+  }
+
 }
