@@ -1515,6 +1515,24 @@ ${escapeHtml(aluno.nome)}
                 EDITAR
               </button>
 
+              ${statusBanco === 'pago' ? `
+                <button
+                  type="button"
+                  class="btn-local"
+                  style="background:#2563eb;color:#ffffff;border:1px solid #2563eb;"
+                  onclick="abrirReciboMensalidade('${m.id}')">
+                  PDF
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-local"
+                  style="background:#166534;color:#ffffff;border:1px solid #166534;"
+                  onclick="abrirReciboMensalidadeImagem('${m.id}')">
+                  JPG
+                </button>
+              ` : ''}
+
               <button
                 type="button"
                 class="btn-local btn-local-danger"
@@ -1532,6 +1550,34 @@ ${escapeHtml(aluno.nome)}
         escapeHtml(e.message) +
         '</div>';
     }
+  }
+
+  function abrirReciboMensalidade(id){
+    if (!id) {
+      alert('Mensalidade não encontrada.');
+      return;
+    }
+
+    const url =
+      '/api/financeiro/recibo_mensalidade?id=' +
+      encodeURIComponent(id) +
+      '&t=' + Date.now();
+
+    window.open(url, '_blank', 'noopener');
+  }
+
+  function abrirReciboMensalidadeImagem(id){
+    if (!id) {
+      alert('Mensalidade não encontrada.');
+      return;
+    }
+
+    const url =
+      '/api/financeiro/recibo_mensalidade_imagem?id=' +
+      encodeURIComponent(id) +
+      '&t=' + Date.now();
+
+    window.open(url, '_blank', 'noopener');
   }
 
   function editarMensalidadeAluno(id){

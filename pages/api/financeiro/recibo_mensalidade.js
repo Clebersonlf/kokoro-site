@@ -13,12 +13,28 @@ function moeda(valor) {
 function dataBR(valor) {
   if (!valor) return '—';
 
-  const s = String(valor).slice(0, 10);
-  const partes = s.split('-');
+  if (valor instanceof Date && !Number.isNaN(valor.getTime())) {
+    return new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'UTC'
+    }).format(valor);
+  }
 
-  if (partes.length !== 3) return s;
+  const s = String(valor).trim();
+  const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
 
-  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  if (iso) {
+    return `${iso[3]}/${iso[2]}/${iso[1]}`;
+  }
+
+  const d = new Date(valor);
+
+  if (!Number.isNaN(d.getTime())) {
+    return new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'UTC'
+    }).format(d);
+  }
+
+  return s;
 }
 
 function referenciaBR(valor) {
