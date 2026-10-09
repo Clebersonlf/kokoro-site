@@ -193,6 +193,39 @@
       padding:8px 10px !important;
       font-size:12px !important;
       line-height:1 !important;
+      border-radius:10px !important;
+      font-weight:800 !important;
+      border:1px solid transparent !important;
+      min-height:40px;
+      box-sizing:border-box;
+    }
+
+    .btn-mensalidade-editar{
+      background:#f59e0b !important;
+      color:#111827 !important;
+      border:1px solid #f59e0b !important;
+      border-radius:10px !important;
+    }
+
+    .btn-mensalidade-pdf{
+      background:#3b82f6 !important;
+      color:#ffffff !important;
+      border:1px solid #3b82f6 !important;
+      border-radius:10px !important;
+    }
+
+    .btn-mensalidade-jpg{
+      background:#facc15 !important;
+      color:#111827 !important;
+      border:1px solid #eab308 !important;
+      border-radius:10px !important;
+    }
+
+    .btn-mensalidade-excluir{
+      background:#ef4444 !important;
+      color:#ffffff !important;
+      border:1px solid #ef4444 !important;
+      border-radius:10px !important;
     }
 
 </style>
@@ -336,6 +369,64 @@ table td small{
 
   #modalMensalidade .modal{
     width:calc(100vw - 12px) !important;
+    border-radius:14px !important;
+  }
+
+  #modalMensalidade .modal-header{
+    padding:14px 12px !important;
+    gap:10px !important;
+  }
+
+  #modalMensalidade .modal-header h3{
+    font-size:16px !important;
+    line-height:1.25 !important;
+  }
+
+  #modalMensalidade .modal-header .btn-back{
+    min-height:44px !important;
+    padding:10px 12px !important;
+    flex-shrink:0 !important;
+  }
+
+  #modalMensalidade .modal-body{
+    padding:14px 12px !important;
+  }
+
+  #modalMensalidade input,
+  #modalMensalidade select,
+  #modalMensalidade textarea{
+    font-size:16px !important;
+    min-height:46px !important;
+    padding:11px 12px !important;
+  }
+
+  #modalMensalidade textarea{
+    min-height:96px !important;
+  }
+
+  #modalMensalidade label{
+    font-size:14px !important;
+  }
+
+  #modalMensalidade .modal-footer{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+    padding:12px !important;
+  }
+
+  #modalMensalidade .modal-footer button{
+    width:100% !important;
+    min-height:46px !important;
+    margin:0 !important;
+    padding:10px 8px !important;
+    font-size:13px !important;
+  }
+
+  #modalMensalidade #mensalidadesAdminConteudo button{
+    min-height:44px !important;
+    padding:10px 12px !important;
+    font-size:13px !important;
   }
 }
 
@@ -1510,7 +1601,7 @@ ${escapeHtml(aluno.nome)}
             ">
               <button
                 type="button"
-                class="btn"
+                class="btn-local btn-mensalidade-editar"
                 onclick="editarMensalidadeAluno('${m.id}')">
                 EDITAR
               </button>
@@ -1518,16 +1609,14 @@ ${escapeHtml(aluno.nome)}
               ${statusBanco === 'pago' ? `
                 <button
                   type="button"
-                  class="btn-local"
-                  style="background:#2563eb;color:#ffffff;border:1px solid #2563eb;"
+                  class="btn-local btn-mensalidade-pdf"
                   onclick="abrirReciboMensalidade('${m.id}')">
                   PDF
                 </button>
 
                 <button
                   type="button"
-                  class="btn-local"
-                  style="background:#166534;color:#ffffff;border:1px solid #166534;"
+                  class="btn-local btn-mensalidade-jpg"
                   onclick="abrirReciboMensalidadeImagem('${m.id}')">
                   JPG
                 </button>
@@ -1535,7 +1624,7 @@ ${escapeHtml(aluno.nome)}
 
               <button
                 type="button"
-                class="btn-local btn-local-danger"
+                class="btn-local btn-mensalidade-excluir"
                 onclick="excluirMensalidadeAluno('${m.id}')">
                 EXCLUIR
               </button>
