@@ -77,7 +77,238 @@ td{
   font-size:12px;
   border-radius:8px;
 }
-@media(max-width:800px){.grid{grid-template-columns:1fr}}
+@media(max-width:800px){
+
+  /* ======================================================
+     KOKORO - CERTIFICADOS MOBILE
+     Desktop permanece como tabela.
+     Celular transforma cada certificado em um card.
+     ====================================================== */
+
+  body{
+    padding:12px;
+    overflow-x:hidden;
+  }
+
+  .container{
+    width:100%;
+    max-width:100%;
+  }
+
+  .header{
+    align-items:stretch;
+    margin-bottom:18px;
+  }
+
+  .header h1{
+    font-size:28px;
+    line-height:1.15;
+  }
+
+  .header > div{
+    width:100%;
+  }
+
+  .header .actions{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .header .actions .btn{
+    width:100%;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    box-sizing:border-box;
+    padding:10px 8px;
+    white-space:normal;
+  }
+
+  .card{
+    padding:16px;
+    border-radius:16px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  input,
+  select,
+  textarea{
+    font-size:16px;
+    min-height:46px;
+  }
+
+  textarea{
+    min-height:96px;
+  }
+
+  /* A tabela deixa de exigir rolagem lateral */
+  .table-wrap{
+    overflow:visible;
+    border-radius:0;
+  }
+
+  table,
+  tbody{
+    display:block;
+    width:100%;
+  }
+
+  thead{
+    display:none;
+  }
+
+  #listaCertificados tr{
+    position:relative;
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin:0 0 14px 0;
+    padding:14px;
+    background:#0b1628;
+    border:1px solid #334155;
+    border-radius:14px;
+    box-shadow:0 8px 18px rgba(0,0,0,.22);
+  }
+
+  #listaCertificados td{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    border:0;
+    padding:5px 0;
+    white-space:normal;
+    word-break:normal;
+    overflow-wrap:anywhere;
+    font-size:14px;
+  }
+
+  /* Número do certificado = cabeçalho do card */
+  #listaCertificados td:nth-child(1){
+    padding-right:94px;
+    padding-bottom:12px;
+    font-size:17px;
+    font-weight:900;
+    color:#ffffff;
+  }
+
+  /* Status no canto superior direito */
+  #listaCertificados td:nth-child(5){
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:auto;
+    max-width:86px;
+    padding:0;
+    text-align:right;
+  }
+
+  #listaCertificados td:nth-child(5) span{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:6px 9px;
+    border-radius:999px;
+    font-size:11px;
+    line-height:1;
+    background:rgba(22,163,74,.18);
+    border:1px solid rgba(74,222,128,.35);
+  }
+
+  #listaCertificados td:nth-child(2)::before,
+  #listaCertificados td:nth-child(3)::before,
+  #listaCertificados td:nth-child(4)::before{
+    display:block;
+    margin-bottom:2px;
+    color:#94a3b8;
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.35px;
+  }
+
+  #listaCertificados td:nth-child(2)::before{
+    content:"Titular";
+  }
+
+  #listaCertificados td:nth-child(3)::before{
+    content:"Graduação";
+  }
+
+  #listaCertificados td:nth-child(4)::before{
+    content:"Emissão";
+  }
+
+  /* Área das ações */
+  #listaCertificados td:nth-child(6){
+    margin-top:10px;
+    padding-top:12px;
+    border-top:1px solid #334155;
+  }
+
+  #listaCertificados td:nth-child(6) .actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    width:100%;
+    white-space:normal;
+  }
+
+  #listaCertificados td:nth-child(6) .btn{
+    width:100%;
+    min-width:0;
+    min-height:44px;
+    box-sizing:border-box;
+    margin:0;
+    padding:10px 6px;
+    border-radius:10px;
+    font-size:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+
+  /* Ordem visual 2 x 3 conforme modelo aprovado */
+  #listaCertificados .btn-validar{order:1;}
+  #listaCertificados .btn-editar{order:2;}
+  #listaCertificados .btn-copiar{order:3;}
+  #listaCertificados .btn-qrpng{order:4;}
+  #listaCertificados .btn-qrsvg{order:5;}
+  #listaCertificados .btn-excluir{order:6;}
+
+  /* Estado sem certificados */
+  #listaCertificados td[colspan]{
+    padding:14px;
+    font-size:14px;
+  }
+
+  #listaCertificados td[colspan]::before{
+    display:none;
+  }
+
+  #buscaCertificados{
+    font-size:16px !important;
+    min-height:46px;
+  }
+}
+
+@media(max-width:360px){
+
+  .header .actions{
+    grid-template-columns:1fr;
+  }
+
+  #listaCertificados td:nth-child(6) .actions{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
 <body>
