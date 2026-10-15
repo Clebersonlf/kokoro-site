@@ -333,12 +333,82 @@
         }
     </style>
     <link rel="stylesheet" href="/css/kokoro-mobile-contrast.css">
+
+<!-- KOKORO VERIFICACAO DE SESSAO ADMINISTRATIVA -->
+<style>html{visibility:hidden}</style>
+<script>
+(async function() {
+  try {
+    const resposta = await fetch('/api/auth/admin-session', {
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+
+    if (resposta.ok) {
+      document.documentElement.style.visibility = 'visible';
+      return;
+    }
+  } catch (erro) {
+    console.error('Falha ao verificar a sessao.');
+  }
+
+  location.replace('/admin/login.html');
+})();
+</script>
+
+
+
+<style>
+/* KOKORO-MOBILE-MENU-INTEGRADO-20261015 */
+@media (max-width: 768px) {
+
+  body.kokoro-admin-dashboard .header {
+    position: sticky;
+    top: 0;
+    margin-top: 0;
+    min-height: 64px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  body.kokoro-admin-dashboard .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.kokoro-admin-dashboard .mobile-menu-btn {
+    position: static;
+    top: auto;
+    left: auto;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body.kokoro-admin-dashboard .header h1 {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: clamp(15px, 4.3vw, 20px);
+    line-height: 1.3;
+    overflow-wrap: normal;
+  }
+
+}
+</style>
+
+
 </head>
 <body class="kokoro-mobile-contrast kokoro-admin-dashboard">
-    <!-- MOBILE MENU BUTTON -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn">
-        <i class="fas fa-bars"></i>
-    </button>
 
     <!-- SIDEBAR OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -466,6 +536,9 @@
     <main class="main-content">
         <div class="header">
             <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu administrativo">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h1>Dashboard Administrativo</h1>
             </div>
             <div class="header-nav">
@@ -775,21 +848,37 @@
 </body>
 </html>
 <script>
+// KOKORO LOGOUT ADMINISTRATIVO SEGURO
 document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('btnLogoutAdmin');
   if (!btn) return;
 
-  btn.addEventListener('click', function (e) {
+  btn.addEventListener('click', async function(e) {
     e.preventDefault();
+    btn.disabled = true;
 
     try {
+      const resposta = await fetch('/api/auth/admin-logout', {
+        method: 'POST',
+        credentials: 'same-origin'
+      });
+
+      if (resposta.status !== 204) {
+        throw new Error('Falha no logout');
+      }
+
       localStorage.removeItem('kokoro_user');
       localStorage.removeItem('adminSecret');
       localStorage.removeItem('kokoro_admin_token');
-      sessionStorage.clear();
-    } catch(e) {}
+      sessionStorage.removeItem('ADMIN_AUTH');
+      sessionStorage.removeItem('kokoro_admin_secret');
 
-    window.location.href = '/login.html';
+      location.replace('/admin/login.html');
+    } catch (erro) {
+      console.error('Erro no logout:', erro);
+      alert('Não foi possível encerrar a sessão. Tente novamente.');
+      btn.disabled = false;
+    }
   });
 });
 </script>
