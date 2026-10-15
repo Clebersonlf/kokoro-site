@@ -1,6 +1,15 @@
+import { exigirAdmin } from '../_lib/kokoro-auth.js';
+import { exigirAdminMutacao } from '../_lib/kokoro-guard.js';
 import { sql } from '../_lib/db';
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  const mutacao = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);
+  const sessao = mutacao
+    ? exigirAdminMutacao(req, res)
+    : exigirAdmin(req, res);
+  if (!sessao) return;
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   

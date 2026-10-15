@@ -1,50 +1,24 @@
-const USUARIOS = {
-  "planckkokoro@gmail.com": {
-    senha: "Semprekokoro@#$",
-    tipo: "admin",
-    nome: "Admin Kokoro",
-    dashboard: "/admin_Dashboard.html"
-  }
-};
+// KOKORO-SITE: autenticacao legada desativada.
+// Login administrativo utiliza API segura no servidor.
 
-function fazerLogin(email, senha) {
-  const usuario = USUARIOS[email];
-  if (!usuario) return { sucesso: false, mensagem: "Usuário não encontrado" };
-  if (usuario.senha !== senha) return { sucesso: false, mensagem: "Senha incorreta" };
-  
-  localStorage.setItem('kokoro_user', JSON.stringify({
-    email: email,
-    tipo: usuario.tipo,
-    nome: usuario.nome,
-    loginTime: new Date().getTime()
-  }));
-  
-  window.location.href = usuario.dashboard;
+function fazerLogin() {
+  window.location.replace('/admin/login.html');
   return { sucesso: true };
 }
 
 function verificarSessao() {
-  const userData = localStorage.getItem('kokoro_user');
-  if (!userData) return null;
-  return JSON.parse(userData);
+  return null;
 }
 
 function fazerLogout() {
-  localStorage.removeItem('kokoro_user');
-  window.location.href = '/';
+  window.location.replace('/admin/login.html');
 }
 
-function protegerPagina(tipoRequerido) {
-  const usuario = verificarSessao();
-  if (!usuario) {
-    alert('Você precisa fazer login.');
-    window.location.href = '/login.html';
-    return false;
-  }
-  if (tipoRequerido && usuario.tipo !== tipoRequerido) {
-    alert('Acesso negado.');
-    window.location.href = '/';
-    return false;
-  }
-  return true;
+function protegerPagina() {
+  window.location.replace('/admin/login.html');
+  return false;
+}
+
+if (window.location.pathname === '/login.html') {
+  window.location.replace('/admin/login.html');
 }

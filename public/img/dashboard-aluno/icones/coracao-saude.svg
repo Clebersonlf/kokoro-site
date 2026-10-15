@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+<defs>
+  <linearGradient id="vermelho" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ff6870"/>
+    <stop offset="55%" stop-color="#f01832"/>
+    <stop offset="100%" stop-color="#b90022"/>
+  </linearGradient>
+</defs>
+<path d="M24 42
+C20 38 5 27 5 16
+C5 5 18 2 24 12
+C30 2 43 5 43 16
+C43 27 28 38 24 42Z"
+fill="url(#vermelho)"
+stroke="#ffffff"
+stroke-width="2.5"
+stroke-linejoin="round"/>
+<path d="M11 15C12 10 17 9 20 12"
+fill="none"
+stroke="#ffb3bb"
+stroke-width="2.5"
+stroke-linecap="round"/>
+</svg>

@@ -1,6 +1,9 @@
+import { exigirAdminApp } from '../../_lib/kokoro-auth-app.js';
 import { sql } from '../../../../pages/api/_lib/db.js';
 
 export async function POST(req) {
+  const bloqueio = exigirAdminApp(req, { mutacao: true });
+  if (bloqueio) return bloqueio;
   try {
     const body = await req.json();
 
@@ -16,7 +19,7 @@ export async function POST(req) {
     const tipo_treino = (body.tipo_treino || '').toString().trim();
     const tecnica_ministrada = (body.tecnica_ministrada || '').toString().trim();
     const observacoes = (body.observacoes || '').toString().trim();
-    const status = (body.status || 'validada').toString().trim();
+    const status = 'pendente';
 
     if (!aluno_id) {
       return Response.json({ ok:false, message:'aluno_id é obrigatório' }, { status:400 });

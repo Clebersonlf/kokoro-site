@@ -1,13 +1,6 @@
+import crypto from 'node:crypto';
+import { exigirAdminMutacao } from '../_lib/kokoro-guard.js';
 import { sql } from '../_lib/db.js';
-
-// CORS p/ testes locais (WebStorm/localhost)
-function withCors(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') { res.status(200).end(); return true; }
-  return false;
-}
 
 // normaliza telefone para DDI+DDD+numero (ex: 5532984945886)
 function normPhoneBR(v) {
@@ -42,10 +35,11 @@ async function safeSendWelcome(telefone, nome) {
 }
 
 export default async function handler(req, res) {
-  if (withCors(req, res)) return;
+  const sessao = exigirAdminMutacao(req, res);
+  if (!sessao) return;
 
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST, OPTIONS');
+    res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok:false, error:'Method not allowed' });
   }
 
@@ -58,17 +52,15 @@ export default async function handler(req, res) {
     if (!emailRaw) return res.status(400).json({ ok:false, error:'Informe o e-mail' });
     const email = emailRaw.toLowerCase();
 
-    const token =
-      Math.random().toString(36).slice(2,10) +
-      Math.random().toString(36).slice(2,10);
+    const token = crypto.randomBytes(12).toString('base64url');
 
     const id =
       'c_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 
     // Importante: tabela "convites" deve existir (ideal: via migration/script)
     await sql`
-      INSERT INTO convites (id, token, email, nome, telefone)
-      VALUES (${id}, ${token}, ${email}, ${nome}, ${telefone})
+      INSERT INTO convites (id, token, email, nome, telefone, expira_em)
+VALUES (${id}, ${token}, ${email}, ${nome}, ${telefone}, now() + interval '72 hours')
     `;
 
     const url = `https://www.planckkokoro.com/cadastro/index.html?token=${encodeURIComponent(token)}`;

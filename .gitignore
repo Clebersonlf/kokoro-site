@@ -32,3 +32,7 @@ _resgate_*/
 backup_kokoro.sh
 .vercel
 .env*.local
+
+# KOKORO - arquivos de ambiente privados
+.env*
+!.env.example

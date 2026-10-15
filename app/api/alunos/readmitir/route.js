@@ -1,6 +1,10 @@
+import { exigirAdminApp } from '../../_lib/kokoro-auth-app.js';
 import { sql } from '../../../../pages/api/_lib/db.js';
 
 export async function POST(request) {
+  const bloqueio = exigirAdminApp(request, { mutacao: true });
+  if (bloqueio) return bloqueio;
+
   try {
     const body = await request.json();
     const { id, motivo_readmissao = '', readmitido_por = 'admin' } = body || {};

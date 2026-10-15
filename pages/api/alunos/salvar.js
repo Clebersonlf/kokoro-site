@@ -1,4 +1,5 @@
 import { sql } from '../_lib/db.js';
+import { obterSessao } from '../_lib/kokoro-auth.js';
 
 const vazioParaNull = (v) =>
   v === undefined || v === null || String(v).trim() === '' ? null : v;
@@ -15,6 +16,31 @@ export default async function handler(req, res) {
   }
 
   const b = req.body || {};
+
+  let origemEsperada;
+  try {
+    origemEsperada = new URL(process.env.KOKORO_APP_ORIGIN).origin;
+  } catch {
+    return res.status(503).json({ error: 'Origem nao configurada' });
+  }
+
+  if (req.headers.origin !== origemEsperada) {
+    return res.status(403).json({ error: 'Origem nao autorizada' });
+  }
+
+  const ehAdmin = obterSessao(req)?.role === 'admin';
+  const tokenConvite = typeof b.tokenConvite === 'string'
+    ? b.tokenConvite.trim()
+    : '';
+
+  if (!ehAdmin && (
+    req.method !== 'PUT' ||
+    !b.id ||
+    !tokenConvite ||
+    tokenConvite.length > 512
+  )) {
+    return res.status(401).json({ error: 'Autorizacao obrigatoria' });
+  }
 
   const id = b.id;
   const nome = String(b.nome || '').trim();
@@ -130,8 +156,8 @@ export default async function handler(req, res) {
           referencia = ${referencia},
           whatsapp = ${whatsapp},
           esporte = ${esporte},
-          faixa = ${faixa},
-          grau = ${grau},
+          faixa = CASE WHEN ${ehAdmin} THEN ${faixa} ELSE faixa END,
+          grau = CASE WHEN ${ehAdmin} THEN ${grau} ELSE grau END,
           ano_graduacao = ${anoGraduacao},
           nome_equipe = ${nomeEquipe},
           nome_professor = ${nomeProfessor},
@@ -173,19 +199,39 @@ export default async function handler(req, res) {
           parq_q8 = ${parq8},
           medicamentos = ${medicamentos},
           termos_aceitos = ${termosAceitos},
-          numero_certificado = ${numeroCertificado},
-          status = ${status},
+          numero_certificado = CASE WHEN ${ehAdmin} THEN ${numeroCertificado} ELSE numero_certificado END,
+          status = CASE WHEN ${ehAdmin} THEN ${status} ELSE status END,
           foto = ${foto},
-          updated_at = NOW()
+          updated_at = NOW(),
+          token_cadastro_usado_em =
+            CASE WHEN ${ehAdmin}
+              THEN token_cadastro_usado_em
+              ELSE NOW()
+            END
         WHERE id = ${id}
+          AND (
+            ${ehAdmin}
+            OR (
+              token_cadastro = ${tokenConvite}
+              AND token_cadastro_usado_em IS NULL
+              AND (
+                token_cadastro_expira_em IS NULL
+                OR token_cadastro_expira_em > NOW()
+              )
+            )
+          )
         RETURNING *
       `;
 
       if (!r.length) {
-        return res.status(404).json({ error: 'Aluno nao encontrado' });
+        return res.status(ehAdmin ? 404 : 403).json({
+          error: ehAdmin ? 'Aluno nao encontrado' : 'Convite invalido ou expirado'
+        });
       }
 
-      return res.status(200).json(r[0]);
+      const resultado = { ...r[0] };
+      delete resultado.token_cadastro;
+      return res.status(200).json(resultado);
     }
 
     const r = await sql`

@@ -1,6 +1,7 @@
 import { Client } from 'pg';
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'GET') {
     return res.status(405).json({
       ok:false,
@@ -41,11 +42,6 @@ export default async function handler(req, res) {
       `
       SELECT
         id,
-        nome,
-        email,
-        telefone,
-        status,
-        token_cadastro,
         token_cadastro_expira_em,
         token_cadastro_usado_em
       FROM alunos
@@ -71,8 +67,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         ok:true,
         valid:false,
-        reason:'ja_usado',
-        aluno
+        reason:'ja_usado'
       });
     }
 
@@ -83,8 +78,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         ok:true,
         valid:false,
-        reason:'expirado',
-        aluno
+        reason:'expirado'
       });
     }
 
@@ -92,7 +86,7 @@ export default async function handler(req, res) {
       ok:true,
       valid:true,
       reason:'ok',
-      aluno
+      aluno: { id: aluno.id }
     });
 
   } catch (e) {
@@ -100,7 +94,7 @@ export default async function handler(req, res) {
       ok:false,
       valid:false,
       reason:'erro_servidor',
-      error:String(e)
+      error:'Falha interna na validacao'
     });
   }
 }

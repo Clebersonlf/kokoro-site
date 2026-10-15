@@ -1,4 +1,5 @@
 import { sql } from '../../../../pages/api/_lib/db.js';
+import { exigirAdminApp } from '../../_lib/kokoro-auth-app.js';
 
 function serializeAluno(aluno) {
   if (!aluno) return null;
@@ -20,6 +21,8 @@ function serializeAluno(aluno) {
 }
 
 export async function GET(request, { params }) {
+  const bloqueio = exigirAdminApp(request);
+  if (bloqueio) return bloqueio;
   const { id } = await params;
   try {
     const r = await sql`SELECT * FROM alunos WHERE id = ${id}`;
@@ -34,6 +37,8 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
+  const bloqueio = exigirAdminApp(request, { mutacao: true });
+  if (bloqueio) return bloqueio;
   const { id } = await params;
   try {
     const body = await request.json();
@@ -65,6 +70,8 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
+  const bloqueio = exigirAdminApp(request, { mutacao: true });
+  if (bloqueio) return bloqueio;
   const { id } = await params;
   try {
     const url = new URL(request.url);

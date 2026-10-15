@@ -1,6 +1,15 @@
+import { exigirAdmin } from '../_lib/kokoro-auth.js';
+import { exigirAdminMutacao } from '../_lib/kokoro-guard.js';
 import { sql } from '../../api/_lib/db.js';
 
 export default async function handler(req, res) {
+    if (req.method === 'GET') {
+        const sessao = exigirAdmin(req, res);
+        if (!sessao) return;
+    } else if (req.method === 'POST') {
+        const sessao = exigirAdminMutacao(req, res);
+        if (!sessao) return;
+    }
     if (req.method === 'POST') {
         try {
             const {

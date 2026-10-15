@@ -1,6 +1,10 @@
 import { sql } from '../_lib/db.js';
+import { exigirAdminMutacao } from '../_lib/kokoro-guard.js';
 
 export default async function handler(req, res) {
+  const sessao = exigirAdminMutacao(req, res);
+  if (!sessao) return;
+
   try {
 
     // =========================================================

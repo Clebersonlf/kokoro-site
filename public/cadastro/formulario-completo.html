@@ -1344,6 +1344,7 @@ if (tokenConvite) {
           const params = new URLSearchParams(window.location.search);
           const alunoId = params.get('id');
 
+          if (tokenConvite) return;
           if(!alunoId) return;
 
           form.dataset.alunoId = alunoId;
@@ -2902,6 +2903,11 @@ if (tokenConvite) {
     const id = form.dataset.alunoId;
     if (id) payload.id = id;
 
+    const tokenNoEnvio =
+      new URLSearchParams(window.location.search).get('token');
+
+    if (tokenNoEnvio) payload.tokenConvite = tokenNoEnvio;
+
     try {
       const r = await fetch('/api/alunos/salvar', {
         method: id ? 'PUT' : 'POST',
@@ -2913,28 +2919,6 @@ if (tokenConvite) {
       if (!r.ok || d.error) {
         alert('Erro: ' + (d.error || ('HTTP ' + r.status)));
         return;
-      }
-
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
-
-      if (token) {
-        const tokenResponse = await fetch('/api/usar-token-cadastro', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token })
-        });
-
-        const tokenData = await tokenResponse.json().catch(() => ({}));
-
-        if (!tokenResponse.ok || !tokenData.ok) {
-          console.error('Falha ao consumir token:', tokenData);
-          alert(
-            'Os dados do cadastro foram salvos, mas houve um problema ao finalizar o convite. ' +
-            'Não tente cadastrar novamente. Entre em contato com a administração.'
-          );
-          return;
-        }
       }
 
       const modal = document.getElementById('successModal');

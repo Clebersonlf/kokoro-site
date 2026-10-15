@@ -52,21 +52,91 @@
   </div>
 </div>
 
-<script src="/auth.js"></script>
 <script>
-document.getElementById('f').addEventListener('submit', function(e) {
+
+document.getElementById('f').addEventListener('submit', async function(e) {
   e.preventDefault();
-  
-  const email = document.getElementById('email').value;
-  const senha = document.getElementById('senha').value;
-  const errDiv = document.getElementById('err');
-  
-  errDiv.textContent = '';
-  
-  const resultado = fazerLogin(email, senha);
-  
-  if (!resultado.sucesso) {
-    errDiv.textContent = resultado.mensagem;
+
+  const email = document.getElementById('email').value.trim();
+  const campoSenha = document.getElementById('senha');
+  const senha = campoSenha.value;
+  const aviso = document.getElementById('err');
+  const botao = document.querySelector('#f button[type="submit"]');
+
+  botao.disabled = true;
+  aviso.textContent = 'Verificando acesso...';
+
+  try {
+    const resposta = await fetch('/api/auth/usuario-login', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+
+    if (!resposta.ok) {
+      aviso.textContent = 'Credenciais invalidas ou acesso indisponivel.';
+      return;
+    }
+
+    const perfil = await fetch('/api/perfil/me', {
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+
+    if (!perfil.ok) {
+      aviso.textContent = 'Nao foi possivel validar o perfil.';
+      return;
+    }
+
+    const dados = await perfil.json();
+
+    if (!dados.ok || !['aluno', 'professor'].includes(dados.perfil)) {
+      aviso.textContent = 'Perfil nao autorizado.';
+      return;
+    }
+
+    if (dados.perfil === 'aluno') {
+      window.location.replace('/dashboard_aluno.html');
+      return;
+    }
+
+    const respostaProfessor = await fetch('/api/perfil/professor', {
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+
+    if (!respostaProfessor.ok) {
+      aviso.textContent = 'Perfil de professor indisponivel.';
+      return;
+    }
+
+    const dadosProfessor = await respostaProfessor.json();
+
+    const tipo = String(
+      dadosProfessor?.professor?.tipo || ''
+    ).trim().toUpperCase();
+
+    const destino =
+      tipo === 'TITULAR'
+        ? '/dashboard_professor_titular.html'
+        : tipo === 'AUXILIAR'
+          ? '/dashboard_professor_aux.html'
+          : null;
+
+    if (!destino) {
+      aviso.textContent = 'Tipo de professor nao autorizado.';
+      return;
+    }
+
+    window.location.replace(destino);
+    return;
+
+  } catch {
+    aviso.textContent = 'Falha de comunicacao com o servidor.';
+  } finally {
+    campoSenha.value = '';
+    botao.disabled = false;
   }
 });
 </script>

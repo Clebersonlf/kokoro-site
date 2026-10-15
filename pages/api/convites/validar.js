@@ -13,13 +13,13 @@ export default async function handler(req, res) {
 
   try {
     const token = (req.query?.token || '').toString().trim();
+
     if (!token) {
-      return res.status(400).json({ ok:false, error:'Parâmetro "token" é obrigatório' });
+      return res.status(400).json({ ok:false, valid:false, reason:'token_obrigatorio' });
     }
 
-    // Neon: retorna ARRAY de linhas
     const rows = await sql`
-      SELECT id, token, email, nome, telefone, status, criado_em, usado_em
+      SELECT id, token, email, nome, telefone, status, criado_em, usado_em, expira_em
       FROM convites
       WHERE token = ${token}
       LIMIT 1;
@@ -30,16 +30,34 @@ export default async function handler(req, res) {
     }
 
     const c = rows[0];
-    const valid = !c.status || c.status === 'pendente';
+
+    if (c.status && c.status !== 'pendente') {
+      return res.status(200).json({
+        ok:true,
+        valid:false,
+        reason:'ja_usado',
+        convite:c
+      });
+    }
+
+    if (c.expira_em && new Date(c.expira_em).getTime() < Date.now()) {
+      return res.status(200).json({
+        ok:true,
+        valid:false,
+        reason:'expirado',
+        convite:c
+      });
+    }
 
     return res.status(200).json({
       ok:true,
-      valid,
-      reason: valid ? 'ok' : 'ja_usado',
-      convite: c
+      valid:true,
+      reason:'ok',
+      convite:c
     });
+
   } catch (e) {
     console.error('[convites/validar] erro:', e);
-    return res.status(500).json({ ok:false, error: String(e) });
+    return res.status(500).json({ ok:false, valid:false, error:String(e) });
   }
 }

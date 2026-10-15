@@ -56,18 +56,40 @@
   </main>
 
   <script>
-    document.getElementById("btn-salvar").addEventListener("click", () => {
+    document.getElementById("btn-salvar").addEventListener("click", async () => {
       const nome = document.getElementById("nome").value.trim();
       const email = document.getElementById("email").value.trim();
       const telefone = document.getElementById("telefone").value.trim();
       const perfil = document.getElementById("perfil").value;
 
-      if (!nome || !email) return alert("Preencha Nome e E-mail.");
+      if (!nome) return alert("Preencha o nome.");
 
-      alert("Cadastro salvo (simulado): " + nome + " • " + email + " • " + perfil);
+      try {
+        const res = await fetch("/api/alunos/criar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome,
+            email,
+            faixa: "branca",
+            grau: "0º Grau",
+            financeiro: "ok",
+            status: "ativo"
+          })
+        });
 
-      // Aqui depois entra a integração (Firebase/Supabase/etc.)
-      // Ex.: salvar {nome,email,telefone,perfil} no banco
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data?.error || "Erro ao salvar cadastro.");
+          return;
+        }
+
+        alert("Cadastro salvo com sucesso!");
+      } catch (e) {
+        console.error(e);
+        alert("Erro ao salvar cadastro.");
+      }
     });
 
     document.getElementById("btn-limpar").addEventListener("click", () => {

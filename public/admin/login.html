@@ -23,18 +23,56 @@
   <div class="card">
     <h1>Login do Admin</h1>
     <label>Admin Secret</label>
-    <input id="secret" type="password" placeholder="cole seu x-admin-secret"/>
+    <input id="secret" type="password" placeholder="Digite sua senha administrativa"/>
     <button id="btn">Entrar</button>
-    <div class="mut">A sessão encerra ao fechar a aba ou ao sair do painel.</div>
+    <div class="mut">A sessão administrativa expira após 30 minutos.</div>
   </div>
-  <script src="/admin/_auth.js"></script>
   <script>
-    document.getElementById('btn').addEventListener('click', ()=>{
-      const s = document.getElementById('secret').value.trim();
-      if(!s){ alert('Informe o Admin Secret.'); return; }
-      if(window.adminLogin(s)){ location.href = "/admin/index.html"; }
-    });
+  // KOKORO LOGIN ADMINISTRATIVO SEGURO
+  const campo = document.getElementById('secret');
+  const botao = document.getElementById('btn');
+  const aviso = document.createElement('p');
+  aviso.setAttribute('role', 'status');
+  aviso.style.marginTop = '12px';
+  botao.insertAdjacentElement('afterend', aviso);
+
+  async function entrarAdmin() {
+    const secret = campo.value;
+    campo.value = '';
+
+    if (!secret) {
+      aviso.textContent = 'Informe a senha administrativa.';
+      return;
+    }
+
+    botao.disabled = true;
+    aviso.textContent = 'Verificando acesso...';
+
+    try {
+      const resposta = await fetch('/api/auth/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ secret })
+      });
+
+      if (!resposta.ok) {
+        aviso.textContent = 'Senha incorreta ou acesso indisponível.';
+        return;
+      }
+
+      location.replace('/admin_Dashboard.html');
+    } catch (erro) {
+      aviso.textContent = 'Falha de comunicação com o servidor.';
+    } finally {
+      botao.disabled = false;
+    }
+  }
+
+  botao.addEventListener('click', entrarAdmin);
+  campo.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') entrarAdmin();
+  });
   </script>
-  <script src="/admin/_session_timer.js" defer></script>
 </body>
 </html>

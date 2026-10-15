@@ -1,6 +1,10 @@
 import { sql } from '../_lib/db.js';
+import { exigirAdmin } from '../_lib/kokoro-auth.js';
 export default async function handler(req,res){
   if(req.method!=='GET') return res.status(405).json({error:'Metodo nao permitido'});
+  res.setHeader('Cache-Control', 'no-store');
+  const sessao = exigirAdmin(req, res);
+  if (!sessao) return;
   const {id}=req.query;
   if(!id) return res.status(400).json({error:'ID obrigatorio'});
   try{

@@ -1,9 +1,15 @@
 import { sql } from '../_lib/db.js';
+import { exigirAdmin } from '../_lib/kokoro-auth.js';
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'private, no-store');
+  res.setHeader('Vary', 'Cookie');
   if (req.method !== 'GET') {
     return res.status(405).json({ ok: false, message: 'Method not allowed' });
   }
+
+  const sessao = exigirAdmin(req, res);
+  if (!sessao) return;
 
   try {
     const alunoId = (req.query?.alunoId || '').toString().trim();
@@ -30,7 +36,7 @@ export default async function handler(req, res) {
     return res.status(500).json({
       ok: false,
       message: 'Erro ao listar sessões',
-      error: String(e)
+      error: 'Falha interna'
     });
   }
 }

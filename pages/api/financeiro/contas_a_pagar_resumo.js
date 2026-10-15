@@ -1,8 +1,21 @@
+import { exigirAdmin } from '../_lib/kokoro-auth.js';
 import { sql } from '../_lib/db';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+
+  res.setHeader('Cache-Control', 'private, no-store');
+  res.setHeader('Vary', 'Cookie');
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({
+      ok: false,
+      error: 'Metodo nao permitido'
+    });
+  }
+
+  const sessao = exigirAdmin(req, res);
+  if (!sessao) return;
+
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();

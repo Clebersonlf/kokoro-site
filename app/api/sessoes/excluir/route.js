@@ -1,6 +1,9 @@
+import { exigirAdminApp } from '../../_lib/kokoro-auth-app.js';
 import { sql } from '../../../../pages/api/_lib/db.js';
 
 export async function POST(req) {
+  const bloqueio = exigirAdminApp(req, { mutacao: true });
+  if (bloqueio) return bloqueio;
   try {
     const body = await req.json();
     const id = Number(body.id || 0);

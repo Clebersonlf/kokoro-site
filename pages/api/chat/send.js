@@ -1,6 +1,9 @@
+import { exigirAdminMutacao } from '../_lib/kokoro-guard.js';
 import { sql } from '../../api/_lib/db.js';
 
 export default async function handler(req, res) {
+    const sessao = exigirAdminMutacao(req, res);
+    if (!sessao) return;
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }

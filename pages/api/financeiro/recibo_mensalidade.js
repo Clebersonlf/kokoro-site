@@ -1,3 +1,4 @@
+import { exigirAdmin } from '../_lib/kokoro-auth.js';
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
@@ -75,6 +76,9 @@ export default async function handler(req, res) {
       error: 'Método não permitido'
     });
   }
+
+  const sessao = exigirAdmin(req, res);
+  if (!sessao) return;
 
   try {
     const id = String(req.query.id || '').trim();

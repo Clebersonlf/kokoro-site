@@ -1,12 +1,16 @@
+import { exigirAdminApp } from '../../_lib/kokoro-auth-app.js';
 import { sql } from '../../../../pages/api/_lib/db.js';
 
 export async function POST(req) {
+  const bloqueio = exigirAdminApp(req, { mutacao: true });
+  if (bloqueio) return bloqueio;
   try {
     const body = await req.json();
 
     const id = Number(body.id || 0);
     const hora_inicio = (body.hora_inicio || '').toString().trim();
     const hora_fim = (body.hora_fim || '').toString().trim();
+    const horas_aula = Number(body.horas_aula || 0);
     const professor = (body.professor || '').toString().trim();
     const plano_aula = (body.plano_aula || '').toString().trim();
     const aula_ministrada = (body.aula_ministrada || '').toString().trim();
@@ -24,6 +28,7 @@ export async function POST(req) {
       SET
         hora_inicio = COALESCE(NULLIF(${hora_inicio}, ''), hora_inicio),
         hora_fim = COALESCE(NULLIF(${hora_fim}, ''), hora_fim),
+        horas_aula = CASE WHEN ${horas_aula} > 0 THEN ${horas_aula} ELSE horas_aula END,
         professor = COALESCE(NULLIF(${professor}, ''), professor),
         plano_aula = COALESCE(NULLIF(${plano_aula}, ''), plano_aula),
         aula_ministrada = COALESCE(NULLIF(${aula_ministrada}, ''), aula_ministrada),

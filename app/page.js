@@ -20,7 +20,7 @@ const socialLinks = {
           </div>
           <div className="auth-buttons">
             <a href="/login.html" className="btn btn-outline">Login</a>
-            <a href="/completar-cadastro.html" className="btn btn-filled">Cadastre-se</a>
+            <button className="btn btn-filled" disabled style={{opacity:0.6,cursor:"not-allowed"}}>Em breve</button>
           </div>
         </div>
       </header>
