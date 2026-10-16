@@ -1778,8 +1778,105 @@ body .profile-side .info-box .value {
 }
 </style>
 
+
+<style>
+/* KOKORO-BOTOES-NEON-MOBILE-20261016 */
+@media (max-width:640px) {
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta .hero-name {
+    margin-bottom:18px !important;
+  }
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta .hero-identidade {
+    display:grid !important;
+    grid-template-columns:max-content max-content !important;
+    align-items:center !important;
+    gap:10px !important;
+    margin-top:0 !important;
+    max-width:100%;
+  }
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta .hero-identidade .pill {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:40px;
+    padding:9px 14px !important;
+    font-size:13px;
+    font-weight:700;
+    border-radius:12px;
+    max-width:100%;
+    box-sizing:border-box;
+  }
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta #statusAluno.pill.green {
+    grid-column:1;
+    color:#4ade80 !important;
+    background:linear-gradient(145deg,#064e3b,#063b35) !important;
+    border:1.5px solid #059669 !important;
+  }
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta #modalidadeAluno {
+    grid-column:2;
+    color:#38bdf8 !important;
+    background:linear-gradient(145deg,#073b64,#062947) !important;
+    border:1.5px solid #0284c7 !important;
+  }
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta #faixaAluno {
+    grid-column:1 / -1;
+    justify-self:start;
+    color:#ffffff !important;
+    background:linear-gradient(145deg,#3b1e69,#261445) !important;
+    border:1.5px solid #7c3aed !important;
+    white-space:normal;
+  }
+}
+</style>
+
+
+<style>
+/* KOKORO-BOTOES-NEON-DESKTOP-20261016 */
+@media (min-width: 861px) {
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta #statusAluno.pill.green {
+    color: #4ade80 !important;
+    background: linear-gradient(
+      145deg,#064e3b,#063b35
+    ) !important;
+    border: 1.5px solid #059669 !important;
+  }
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta #modalidadeAluno {
+    color: #38bdf8 !important;
+    background: linear-gradient(
+      145deg,#073b64,#062947
+    ) !important;
+    border: 1.5px solid #0284c7 !important;
+  }
+
+  body.kokoro-athlete-dashboard
+  .hero-atleta #faixaAluno {
+    color: #ffffff !important;
+    background: linear-gradient(
+      145deg,#3b1e69,#261445
+    ) !important;
+    border: 1.5px solid #7c3aed !important;
+  }
+
+}
+</style>
+
 </head>
-<body class="kokoro-mobile-contrast kokoro-athlete-dashboard">
+<body class="kokoro-athlete-dashboard">
   <div class="shell">
     <header class="topbar">
       <div class="brand">
