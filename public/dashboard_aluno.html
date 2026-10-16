@@ -1697,6 +1697,87 @@ body .profile-side .info-box .value {
 
 
 
+
+<style>
+/* KOKORO-ESPACAMENTO-PAINEL-ALUNO-20261016 */
+@media (min-width: 861px) {
+
+  .hero-atleta.hero-referencia {
+    grid-template-columns: 170px minmax(0, 1fr) !important;
+    column-gap: 18px !important;
+    align-items: start !important;
+  }
+
+  .hero-atleta.hero-referencia .avatar-wrap {
+    align-self: start;
+  }
+
+  .hero-atleta.hero-referencia .hero-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 4px;
+  }
+
+  .hero-atleta .eyebrow {
+    font-size: 18px !important;
+    line-height: 1.08 !important;
+    letter-spacing: 0.04em !important;
+    margin: 0 0 12px 0 !important;
+  }
+
+  .hero-atleta .hero-name {
+    font-size: 34px !important;
+    line-height: 1.02 !important;
+    margin: 0 0 18px 0 !important;
+  }
+
+  .hero-atleta .hero-identidade {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin: 0 0 18px 0 !important;
+  }
+
+  .hero-atleta .pill {
+    min-height: 42px;
+    padding: 9px 18px !important;
+  }
+
+  .hero-atleta .hero-resumo-grid {
+    margin-top: 0 !important;
+  }
+}
+
+/* KOKORO-NOME-BOTOES-DESCER-6PX-20261016 */
+@media (min-width: 861px) {
+
+  .hero-atleta.hero-referencia
+  > .hero-info > .hero-name {
+    position: relative;
+    top: 6px;
+  }
+
+  .hero-atleta.hero-referencia
+  > .hero-info > .hero-identidade {
+    position: relative;
+    top: 6px;
+  }
+
+}
+
+</style>
+
+
+<style>
+/* KOKORO-STATUS-ATIVO-VERDE-20261016 */
+.hero-atleta #statusAluno.pill.green {
+  color: #4ade80 !important;
+}
+</style>
+
 </head>
 <body class="kokoro-mobile-contrast kokoro-athlete-dashboard">
   <div class="shell">
