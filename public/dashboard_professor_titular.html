@@ -273,6 +273,89 @@ a[href="/consultoria_alunos.html"] path {
     opacity: 1 !important;
 }
 </style>
+
+<style id="kokoro-professor-guard-css">
+  body { visibility: hidden !important; }
+</style>
+<script>
+(function () {
+  async function verificarAcesso() {
+    const opcoes = {
+      credentials: 'same-origin',
+      cache: 'no-store'
+    };
+
+    try {
+      const admin = await fetch('/api/auth/admin-session', opcoes);
+      if (admin.ok) return 'admin';
+
+      const professor = await fetch('/api/perfil/professor', opcoes);
+      if (professor.ok) {
+        const dados = await professor.json();
+
+        const tipo = String(
+          dados?.professor?.tipo || ''
+        ).trim().toUpperCase();
+
+        if (tipo === 'TITULAR') return 'professor';
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
+  window.kokoroProfessorGate = verificarAcesso();
+
+  window.kokoroProfessorGate.then(async function (perfil) {
+    if (!perfil) {
+      window.location.replace('/login.html');
+      return;
+    }
+
+    if (document.readyState === 'loading') {
+      await new Promise(resolve =>
+        document.addEventListener('DOMContentLoaded', resolve, { once: true })
+      );
+    }
+
+    if (perfil === 'professor') {
+      const bloqueados = [
+        '/admin_Dashboard.html',
+        '/dashboard_aluno.html',
+        '/dashboard_professor_aux.html',
+        '/chat.html',
+        '/consultoria_alunos.html'
+      ];
+
+      document.querySelectorAll('a[href]').forEach(link => {
+        const caminho = new URL(link.href).pathname;
+
+        if (caminho.startsWith('/admin/') ||
+            bloqueados.includes(caminho)) {
+          link.style.setProperty('display', 'none', 'important');
+        }
+      });
+
+      const indicadores = {
+        'alerta-financeiro': 'Resumo financeiro restrito',
+        'alerta-presencas': 'Resumo de sessões em preparação',
+        'alerta-graduacao': 'Indicadores em preparação',
+        'card-financeiro': '—',
+        'card-checkins': '—',
+        'card-aulas': '—'
+      };
+
+      Object.entries(indicadores).forEach(([id, texto]) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = texto;
+      });
+    }
+
+    document.getElementById('kokoro-professor-guard-css')?.remove();
+  }).catch(() => window.location.replace('/login.html'));
+})();
+</script>
+
 </head>
 <body>
     <div class="top-bar">
@@ -477,7 +560,9 @@ if (cardAulas) {
     }
 }
 
-carregarResumo();
+window.kokoroProfessorGate.then(perfil => {
+    if (perfil === 'admin') carregarResumo();
+});
 
     </script>
 </body>

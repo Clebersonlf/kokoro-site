@@ -204,6 +204,83 @@ a[href="/consultoria_alunos.html"] path {
     opacity: 1 !important;
 }
 </style>
+
+<style id="kokoro-auxiliar-guard">
+  html { visibility: hidden !important; }
+</style>
+<script>
+(async function () {
+  const opcoes = {
+    credentials: 'same-origin',
+    cache: 'no-store'
+  };
+
+  let autorizado = false;
+  let administrador = false;
+
+  try {
+    const admin = await fetch(
+      '/api/auth/admin-session', opcoes
+    );
+
+    if (admin.ok) {
+      autorizado = true;
+      administrador = true;
+    } else {
+      const resposta = await fetch(
+        '/api/perfil/professor', opcoes
+      );
+
+      if (resposta.ok) {
+        const dados = await resposta.json();
+        const tipo = String(
+          dados?.professor?.tipo || ''
+        ).trim().toUpperCase();
+
+        autorizado = tipo === 'AUXILIAR';
+      }
+    }
+  } catch (_) {}
+
+  if (!autorizado) {
+    window.location.replace('/login.html');
+    return;
+  }
+
+  function liberarPainel() {
+    if (!administrador) {
+      document.querySelectorAll('a[href]').forEach(link => {
+        const caminho = new URL(
+          link.href, location.origin
+        ).pathname;
+
+        if (
+          caminho.startsWith('/admin/') ||
+          caminho === '/admin_Dashboard.html' ||
+          caminho === '/dashboard_professor_titular.html'
+        ) {
+          link.style.display = 'none';
+        }
+      });
+    }
+
+    document.getElementById(
+      'kokoro-auxiliar-guard'
+    )?.remove();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener(
+      'DOMContentLoaded',
+      liberarPainel,
+      { once: true }
+    );
+  } else {
+    liberarPainel();
+  }
+})();
+</script>
+
 </head>
 <body>
     <div class="top-bar">

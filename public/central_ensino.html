@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Central de Ensino | KOKORO</title>
+<style>
+:root {
+  color-scheme: dark;
+  --fundo: #06101f;
+  --painel: #0c1a30;
+  --borda: #254568;
+  --azul: #35c9ff;
+  --texto: #eef7ff;
+  --suave: #adc3dc;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font: 15px/1.5 Arial, sans-serif;
+  background: radial-gradient(circle at 90% 0%, #12375a, var(--fundo) 48%);
+  color: var(--texto);
+  min-height: 100vh;
+}
+main { max-width: 1160px; margin: auto; padding: 26px 18px 60px; }
+.topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.marca { color: var(--azul); font-weight: bold; letter-spacing: 3px; }
+h1 { font-size: clamp(25px, 4vw, 38px); margin: 8px 0; }
+h2 { font-size: 21px; margin: 0 0 8px; }
+h3 { font-size: 16px; margin: 0; }
+p { color: var(--suave); }
+a { color: var(--azul); }
+.voltar { padding: 10px; text-decoration: none; white-space: nowrap; }
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 390px);
+  gap: 20px;
+  align-items: start;
+}
+.painel {
+  background: rgba(12, 26, 48, .96);
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  padding: 23px;
+  box-shadow: 0 12px 35px #0003;
+  min-width: 0;
+}
+
+.cabecalho-catalogo, .cabecalho-tecnica {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cabecalho-catalogo { flex-wrap: wrap; }
+.cabecalho-catalogo h2 { margin: 0; }
+.botao-editar {
+  padding: 6px 10px;
+  background: #123b5e;
+  border-color: #328db9;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.acoes-formulario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.botao-cancelar {
+  background: transparent;
+  border-color: #55718d;
+}
+.grid.somente-catalogo {
+  grid-template-columns: minmax(0, 1fr);
+}
+label { display: block; font-weight: bold; margin: 14px 0 6px; }
+input, textarea {
+  width: 100%;
+  padding: 12px 13px;
+  border-radius: 9px;
+  border: 1px solid #3a5978;
+  background: #071526;
+  color: white;
+  font: inherit;
+}
+input:focus, textarea:focus {
+  outline: 2px solid var(--azul);
+  outline-offset: 1px;
+}
+textarea { min-height: 95px; resize: vertical; }
+button {
+  background: #087baa;
+  color: white;
+  border: 1px solid #42cbff;
+  border-radius: 9px;
+  padding: 12px 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover { background: #09638a; }
+button:disabled { opacity: .55; cursor: wait; }
+.campo-busca { margin: 16px 0 22px; }
+.grupo { margin: 20px 0; }
+.grupo h3 {
+  color: var(--azul);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--borda);
+}
+.tecnica {
+  padding: 13px 0;
+  border-bottom: 1px solid #20344e;
+}
+.nome { font-weight: bold; }
+.detalhe { color: var(--suave); font-size: 13px; margin-top: 4px; }
+.aviso {
+  background: #10263b;
+  border-left: 3px solid var(--azul);
+  border-radius: 7px;
+  padding: 13px;
+  margin: 15px 0;
+}
+.mensagem { min-height: 28px; color: var(--azul); }
+[hidden] { display: none !important; }
+@media (max-width: 760px) {
+  .grid { grid-template-columns: 1fr; }
+  .topo { flex-direction: column; }
+  .painel { padding: 17px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="topo">
+    <div>
+      <div class="marca">KOKORO</div>
+      <h1>Central de Ensino</h1>
+      <p>Biblioteca de conhecimento e avaliação técnica do jiu-jítsu.</p>
+    </div>
+    <a class="voltar" href="/">← Voltar ao KOKORO</a>
+  </header>
+
+  <p id="acesso" role="status" aria-live="polite">
+    Verificando sua sessão...
+  </p>
+
+  <div id="area" class="grid somente-catalogo" hidden>
+    <section class="painel">
+      <div class="cabecalho-catalogo">
+        <h2>Banco de técnicas</h2>
+        <button id="novaTecnica" type="button" hidden>
+          ＋ Nova técnica
+        </button>
+      </div>
+      <p>Pesquise técnicas por nome, categoria ou posição.</p>
+
+      <label for="busca">Pesquisar técnicas</label>
+      <input id="busca" class="campo-busca" type="search"
+        maxlength="100" placeholder="Ex.: Kimura, raspagem, guarda">
+
+      <div id="resultado" aria-live="polite">
+        Carregando catálogo...
+      </div>
+
+      <p class="aviso">
+        Próxima integração: selecionar técnicas deste catálogo
+        para compor os planos de aula, mantendo uma descrição
+        livre para cada aplicação ensinada.
+      </p>
+    </section>
+
+    <section class="painel" id="painelCadastro" hidden>
+      <h2 id="tituloCadastro">Cadastrar técnica</h2>
+      <p>Registre técnicas usando os nomes conhecidos no jiu-jítsu brasileiro.</p>
+
+      <form id="cadastro">
+        <label for="nome">Nome da técnica *</label>
+        <input id="nome" name="nome" required maxlength="160"
+          placeholder="Ex.: Kimura">
+
+        <label for="categoria">Categoria *</label>
+        <input id="categoria" name="categoria" required maxlength="100"
+          placeholder="Ex.: Chaves de membros superiores">
+
+        <label for="subcategoria">Subcategoria</label>
+        <input id="subcategoria" name="subcategoria" maxlength="100">
+
+        <label for="posicao">Posição de origem</label>
+        <input id="posicao" name="posicao_origem" maxlength="160"
+          placeholder="Ex.: Guarda fechada">
+
+        <label for="regiao">Região do corpo</label>
+        <input id="regiao" name="regiao_corpo" maxlength="100">
+
+        <label for="curta">Descrição resumida</label>
+        <textarea id="curta" name="descricao_curta"
+          maxlength="1000"></textarea>
+
+        <label for="detalhada">Descrição detalhada</label>
+        <textarea id="detalhada" name="descricao_detalhada"
+          maxlength="12000"></textarea>
+
+        <label for="imagem">Endereço da imagem (opcional)</label>
+        <input id="imagem" name="imagem_url" type="url"
+          maxlength="1500"
+          placeholder="https://exemplo.com/imagem.jpg">
+
+        <p class="mensagem" id="mensagem" aria-live="polite"></p>
+
+        <div class="acoes-formulario">
+          <button id="salvar" type="submit">Salvar técnica</button>
+          <button id="cancelarEdicao" class="botao-cancelar"
+            type="button">Cancelar</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const acesso = document.getElementById('acesso');
+  const area = document.getElementById('area');
+  const resultado = document.getElementById('resultado');
+  const busca = document.getElementById('busca');
+  const form = document.getElementById('cadastro');
+  const mensagem = document.getElementById('mensagem');
+  const salvar = document.getElementById('salvar');
+  const botaoNova = document.getElementById('novaTecnica');
+  const botaoCancelar = document.getElementById('cancelarEdicao');
+  const painelCadastro = document.getElementById('painelCadastro');
+  const tituloCadastro = document.getElementById('tituloCadastro');
+
+  let podeCriarTecnica = false;
+  let podeEditarTecnica = false;
+  let edicaoId = null;
+
+  let consultaAtual = 0;
+  let atraso;
+
+  async function requisitar(url, opcoes = {}) {
+    const resposta = await fetch(url, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      ...opcoes
+    });
+    const dados = await resposta.json().catch(() => ({}));
+    return { resposta, dados };
+  }
+
+  function elemento(tag, classe, texto) {
+    const el = document.createElement(tag);
+    if (classe) el.className = classe;
+    if (texto !== undefined) el.textContent = texto;
+    return el;
+  }
+
+  function fecharFormulario() {
+    edicaoId = null;
+    form.reset();
+    mensagem.textContent = '';
+    tituloCadastro.textContent = 'Cadastrar técnica';
+    salvar.textContent = 'Salvar técnica';
+    painelCadastro.hidden = true;
+    area.classList.add('somente-catalogo');
+  }
+
+  function abrirFormulario(tecnica = null) {
+    if (tecnica && !podeEditarTecnica) return;
+    if (!tecnica && !podeCriarTecnica) return;
+
+    form.reset();
+    mensagem.textContent = '';
+    edicaoId = tecnica ? tecnica.id : null;
+
+    if (tecnica) {
+      const campos = [
+        'nome', 'categoria', 'subcategoria',
+        'posicao_origem', 'regiao_corpo',
+        'descricao_curta', 'descricao_detalhada',
+        'imagem_url'
+      ];
+
+      for (const nome of campos) {
+        const controle = form.elements.namedItem(nome);
+        if (controle) controle.value = tecnica[nome] || '';
+      }
+    }
+
+    tituloCadastro.textContent = tecnica
+      ? 'Editar técnica'
+      : 'Cadastrar técnica';
+
+    salvar.textContent = tecnica
+      ? 'Salvar alterações'
+      : 'Salvar técnica';
+
+    painelCadastro.hidden = false;
+    area.classList.remove('somente-catalogo');
+    painelCadastro.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
+
+  botaoNova.addEventListener('click', () => abrirFormulario());
+
+  botaoCancelar.addEventListener('click', fecharFormulario);
+
+  function mostrarTecnicas(tecnicas) {
+    resultado.replaceChildren();
+
+    if (!tecnicas.length) {
+      resultado.append(elemento(
+        'p', '', 'Nenhuma técnica encontrada no catálogo.'
+      ));
+      return;
+    }
+
+    const grupos = new Map();
+
+    for (const tecnica of tecnicas) {
+      const categoria = tecnica.categoria || 'Sem categoria';
+      if (!grupos.has(categoria)) grupos.set(categoria, []);
+      grupos.get(categoria).push(tecnica);
+    }
+
+    for (const [categoria, itens] of grupos) {
+      const grupo = elemento('section', 'grupo');
+      grupo.append(elemento('h3', '', categoria));
+
+      for (const tecnica of itens) {
+        const bloco = elemento('div', 'tecnica');
+        const cabecalho = elemento('div', 'cabecalho-tecnica');
+        cabecalho.append(elemento('div', 'nome', tecnica.nome));
+
+        if (podeEditarTecnica) {
+          const editar = elemento(
+            'button', 'botao-editar', '✎ Editar'
+          );
+
+          editar.type = 'button';
+          editar.setAttribute(
+            'aria-label',
+            'Editar técnica ' + tecnica.nome
+          );
+
+          editar.addEventListener(
+            'click',
+            () => abrirFormulario(tecnica)
+          );
+
+          cabecalho.append(editar);
+        }
+
+        bloco.append(cabecalho);
+
+        const informacoes = [
+          tecnica.subcategoria,
+          tecnica.posicao_origem,
+          tecnica.regiao_corpo
+        ].filter(Boolean).join(' • ');
+
+        if (informacoes) {
+          bloco.append(elemento('div', 'detalhe', informacoes));
+        }
+
+        if (tecnica.descricao_curta) {
+          bloco.append(elemento(
+            'div', 'detalhe', tecnica.descricao_curta
+          ));
+        }
+        grupo.append(bloco);
+      }
+      resultado.append(grupo);
+    }
+  }
+
+  async function carregarTecnicas() {
+    const consulta = ++consultaAtual;
+    resultado.textContent = 'Consultando catálogo...';
+
+    try {
+      const parametros = new URLSearchParams({
+        busca: busca.value.trim()
+      });
+
+      const { resposta, dados } = await requisitar(
+        '/api/ensino/tecnicas?' + parametros.toString()
+      );
+
+      if (consulta !== consultaAtual) return;
+
+      if (!resposta.ok || !Array.isArray(dados.tecnicas)) {
+        throw new Error('O catálogo não pôde ser consultado.');
+      }
+
+      mostrarTecnicas(dados.tecnicas);
+    } catch (erro) {
+      if (consulta === consultaAtual) {
+        resultado.textContent = erro.message;
+      }
+    }
+  }
+
+  busca.addEventListener('input', () => {
+    clearTimeout(atraso);
+    atraso = setTimeout(carregarTecnicas, 300);
+  });
+
+  form.addEventListener('submit', async evento => {
+    evento.preventDefault();
+    salvar.disabled = true;
+    mensagem.textContent = 'Salvando técnica...';
+
+    const editando = Boolean(edicaoId);
+
+    if (
+      (editando && !podeEditarTecnica) ||
+      (!editando && !podeCriarTecnica)
+    ) {
+      mensagem.textContent = 'Operação não autorizada.';
+      salvar.disabled = false;
+      return;
+    }
+
+    const dados = Object.fromEntries(new FormData(form).entries());
+
+    if (editando) {
+      dados.id = edicaoId;
+    }
+
+    try {
+      const { resposta, dados: retorno } = await requisitar(
+        '/api/ensino/tecnicas', {
+          method: editando ? 'PATCH' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dados)
+        }
+      );
+
+      if (!resposta.ok) {
+        throw new Error(
+          retorno.error || 'Não foi possível salvar a técnica.'
+        );
+      }
+
+      mensagem.textContent = editando
+        ? 'Alterações salvas com sucesso!'
+        : 'Técnica cadastrada com sucesso!';
+
+      edicaoId = null;
+      tituloCadastro.textContent = 'Cadastrar técnica';
+      salvar.textContent = 'Salvar técnica';
+      form.reset();
+      busca.value = '';
+      await carregarTecnicas();
+    } catch (erro) {
+      mensagem.textContent = erro.message;
+    } finally {
+      salvar.disabled = false;
+    }
+  });
+
+  async function iniciar() {
+    try {
+      const { resposta, dados } = await requisitar(
+        '/api/ensino/permissoes'
+      );
+
+      if (!resposta.ok || !dados.ok) {
+        acesso.textContent =
+          'Acesso restrito. Entre com uma conta autorizada do KOKORO.';
+        return;
+      }
+
+      if (!dados.podeConsultarBiblioteca) {
+        acesso.textContent = 'Seu perfil não possui essa permissão.';
+        return;
+      }
+
+      podeCriarTecnica = dados.podeCriarTecnica === true;
+      podeEditarTecnica = dados.podeEditarTecnica === true;
+
+      botaoNova.hidden = !podeCriarTecnica;
+      fecharFormulario();
+
+      acesso.textContent =
+        'Sessão autorizada • ' +
+        (dados.tipo || dados.perfil || 'KOKORO');
+
+      area.hidden = false;
+      await carregarTecnicas();
+    } catch {
+      acesso.textContent =
+        'Não foi possível confirmar o acesso. Verifique o servidor.';
+    }
+  }
+
+  iniciar();
+})();
+</script>
+</body>
+</html>
