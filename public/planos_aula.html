@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planos de Aula | KOKORO</title>
+<style>
+:root {
+  color-scheme: dark;
+  --fundo: #06101f;
+  --painel: #0c1a30;
+  --borda: #29496b;
+  --azul: #35c9ff;
+  --texto: #eef7ff;
+  --suave: #afc4dc;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--texto);
+  background: radial-gradient(
+    circle at 90% 0%, #153656, var(--fundo) 48%
+  );
+  font: 15px/1.5 Arial, sans-serif;
+}
+main {
+  width: 100%;
+  max-width: 1180px;
+  margin: auto;
+  padding: 24px 16px 60px;
+}
+h1 { font-size: clamp(25px, 4vw, 36px); margin: 8px 0; }
+h2 { margin: 0 0 10px; font-size: 21px; }
+h3 { font-size: 16px; margin: 0; }
+p { color: var(--suave); }
+a { color: var(--azul); }
+.marca { color: var(--azul); letter-spacing: 3px; font-weight: bold; }
+.topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.voltar { align-self: flex-start; text-decoration: none; }
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+}
+.painel {
+  min-width: 0;
+  border: 1px solid var(--borda);
+  border-radius: 15px;
+  padding: 21px;
+  background: rgba(12,26,48,.97);
+}
+label { display: block; font-weight: bold; margin: 14px 0 6px; }
+input, textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  background: #071526;
+  border: 1px solid #416180;
+  border-radius: 9px;
+  padding: 12px;
+  color: #fff;
+  font: inherit;
+}
+textarea { min-height: 100px; resize: vertical; }
+input:focus, textarea:focus {
+  outline: 2px solid var(--azul);
+  outline-offset: 1px;
+}
+button {
+  border: 1px solid #43cfff;
+  border-radius: 9px;
+  background: #087baa;
+  color: #fff;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:disabled { opacity: .6; cursor: wait; }
+button:hover:not(:disabled) { background: #08688e; }
+.aviso {
+  background: #102941;
+  border-left: 3px solid var(--azul);
+  padding: 12px;
+  border-radius: 6px;
+  margin: 14px 0;
+}
+.categoria { margin-top: 22px; }
+.categoria h3 {
+  color: var(--azul);
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--borda);
+}
+.opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #263e5b;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.opcao input {
+  width: 19px;
+  height: 19px;
+  flex: none;
+  margin: 2px 0 0;
+  accent-color: #35c9ff;
+}
+.opcao span { flex: 1; }
+.menor { font-size: 13px; color: var(--suave); }
+.descricao-item {
+  border-top: 1px solid var(--borda);
+  padding-top: 12px;
+  margin-top: 15px;
+}
+.selecao { color: var(--azul); font-weight: bold; }
+.botoes { display: flex; flex-wrap: wrap; gap: 10px; }
+.registro {
+  border-bottom: 1px solid var(--borda);
+  padding: 13px 0;
+}
+.registro strong { display: block; }
+.registro small { color: var(--suave); }
+.mensagem { min-height: 24px; color: var(--azul); }
+[hidden] { display: none !important; }
+@media (max-width: 760px) {
+  .grade { grid-template-columns: 1fr; }
+  .painel { padding: 16px; }
+  main { padding: 18px 12px 50px; }
+  .opcao { padding: 12px 8px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="topo">
+    <div>
+      <div class="marca">KOKORO</div>
+      <h1>Planos de Aula</h1>
+      <p>Planejamento pedagógico e biblioteca de ensino.</p>
+    </div>
+    <a class="voltar" href="/central_ensino.html">
+      ← Central de Ensino
+    </a>
+  </header>
+
+  <p id="acesso" role="status" aria-live="polite">
+    Verificando permissões...
+  </p>
+
+  <div class="grade" id="area" hidden>
+    <section class="painel" id="painelPlano">
+      <h2>Novo plano de aula</h2>
+      <p>Registre o planejamento e selecione as técnicas ensinadas.</p>
+
+      <form id="formPlano">
+        <label for="titulo">Título da aula *</label>
+        <input id="titulo" name="titulo" maxlength="160"
+          required placeholder="Ex.: Finalizações da guarda fechada">
+
+        <label for="data">Data da aula *</label>
+        <input id="data" name="data_aula" type="date" required>
+
+        <label for="turma">Turma</label>
+        <input id="turma" name="turma_descricao" maxlength="160"
+          placeholder="Ex.: Adulto iniciante">
+
+        <label for="objetivos">Objetivos da aula</label>
+        <textarea id="objetivos" name="objetivos"
+          maxlength="4000"
+          placeholder="O que os alunos deverão aprender?"></textarea>
+
+        <label for="conteudo">Descrição livre da aula</label>
+        <textarea id="conteudo" name="conteudo_livre"
+          maxlength="12000"
+          placeholder="Descreva livremente o conteúdo, os exercícios e as orientações."></textarea>
+
+        <div class="aviso">
+          A descrição livre permanece disponível mesmo
+          quando você seleciona técnicas do catálogo.
+        </div>
+
+        <h2>Técnicas selecionadas</h2>
+        <p class="menor">
+          Descreva como cada técnica será ensinada nesta aula.
+        </p>
+
+        <div id="descricoes"></div>
+
+        <p class="mensagem" id="mensagem" role="status"
+          aria-live="polite"></p>
+
+        <div class="botoes">
+          <button id="salvar" type="submit">
+            Salvar plano como rascunho
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="painel">
+      <h2>Escolher técnicas</h2>
+      <p>Marque as técnicas que farão parte do plano.</p>
+
+      <label for="pesquisa">Pesquisar no catálogo</label>
+      <input id="pesquisa" type="search" maxlength="100"
+        placeholder="Ex.: Kimura, raspagem, guarda">
+
+      <p id="quantidade" class="selecao">
+        Nenhuma técnica selecionada
+      </p>
+
+      <div id="catalogo" aria-live="polite">
+        Carregando técnicas...
+      </div>
+    </section>
+  </div>
+
+  <section class="painel" id="biblioteca"
+    style="margin-top:18px" hidden>
+    <h2>Planos registrados</h2>
+    <p class="menor" id="descricaoBiblioteca"></p>
+    <div id="listaPlanos" aria-live="polite">
+      Carregando planos...
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const porId = id => document.getElementById(id);
+
+  const acesso = porId('acesso');
+  const area = porId('area');
+  const form = porId('formPlano');
+  const salvar = porId('salvar');
+  const mensagem = porId('mensagem');
+  const pesquisa = porId('pesquisa');
+  const catalogo = porId('catalogo');
+  const descricoes = porId('descricoes');
+  const quantidade = porId('quantidade');
+  const listaPlanos = porId('listaPlanos');
+
+  const selecionadas = new Map();
+  let buscaAtual = 0;
+  let atraso;
+
+  function elemento(tag, classe, texto) {
+    const el = document.createElement(tag);
+    if (classe) el.className = classe;
+    if (texto !== undefined) el.textContent = texto;
+    return el;
+  }
+
+  async function api(url, opcoes = {}) {
+    const resposta = await fetch(url, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      ...opcoes
+    });
+    const dados = await resposta.json().catch(() => ({}));
+    return { resposta, dados };
+  }
+
+  function atualizarDescricoes() {
+    descricoes.replaceChildren();
+
+    const total = selecionadas.size;
+    quantidade.textContent = total
+      ? total + (total === 1
+          ? ' técnica selecionada'
+          : ' técnicas selecionadas')
+      : 'Nenhuma técnica selecionada';
+
+    if (!total) {
+      descricoes.append(elemento(
+        'p', 'menor',
+        'Você também pode preparar uma aula apenas com a descrição livre.'
+      ));
+      return;
+    }
+
+    for (const [id, tecnica] of selecionadas) {
+      const grupo = elemento('div', 'descricao-item');
+      const label = elemento(
+        'label', '', tecnica.nome + ' — descrição da aula'
+      );
+      const textarea = elemento('textarea');
+      const campoId = 'descricao-' + id;
+
+      label.htmlFor = campoId;
+      textarea.id = campoId;
+      textarea.maxLength = 6000;
+      textarea.value = tecnica.descricao || '';
+      textarea.placeholder =
+        'Ex.: entrada, pegadas, variações e orientações ensinadas.';
+
+      textarea.addEventListener('input', () => {
+        tecnica.descricao = textarea.value;
+      });
+
+      grupo.append(label, textarea);
+      descricoes.append(grupo);
+    }
+  }
+
+  function mostrarCatalogo(tecnicas) {
+    catalogo.replaceChildren();
+
+    if (!tecnicas.length) {
+      catalogo.append(elemento(
+        'p', '', 'Nenhuma técnica encontrada nesta pesquisa.'
+      ));
+      return;
+    }
+
+    const categorias = new Map();
+
+    for (const tecnica of tecnicas) {
+      const categoria = tecnica.categoria || 'Outras técnicas';
+
+      if (!categorias.has(categoria)) {
+        categorias.set(categoria, []);
+      }
+      categorias.get(categoria).push(tecnica);
+    }
+
+    for (const [categoria, itens] of categorias) {
+      const grupo = elemento('section', 'categoria');
+      grupo.append(elemento('h3', '', categoria));
+
+      for (const tecnica of itens) {
+        const opcao = elemento('label', 'opcao');
+        const checkbox = elemento('input');
+
+        checkbox.type = 'checkbox';
+        checkbox.checked = selecionadas.has(tecnica.id);
+
+        const informacoes = elemento('span');
+        informacoes.append(
+          elemento('strong', '', tecnica.nome)
+        );
+
+        if (tecnica.posicao_origem) {
+          informacoes.append(
+            elemento(
+              'div', 'menor', tecnica.posicao_origem
+            )
+          );
+        }
+
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            selecionadas.set(tecnica.id, {
+              id: tecnica.id,
+              nome: tecnica.nome,
+              descricao: ''
+            });
+          } else {
+            selecionadas.delete(tecnica.id);
+          }
+          atualizarDescricoes();
+        });
+
+        opcao.append(checkbox, informacoes);
+        grupo.append(opcao);
+      }
+
+      catalogo.append(grupo);
+    }
+
+    if (tecnicas.length === 100) {
+      catalogo.append(elemento(
+        'p', 'menor',
+        'Exibindo até 100 resultados. Refine a pesquisa para encontrar outras técnicas.'
+      ));
+    }
+  }
+
+  async function consultarCatalogo() {
+    const numero = ++buscaAtual;
+    catalogo.textContent = 'Consultando catálogo...';
+
+    try {
+      const parametros = new URLSearchParams({
+        busca: pesquisa.value.trim(),
+        pagina: '1'
+      });
+
+      const { resposta, dados } = await api(
+        '/api/ensino/tecnicas?' + parametros
+      );
+
+      if (numero !== buscaAtual) return;
+
+      if (!resposta.ok || !Array.isArray(dados.tecnicas)) {
+        throw new Error('Não foi possível consultar as técnicas.');
+      }
+
+      mostrarCatalogo(dados.tecnicas);
+    } catch (erro) {
+      if (numero === buscaAtual) {
+        catalogo.textContent = erro.message;
+      }
+    }
+  }
+
+  pesquisa.addEventListener('input', () => {
+    clearTimeout(atraso);
+    atraso = setTimeout(consultarCatalogo, 300);
+  });
+
+  async function consultarPlanos() {
+    listaPlanos.textContent = 'Consultando planos...';
+
+    try {
+      const { resposta, dados } = await api(
+        '/api/ensino/planos'
+      );
+
+      if (!resposta.ok || !Array.isArray(dados.planos)) {
+        throw new Error('Não foi possível consultar os planos.');
+      }
+
+      listaPlanos.replaceChildren();
+
+      if (!dados.planos.length) {
+        listaPlanos.append(elemento(
+          'p', '', 'Nenhum plano de aula registrado.'
+        ));
+        return;
+      }
+
+      for (const plano of dados.planos) {
+        const bloco = elemento('div', 'registro');
+        bloco.append(elemento(
+          'strong', '', plano.titulo
+        ));
+
+        const data = String(plano.data_aula || '').slice(0, 10);
+        const informacoes = [
+          data,
+          plano.turma_descricao,
+          plano.status
+        ].filter(Boolean).join(' • ');
+
+        bloco.append(elemento('small', '', informacoes));
+        listaPlanos.append(bloco);
+      }
+    } catch (erro) {
+      listaPlanos.textContent = erro.message;
+    }
+  }
+
+  form.addEventListener('submit', async evento => {
+    evento.preventDefault();
+
+    const tecnicas = Array.from(selecionadas.values())
+      .map(item => ({
+        tecnica_id: item.id,
+        descricao_ministrada: item.descricao.trim()
+      }));
+
+    if (tecnicas.length > 30) {
+      mensagem.textContent =
+        'O limite é de 30 técnicas por plano.';
+      return;
+    }
+
+    const dados = Object.fromEntries(
+      new FormData(form).entries()
+    );
+    dados.tecnicas = tecnicas;
+
+    salvar.disabled = true;
+    mensagem.textContent = 'Salvando plano...';
+
+    try {
+      const { resposta, dados: retorno } = await api(
+        '/api/ensino/planos',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dados)
+        }
+      );
+
+      if (!resposta.ok || !retorno.ok) {
+        throw new Error(
+          retorno.error || 'Não foi possível salvar o plano.'
+        );
+      }
+
+      mensagem.textContent =
+        'Plano salvo como rascunho com sucesso!';
+
+      form.reset();
+      selecionadas.clear();
+      atualizarDescricoes();
+      mostrarSelecaoAtual();
+      definirData();
+      await consultarPlanos();
+    } catch (erro) {
+      mensagem.textContent = erro.message;
+    } finally {
+      salvar.disabled = false;
+    }
+  });
+
+  function mostrarSelecaoAtual() {
+    catalogo.querySelectorAll(
+      'input[type="checkbox"]'
+    ).forEach(el => {
+      el.checked = false;
+    });
+  }
+
+  function definirData() {
+    const agora = new Date();
+    const local = new Date(
+      agora.getTime() - agora.getTimezoneOffset() * 60000
+    );
+    porId('data').value =
+      local.toISOString().slice(0, 10);
+  }
+
+  async function iniciar() {
+    try {
+      const { resposta, dados } = await api(
+        '/api/ensino/permissoes'
+      );
+
+      if (!resposta.ok || !dados.ok) {
+        acesso.textContent =
+          'Acesso restrito. Entre com uma conta autorizada.';
+        return;
+      }
+
+      if (!dados.podeConsultarBiblioteca) {
+        acesso.textContent =
+          'Seu perfil não possui permissão de consulta.';
+        return;
+      }
+
+      acesso.textContent =
+        'Sessão autorizada • ' +
+        (dados.tipo || dados.perfil);
+
+      porId('biblioteca').hidden = false;
+      porId('descricaoBiblioteca').textContent =
+        dados.perfil === 'admin' ||
+        dados.podeConsultarRelatoriosGerais
+          ? 'Consulta de planos registrados, conforme as permissões.'
+          : 'Consulta dos seus próprios planos de aula.';
+
+      await consultarPlanos();
+
+      if (dados.podeCriarPlano === true) {
+        area.hidden = false;
+        definirData();
+        atualizarDescricoes();
+        await consultarCatalogo();
+      }
+    } catch {
+      acesso.textContent =
+        'Não foi possível verificar sua sessão.';
+    }
+  }
+
+  iniciar();
+})();
+</script>
+</body>
+</html>

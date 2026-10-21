@@ -122,17 +122,124 @@ export default async function handler(req, res) {
       });
     }
 
+    const tecnicas = dados.tecnicas === undefined
+      ? [] : dados.tecnicas;
+
+    if (!Array.isArray(tecnicas) || tecnicas.length > 30) {
+      return res.status(400).json({
+        ok: false, error: 'Lista de tecnicas invalida'
+      });
+    }
+
+    const ids = new Set();
+    const selecionadas = [];
+
+    for (const item of tecnicas) {
+      if (!item || typeof item !== 'object' ||
+          Array.isArray(item)) {
+        return res.status(400).json({
+          ok: false, error: 'Tecnica selecionada invalida'
+        });
+      }
+
+      const id = item.tecnica_id;
+      const descricao = item.descricao_ministrada ?? '';
+
+      if (
+        typeof id !== 'string' ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) ||
+        ids.has(id.toLowerCase()) ||
+        typeof descricao !== 'string' ||
+        descricao.length > 6000
+      ) {
+        return res.status(400).json({
+          ok: false, error: 'Dados das tecnicas invalidos'
+        });
+      }
+
+      ids.add(id.toLowerCase());
+      selecionadas.push({
+        tecnica_id: id,
+        descricao_ministrada: descricao.trim()
+      });
+    }
+
+    const tecnicasJson = JSON.stringify(selecionadas);
+
+    // Uma unica instrucao SQL evita salvar um plano
+    // incompleto caso alguma tecnica esteja indisponivel.
     const linhas = await sql`
-      INSERT INTO kokoro_planos_aula
-        (professor_id, titulo, data_aula,
-         turma_descricao, objetivos, conteudo_livre,
-         status)
-      VALUES
-        (${acesso.id}, ${titulo}, ${data},
-         ${turma}, ${objetivos}, ${conteudo},
-         'rascunho')
-      RETURNING id, titulo, data_aula, status
+      WITH entradas AS (
+        SELECT
+          (x.item->>'tecnica_id')::uuid AS tecnica_id,
+          COALESCE(
+            x.item->>'descricao_ministrada', ''
+          ) AS descricao_ministrada,
+          x.ordem::integer AS ordem
+        FROM jsonb_array_elements(
+          ${tecnicasJson}::jsonb
+        ) WITH ORDINALITY AS x(item, ordem)
+      ),
+      validas AS (
+        SELECT
+          t.id AS tecnica_id,
+          t.nome,
+          e.descricao_ministrada,
+          e.ordem
+        FROM entradas e
+        JOIN kokoro_tecnicas t
+          ON t.id = e.tecnica_id
+         AND t.ativo = TRUE
+      ),
+      novo_plano AS (
+        INSERT INTO kokoro_planos_aula
+          (professor_id, titulo, data_aula,
+           turma_descricao, objetivos, conteudo_livre,
+           status)
+        SELECT
+          ${acesso.id}::uuid,
+          ${titulo},
+          ${data}::date,
+          ${turma},
+          ${objetivos},
+          ${conteudo},
+          'rascunho'
+        WHERE (
+          SELECT COUNT(*) FROM validas
+        ) = ${selecionadas.length}
+        RETURNING id, titulo, data_aula, status
+      ),
+      itens_criados AS (
+        INSERT INTO kokoro_plano_tecnicas
+          (plano_id, tecnica_id, nome_tecnica_snapshot,
+           descricao_ministrada, ordem)
+        SELECT
+          p.id,
+          v.tecnica_id,
+          v.nome,
+          v.descricao_ministrada,
+          v.ordem
+        FROM novo_plano p
+        CROSS JOIN validas v
+        RETURNING id
+      )
+      SELECT
+        p.id,
+        p.titulo,
+        p.data_aula,
+        p.status,
+        (
+          SELECT COUNT(*) FROM itens_criados
+        )::integer AS quantidade_tecnicas
+      FROM novo_plano p
     `;
+
+    if (!linhas.length) {
+      return res.status(400).json({
+        ok: false,
+        error: 'Uma ou mais tecnicas nao estao disponiveis'
+      });
+    }
 
     return res.status(201).json({
       ok: true,
