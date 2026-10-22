@@ -57,7 +57,7 @@ a { color: var(--azul); }
   background: rgba(12,26,48,.97);
 }
 label { display: block; font-weight: bold; margin: 14px 0 6px; }
-input, textarea {
+input, select, textarea {
   display: block;
   width: 100%;
   min-width: 0;
@@ -69,7 +69,11 @@ input, textarea {
   font: inherit;
 }
 textarea { min-height: 100px; resize: vertical; }
-input:focus, textarea:focus {
+select, select option, select optgroup {
+  background-color: #071526;
+  color: #fff;
+}
+input:focus, select:focus, textarea:focus {
   outline: 2px solid var(--azul);
   outline-offset: 1px;
 }
@@ -132,6 +136,74 @@ button:hover:not(:disabled) { background: #08688e; }
 .registro small { color: var(--suave); }
 .mensagem { min-height: 24px; color: var(--azul); }
 [hidden] { display: none !important; }
+
+.rotulo-turma {
+  display: block;
+  font-weight: bold;
+  margin: 14px 0 6px;
+}
+.turma-dropdown {
+  width: 100%;
+}
+.turma-dropdown summary {
+  display: block;
+  position: relative;
+  list-style: none;
+  cursor: pointer;
+  background: #071526;
+  border: 1px solid #416180;
+  border-radius: 9px;
+  padding: 12px 34px 12px 12px;
+  color: #fff;
+}
+.turma-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+.turma-dropdown summary::after {
+  content: "⌄";
+  position: absolute;
+  right: 13px;
+  top: 10px;
+}
+.turma-dropdown[open] summary::after {
+  content: "⌃";
+}
+.turma-dropdown summary:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 2px;
+}
+.turma-lista {
+  margin-top: 6px;
+  max-height: min(320px, 50vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--borda);
+  border-radius: 9px;
+  background: #071526;
+  padding: 7px;
+}
+.turma-grupo {
+  padding: 12px 8px 5px;
+  color: var(--azul);
+  font-size: 13px;
+  font-weight: bold;
+}
+.turma-opcao {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: normal;
+  background: transparent;
+  color: var(--texto);
+  border: 0;
+  border-radius: 6px;
+}
+.turma-opcao:hover,
+.turma-opcao:focus-visible {
+  background: #17415f;
+}
+
 @media (max-width: 760px) {
   .grade { grid-template-columns: 1fr; }
   .painel { padding: 16px; }
@@ -170,10 +242,33 @@ button:hover:not(:disabled) { background: #08688e; }
         <label for="data">Data da aula *</label>
         <input id="data" name="data_aula" type="date" required>
 
-        <label for="turma">Turma</label>
-        <input id="turma" name="turma_descricao" maxlength="160"
-          placeholder="Ex.: Adulto iniciante">
-
+        <div class="rotulo-turma" id="rotuloTurma">Turma</div>
+        <details id="menuTurmas" class="turma-dropdown">
+          <summary id="turmaResumo" aria-labelledby="rotuloTurma turmaResumo">Selecione a turma</summary>
+          <div class="turma-lista">
+            <div class="turma-grupo">Kids — 4 a 12 anos</div>
+            <button type="button" class="turma-opcao" data-turma="Kids — Iniciante">Kids — Iniciante</button>
+            <button type="button" class="turma-opcao" data-turma="Kids — Intermediário">Kids — Intermediário</button>
+            <button type="button" class="turma-opcao" data-turma="Kids — Avançado">Kids — Avançado</button>
+            <div class="turma-grupo">Infanto-Juvenil — 13 a 15 anos</div>
+            <button type="button" class="turma-opcao" data-turma="Infanto-Juvenil — Iniciante">Infanto-Juvenil — Iniciante</button>
+            <button type="button" class="turma-opcao" data-turma="Infanto-Juvenil — Intermediário">Infanto-Juvenil — Intermediário</button>
+            <button type="button" class="turma-opcao" data-turma="Infanto-Juvenil — Avançado">Infanto-Juvenil — Avançado</button>
+            <div class="turma-grupo">Juvenil — 16 a 17 anos</div>
+            <button type="button" class="turma-opcao" data-turma="Juvenil — Iniciante">Juvenil — Iniciante</button>
+            <button type="button" class="turma-opcao" data-turma="Juvenil — Intermediário">Juvenil — Intermediário</button>
+            <button type="button" class="turma-opcao" data-turma="Juvenil — Avançado">Juvenil — Avançado</button>
+            <div class="turma-grupo">Adultos e Masters — 18 anos ou mais</div>
+            <button type="button" class="turma-opcao" data-turma="Adultos e Masters — Iniciante">Adultos e Masters — Iniciante</button>
+            <button type="button" class="turma-opcao" data-turma="Adultos e Masters — Intermediário">Adultos e Masters — Intermediário</button>
+            <button type="button" class="turma-opcao" data-turma="Adultos e Masters — Avançado">Adultos e Masters — Avançado</button>
+            <div class="turma-grupo">Outras modalidades de turma</div>
+            <button type="button" class="turma-opcao" data-turma="Turma mista — Diferentes níveis">Turma mista — Diferentes níveis</button>
+            <button type="button" class="turma-opcao" data-turma="Aula individual / Particular">Aula individual / Particular</button>
+          </div>
+        </details>
+        <input type="hidden" id="turma" name="turma_descricao" value="">
+        <p class="menor">O nível é pedagógico e não substitui a graduação por faixa.</p>
         <label for="objetivos">Objetivos da aula</label>
         <textarea id="objetivos" name="objetivos"
           maxlength="4000"
@@ -251,6 +346,26 @@ button:hover:not(:disabled) { background: #08688e; }
   const descricoes = porId('descricoes');
   const quantidade = porId('quantidade');
   const listaPlanos = porId('listaPlanos');
+
+  const menuTurmas = porId('menuTurmas');
+  const turmaResumo = porId('turmaResumo');
+  const turma = porId('turma');
+
+  menuTurmas.querySelectorAll('.turma-opcao').forEach(botao => {
+    botao.addEventListener('click', () => {
+      turma.value = botao.dataset.turma;
+      turmaResumo.textContent = botao.dataset.turma;
+      menuTurmas.open = false;
+      turmaResumo.focus();
+    });
+  });
+
+  menuTurmas.addEventListener('keydown', evento => {
+    if (evento.key === 'Escape' && menuTurmas.open) {
+      menuTurmas.open = false;
+      turmaResumo.focus();
+    }
+  });
 
   const selecionadas = new Map();
   let buscaAtual = 0;
@@ -508,6 +623,8 @@ button:hover:not(:disabled) { background: #08688e; }
         'Plano salvo como rascunho com sucesso!';
 
       form.reset();
+      turmaResumo.textContent = 'Selecione a turma';
+      menuTurmas.open = false;
       selecionadas.clear();
       atualizarDescricoes();
       mostrarSelecaoAtual();
