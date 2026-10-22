@@ -65,19 +65,43 @@ export default async function handler(req, res) {
 
       if (acesso.geral) {
         planos = await sql`
-          SELECT id, professor_id, titulo, data_aula,
-                 turma_descricao, objetivos, conteudo_livre,
-                 status, criado_em
-          FROM kokoro_planos_aula
+          SELECT p.id, p.professor_id, p.titulo, p.data_aula,
+                 p.turma_descricao, p.objetivos, p.conteudo_livre,
+                 p.status, p.criado_em,
+                 COALESCE((
+                   SELECT jsonb_agg(
+                     jsonb_build_object(
+                       'nome', pt.nome_tecnica_snapshot,
+                       'descricao_ministrada',
+                       pt.descricao_ministrada
+                     )
+                     ORDER BY pt.ordem, pt.id
+                   )
+                   FROM kokoro_plano_tecnicas pt
+                   WHERE pt.plano_id = p.id
+                 ), '[]'::jsonb) AS tecnicas
+          FROM kokoro_planos_aula p
           ORDER BY data_aula DESC, criado_em DESC
           LIMIT 100
         `;
       } else {
         planos = await sql`
-          SELECT id, professor_id, titulo, data_aula,
-                 turma_descricao, objetivos, conteudo_livre,
-                 status, criado_em
-          FROM kokoro_planos_aula
+          SELECT p.id, p.professor_id, p.titulo, p.data_aula,
+                 p.turma_descricao, p.objetivos, p.conteudo_livre,
+                 p.status, p.criado_em,
+                 COALESCE((
+                   SELECT jsonb_agg(
+                     jsonb_build_object(
+                       'nome', pt.nome_tecnica_snapshot,
+                       'descricao_ministrada',
+                       pt.descricao_ministrada
+                     )
+                     ORDER BY pt.ordem, pt.id
+                   )
+                   FROM kokoro_plano_tecnicas pt
+                   WHERE pt.plano_id = p.id
+                 ), '[]'::jsonb) AS tecnicas
+          FROM kokoro_planos_aula p
           WHERE professor_id = ${acesso.id}
           ORDER BY data_aula DESC, criado_em DESC
           LIMIT 100

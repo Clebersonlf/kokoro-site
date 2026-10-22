@@ -133,6 +133,34 @@ button:hover:not(:disabled) { background: #08688e; }
   padding: 13px 0;
 }
 .registro strong { display: block; }
+
+.detalhes-plano {
+  margin-top: 12px;
+}
+.detalhes-plano summary {
+  cursor: pointer;
+  color: var(--azul);
+  font-weight: bold;
+  padding: 7px 0;
+}
+.detalhes-conteudo {
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid var(--borda);
+  border-radius: 9px;
+  background: #071526;
+}
+.detalhes-conteudo p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 5px 0 14px;
+}
+.tecnica-vinculada {
+  border-top: 1px solid var(--borda);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
 .registro small { color: var(--suave); }
 .mensagem { min-height: 24px; color: var(--azul); }
 [hidden] { display: none !important; }
@@ -571,6 +599,57 @@ button:hover:not(:disabled) { background: #08688e; }
         ].filter(Boolean).join(' • ');
 
         bloco.append(elemento('small', '', informacoes));
+
+        const detalhes = elemento('details', 'detalhes-plano');
+        detalhes.append(elemento(
+          'summary', '', 'Ver conteúdo e técnicas'
+        ));
+
+        const corpo = elemento('div', 'detalhes-conteudo');
+
+        if (plano.objetivos) {
+          corpo.append(elemento('strong', '', 'Objetivos'));
+          corpo.append(elemento('p', '', plano.objetivos));
+        }
+
+        if (plano.conteudo_livre) {
+          corpo.append(elemento('strong', '', 'Descrição da aula'));
+          corpo.append(elemento('p', '', plano.conteudo_livre));
+        }
+
+        const tecnicas = Array.isArray(plano.tecnicas)
+          ? plano.tecnicas : [];
+
+        corpo.append(elemento(
+          'strong', '',
+          'Técnicas vinculadas (' + tecnicas.length + ')'
+        ));
+
+        if (!tecnicas.length) {
+          corpo.append(elemento(
+            'p', '',
+            'Nenhuma técnica vinculada a este plano.'
+          ));
+        } else {
+          for (const tecnica of tecnicas) {
+            const item = elemento('div', 'tecnica-vinculada');
+
+            item.append(elemento(
+              'strong', '', tecnica.nome || 'Técnica sem nome'
+            ));
+
+            item.append(elemento(
+              'p', '',
+              tecnica.descricao_ministrada ||
+              'Sem descrição individual registrada.'
+            ));
+
+            corpo.append(item);
+          }
+        }
+
+        detalhes.append(corpo);
+        bloco.append(detalhes);
         listaPlanos.append(bloco);
       }
     } catch (erro) {
