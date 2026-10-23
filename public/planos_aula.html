@@ -133,6 +133,16 @@ button:hover:not(:disabled) { background: #08688e; }
   padding: 13px 0;
 }
 .registro strong { display: block; }
+.btn-editar-plano {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 9px 13px;
+  background: #102941;
+}
+#cancelarEdicao {
+  background: #102941;
+  border-color: #57738d;
+}
 
 .detalhes-plano {
   margin-top: 12px;
@@ -326,6 +336,9 @@ button:hover:not(:disabled) { background: #08688e; }
           <button id="salvar" type="submit">
             Salvar plano como rascunho
           </button>
+          <button id="cancelarEdicao" type="button" hidden>
+            Cancelar edição
+          </button>
         </div>
       </form>
     </section>
@@ -394,6 +407,11 @@ button:hover:not(:disabled) { background: #08688e; }
       turmaResumo.focus();
     }
   });
+
+  let planoEmEdicao = null;
+  const cancelarEdicao = porId('cancelarEdicao');
+  const tituloFormulario = porId('painelPlano')
+    .querySelector('h2');
 
   const selecionadas = new Map();
   let buscaAtual = 0;
@@ -564,6 +582,80 @@ button:hover:not(:disabled) { background: #08688e; }
     atraso = setTimeout(consultarCatalogo, 300);
   });
 
+  function limparFormulario() {
+    planoEmEdicao = null;
+    form.reset();
+
+    turmaResumo.textContent = 'Selecione a turma';
+    menuTurmas.open = false;
+
+    selecionadas.clear();
+    atualizarDescricoes();
+    mostrarSelecaoAtual();
+    definirData();
+
+    tituloFormulario.textContent = 'Novo plano de aula';
+    salvar.textContent = 'Salvar plano como rascunho';
+    cancelarEdicao.hidden = true;
+  }
+
+  function editarPlano(plano) {
+    if (!plano.pode_editar ||
+        plano.status !== 'rascunho') {
+      return;
+    }
+
+    planoEmEdicao = plano.id;
+
+    porId('titulo').value = plano.titulo || '';
+    porId('data').value =
+      String(plano.data_aula || '').slice(0, 10);
+    porId('objetivos').value = plano.objetivos || '';
+    porId('conteudo').value = plano.conteudo_livre || '';
+
+    turma.value = plano.turma_descricao || '';
+    turmaResumo.textContent =
+      plano.turma_descricao || 'Selecione a turma';
+    menuTurmas.open = false;
+
+    selecionadas.clear();
+
+    const tecnicas = Array.isArray(plano.tecnicas)
+      ? plano.tecnicas : [];
+
+    for (const tecnica of tecnicas) {
+      if (!tecnica.tecnica_id || !tecnica.nome) {
+        continue;
+      }
+
+      selecionadas.set(tecnica.tecnica_id, {
+        id: tecnica.tecnica_id,
+        nome: tecnica.nome,
+        descricao: tecnica.descricao_ministrada || ''
+      });
+    }
+
+    atualizarDescricoes();
+    consultarCatalogo();
+
+    tituloFormulario.textContent = 'Editar plano de aula';
+    salvar.textContent = 'Salvar alterações';
+    cancelarEdicao.hidden = false;
+    mensagem.textContent =
+      'Editando um rascunho já registrado.';
+
+    porId('painelPlano').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
+
+  cancelarEdicao.addEventListener('click', () => {
+    limparFormulario();
+    mensagem.textContent =
+      'Edição cancelada. O plano original foi preservado.';
+  });
+
   async function consultarPlanos() {
     listaPlanos.textContent = 'Consultando planos...';
 
@@ -650,6 +742,20 @@ button:hover:not(:disabled) { background: #08688e; }
 
         detalhes.append(corpo);
         bloco.append(detalhes);
+
+        if (plano.pode_editar === true) {
+          const botaoEditar = elemento(
+            'button', 'btn-editar-plano', 'Editar plano'
+          );
+
+          botaoEditar.type = 'button';
+          botaoEditar.addEventListener('click', () => {
+            editarPlano(plano);
+          });
+
+          bloco.append(botaoEditar);
+        }
+
         listaPlanos.append(bloco);
       }
     } catch (erro) {
@@ -677,6 +783,18 @@ button:hover:not(:disabled) { background: #08688e; }
     );
     dados.tecnicas = tecnicas;
 
+    if (!tecnicas.length && !window.confirm(
+      'Nenhuma técnica selecionada. Deseja salvar mesmo assim?'
+    )) {
+      return;
+    }
+
+    const editando = Boolean(planoEmEdicao);
+
+    if (editando) {
+      dados.plano_id = planoEmEdicao;
+    }
+
     salvar.disabled = true;
     mensagem.textContent = 'Salvando plano...';
 
@@ -684,7 +802,7 @@ button:hover:not(:disabled) { background: #08688e; }
       const { resposta, dados: retorno } = await api(
         '/api/ensino/planos',
         {
-          method: 'POST',
+          method: editando ? 'PATCH' : 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -698,17 +816,17 @@ button:hover:not(:disabled) { background: #08688e; }
         );
       }
 
-      mensagem.textContent =
-        'Plano salvo como rascunho com sucesso!';
-
-      form.reset();
-      turmaResumo.textContent = 'Selecione a turma';
-      menuTurmas.open = false;
-      selecionadas.clear();
-      atualizarDescricoes();
-      mostrarSelecaoAtual();
-      definirData();
+      limparFormulario();
       await consultarPlanos();
+
+      mensagem.textContent = editando
+        ? 'Plano atualizado com sucesso!'
+        : 'Plano salvo como rascunho com sucesso!';
+
+      mensagem.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
     } catch (erro) {
       mensagem.textContent = erro.message;
     } finally {
